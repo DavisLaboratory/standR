@@ -104,3 +104,31 @@ run_ruv4 <- function(spe_object, k, factors, negctrlGenes){
   return(spe)
 
 }
+
+
+#' Combat normalisation
+#'
+#' @param spe_object A Spatial Experiment object.
+#' @param n_assay Integer, choose the assay from spe_object.
+#' @param batch A vector indicating batches.
+#' @param bio_factor A vector indicating biology.
+#'
+#' @return A Spatial Experiment object.
+#' @export
+run_combat <- function(spe_object, n_assay, batch, bio_factor){
+
+  stopifnot(is.numeric(n_assay))
+  stopifnot(n_assay <= length(spe_object@assays))
+  stopifnot(length(batch)==ncol(spe_object))
+  stopifnot(length(bio_factor)==ncol(spe_object))
+
+  corrected_data <- sva::ComBat_seq(as.matrix(SummarizedExperiment::assay(spe_object, n_assay)),
+                                    batch = batch, group = bio_factor)
+
+  spe_combat <- spe_object
+
+  spe_combat@assays@data$logcounts <- corrected_data
+
+  return(spe_combat)
+}
+

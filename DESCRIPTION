@@ -30,9 +30,9 @@ Imports:
     cluster,
     mclustcomp
 Suggests:
-    testthat (>= 3.0.0),
     biomaRt,
     ggpubr,
     ggrepel,
-    patchwork
+    patchwork,
+    sva
 Config/testthat/edition: 3
