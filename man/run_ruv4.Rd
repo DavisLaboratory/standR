@@ -2,7 +2,7 @@
 % Please edit documentation in R/batchCorrection.R
 \name{run_ruv4}
 \alias{run_ruv4}
-\title{RUV4 normalisation}
+\title{RUV4 batch correction}
 \usage{
 run_ruv4(spe_object, k, factors, negctrlGenes)
 }
@@ -19,5 +19,5 @@ run_ruv4(spe_object, k, factors, negctrlGenes)
 A Spatial Experiment object.
 }
 \description{
-RUV4 normalisation
+RUV4 batch correction
 }

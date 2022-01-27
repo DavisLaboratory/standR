@@ -28,7 +28,9 @@ Imports:
     ruv,
     S4Vectors,
     cluster,
-    mclustcomp
+    mclustcomp,
+    ggalluvial,
+    limma
 Suggests:
     biomaRt,
     ggpubr,
