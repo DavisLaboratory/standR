@@ -59,7 +59,7 @@ chooseNegCTRLgenes <- function(spe_object, n_assay = 2, batch_name = "SlideName"
   return(spe)
 }
 
-#' RUV4 normalisation
+#' RUV4 batch correction
 #'
 #' @param spe_object A Spatial Experiment object.
 #' @param k The number of unwanted factors to use. Can be 0.
@@ -106,7 +106,7 @@ run_ruv4 <- function(spe_object, k, factors, negctrlGenes){
 }
 
 
-#' Combat normalisation
+#' Combat batch correction
 #'
 #' @param spe_object A Spatial Experiment object.
 #' @param n_assay Integer, choose the assay from spe_object.
@@ -132,3 +132,20 @@ run_combat <- function(spe_object, n_assay, batch, bio_factor){
   return(spe_combat)
 }
 
+
+#' Limma batch correction
+#'
+#' @param spe_object A Spatial Experiment object.
+#' @param n_assay Integer, choose the assay from spe_object.
+#' @param batch A vector indicating batches.
+#'
+#' @return A Spatial Experiment object.
+#' @export
+#'
+run_limmarmbatch <- function(spe_object, n_assay, batch){
+  spe_limma_rmb <- spe_object
+  spe_limma_rmb@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe_object,n_assay),
+                                                                  batch = batch)
+
+  return(spe_limma_rmb)
+}
