@@ -1,0 +1,38 @@
+Package: standR
+Title: Spatial transcriptome analyses of Nanostring's DSP data in R
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Ning",
+           family = "Liu",
+           role = c("aut", "cre"),
+           email = "liu.n@wehi.edu.au",
+           comment = c(ORCID = "0000-0002-9487-9305"))
+Description: This package is providing functions to assist the analysis of Nanostring's GeoMx DSP data. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+    dplyr,
+    magrittr,
+    SpatialExperiment,
+    SummarizedExperiment,
+    SingleCellExperiment,
+    edgeR,
+    rlang,
+    readr,
+    tibble,
+    ggplot2,
+    tidyr,
+    ruv,
+    S4Vectors,
+    cluster,
+    mclustcomp
+Suggests:
+    testthat (>= 3.0.0),
+    biomaRt,
+    ggpubr,
+    ggrepel,
+    patchwork
+Config/testthat/edition: 3
