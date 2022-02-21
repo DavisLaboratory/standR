@@ -9,7 +9,7 @@ geomx_import_from_dge(dge_object, spatialCoord = NULL)
 \arguments{
 \item{dge_object}{a DGEList object.}
 
-\item{spatialCoord}{a dataframe with coordinates of samples, rowname must be cosistent with the colnames of dge_object.}
+\item{spatialCoord}{a matrix with coordinates of samples, rowname must be cosistent with the colnames of dge_object.}
 }
 \value{
 A SpatialExperiment object.

@@ -8,7 +8,7 @@
 #' @export
 #'
 plotMetadata <- function(spe_object, column2plot, textsize = 3){
-  require(ggalluvial)
+  #require(ggalluvial)
   stopifnot(all(column2plot %in% colnames(SummarizedExperiment::colData(spe_object))))
   x = stratum = alluvium = NULL
   p <- SummarizedExperiment::colData(spe_object) %>%

@@ -126,7 +126,7 @@ geomx_import_from_path <- function(dirPath, countFile, sampleAnnoFile, featureAn
 #' Import GeoMX DSP data into a saptial experiment object from DGEList object
 #'
 #' @param dge_object a DGEList object.
-#' @param spatialCoord a dataframe with coordinates of samples, rowname must be cosistent with the colnames of dge_object.
+#' @param spatialCoord a matrix with coordinates of samples, rowname must be cosistent with the colnames of dge_object.
 #'
 #' @return A SpatialExperiment object.
 #' @export

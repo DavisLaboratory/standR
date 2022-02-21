@@ -314,12 +314,12 @@ plotPCAbiplot <- function(spe_object, featureToPlot, featureToShape = NA, n_load
 #' @param color Colors.
 #' @param emphasize Logical vector, indicating which samples are highlighted while the others are gray.
 #'
-#' @return
+#' @return A spatial experiment object.
 #' @export
-#'
-#' @examples
 plot2dUMAP <- function(spe, featureToPlot, point_size = 1,
                        color = NA, emphasize = NULL){
+
+  . = NULL
 
   if(is.na(color)){
     color <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
