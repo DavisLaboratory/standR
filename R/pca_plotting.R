@@ -302,3 +302,58 @@ plotPCAbiplot <- function(spe_object, featureToPlot, featureToShape = NA, n_load
                              color = "black",
                              size = 3)
 }
+
+
+
+
+#' Plot UMAP
+#'
+#' @param spe A spatial experiment object.
+#' @param featureToPlot Feautre to color by.
+#' @param point_size Point size.
+#' @param color Colors.
+#' @param emphasize Logical vector, indicating which samples are highlighted while the others are gray.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot2dUMAP <- function(spe, featureToPlot, point_size = 1,
+                       color = NA, emphasize = NULL){
+
+  if(is.na(color)){
+    color <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+               "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+  }
+
+  x <- reducedDim(spe, "UMAP") %>%
+    as.data.frame() %>%
+    cbind(SummarizedExperiment::colData(spe)[rownames(.),])
+
+
+  if(!is.null(emphasize)){
+    stopifnot(length(emphasize)==nrow(x))
+    p <- x[!emphasize,] %>%
+      ggplot(aes_string("V1", "V2")) +
+      geom_point(size = point_size, alpha = .3, col = "gray") +
+      geom_point(data = x[emphasize,], aes_string(col = featureToPlot), size = point_size, alpha = .3) +
+      scale_color_manual(values = color) +
+      theme_bw() +
+      xlab("UMAP1") +
+      ylab("UMAP2") +
+      guides(colour = guide_legend(override.aes = list(size=5)))
+  } else {
+    p <- x %>%
+      ggplot(aes_string("V1", "V2", col = featureToPlot)) +
+      geom_point(size = point_size, alpha = .3) +
+      theme_bw() +
+      xlab("UMAP1") +
+      ylab("UMAP2") +
+      guides(colour = guide_legend(override.aes = list(size=5))) +
+      scale_color_manual(values = color)
+
+  }
+
+  return(p)
+}
+
