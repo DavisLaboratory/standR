@@ -1,3 +1,4 @@
+# DEseq2 normalisation
 calDESeq2NormCount <- function(spe_object, log = TRUE){
   # get raw count
   count_df <- SummarizedExperiment::assay(spe_object,1)
@@ -23,21 +24,36 @@ calDESeq2NormCount <- function(spe_object, log = TRUE){
 }
 
 
-rpkm2tpm <- function(x){
-  tpm <- t(t(x)/colSums(x)) * 1e6
+
+rpkm2tpm <- function(x) {
+  colSumMat <- edgeR::expandAsMatrix(colSums(x, na.rm = TRUE),
+                                     byrow = TRUE,
+                                     dim = dim(x))
+  tpm <- x / colSumMat * 1e6
   return(tpm)
 }
+
 
 #' Perform normalisation to GeoMX data
 #'
 #' @param spe_object A spatial experiment object.
-#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, deseq2norm
+#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, deseq2norm. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
 #' @param log Log-transformed or not.
 #'
-#' @return A spatial experiment object.
+#' @return A spatial experiment object, with the second assay being the normalised count matrix.
 #' @export
 #'
-geomx_normalize <- function(spe_object, method = "TMM", log = TRUE){
+#' @examples
+#' data("dkd_spe_subset")
+#'
+#' spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
+#' head(SummarizedExperiment::assay(spe_tmm, 2))
+#' spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile")
+#' head(SummarizedExperiment::assay(spe_upq, 2))
+#' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "deseq2norm")
+#' head(SummarizedExperiment::assay(spe_deseqnorm, 2))
+#'
+geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   if(!(method %in% c("TMM","RPKM","TPM","CPM","upperquartile","deseq2norm"))){
     stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,deseq2")
@@ -65,9 +81,9 @@ geomx_normalize <- function(spe_object, method = "TMM", log = TRUE){
 
   if(method == "RPKM"){
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- edgeR::rpkm(y, log = TRUE)
+      spe@assays@data$logcounts <- edgeR::rpkm(y, log = TRUE, prior.count = 0)
     } else {
-      spe@assays@data$logcounts <- edgeR::rpkm(y, log = FALSE)
+      spe@assays@data$logcounts <- edgeR::rpkm(y, log = FALSE, prior.count = 0)
     }
   }
 
@@ -76,9 +92,9 @@ geomx_normalize <- function(spe_object, method = "TMM", log = TRUE){
 
   if(method == "TPM"){
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- log2(rpkm2tpm(2^edgeR::rpkm(y)))
+      spe@assays@data$logcounts <- log(rpkm2tpm(edgeR::rpkm(y))+1, 2)
     } else {
-      spe@assays@data$logcounts <- rpkm2tpm(2^edgeR::rpkm(y))
+      spe@assays@data$logcounts <- rpkm2tpm(edgeR::rpkm(y))
     }
   }
 
@@ -108,3 +124,4 @@ geomx_normalize <- function(spe_object, method = "TMM", log = TRUE){
 
   return(spe)
 }
+
