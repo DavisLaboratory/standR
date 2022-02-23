@@ -26,17 +26,16 @@ Imports:
     ggplot2,
     tidyr,
     ruv,
-    S4Vectors,
-    cluster,
-    mclustcomp,
     limma,
-    ggalluvial
+    patchwork,
+    ggalluvial,
+    S4Vectors
 Suggests:
-    biomaRt,
     ggpubr,
     ggrepel,
-    patchwork,
     sva,
+    cluster,
+    mclustcomp,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

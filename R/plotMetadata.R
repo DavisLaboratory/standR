@@ -1,7 +1,6 @@
+#' @importFrom ggalluvial stat_stratum
 #' @import ggplot2
-#' @import ggalluvial
 NULL
-
 
 #' Plot the user-defined meta data using alluvium plot
 #'
@@ -22,7 +21,7 @@ plotMetadata <- function(spe_object, column2plot, textsize = 3){
   x = stratum = alluvium = NULL
 
   #using alluvium plot to visualise user-defined metadata in the data.
-  p <- SummarizedExperiment::colData(spe_object) %>%
+  SummarizedExperiment::colData(spe_object) %>%
     as.data.frame() %>%
     dplyr::select(column2plot) %>%
     ggalluvial::to_lodes_form() %>%
@@ -36,6 +35,4 @@ plotMetadata <- function(spe_object, column2plot, textsize = 3){
     theme(legend.position = "none") +
     xlab("Metadata") +
     ylab("Frequency")
-
-  return(p)
 }
