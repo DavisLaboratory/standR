@@ -4,14 +4,7 @@
 \alias{addQCstat}
 \title{Add QC statistics to the Spatial Experiment object}
 \usage{
-addQCstat(
-  spe_object,
-  sample_fraction = 0.9,
-  rm_genes = TRUE,
-  min_count = 5,
-  addGeneinfo = FALSE,
-  gene_coords = "from_bioMart"
-)
+addQCstat(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5)
 }
 \arguments{
 \item{spe_object}{A spatial experiment object}
@@ -21,14 +14,16 @@ addQCstat(
 \item{rm_genes}{Logical. Decide whether genes with low count in more than sample_fraction of the samples are removed from the dataset. Default is TRUE.}
 
 \item{min_count}{Interger. Minimum read count to calculate count threshold. Default is 5.}
-
-\item{addGeneinfo}{Logical. Decide if extra gene information are added to the object. Default is TRUE.}
-
-\item{gene_coords}{Default is from_bioMart, meaning human gene information including genomic position and gene length will be added based on the information in bioMart. Note: genes that failed getting info from biomart will be removed. Alternatively, this can be a dataframe with 5 columns with colnames hgnc_symbol, ensembl_gene_id, start_position, end_position, geneLength.}
 }
 \value{
 A spatial experiment object
 }
 \description{
 Add QC statistics to the Spatial Experiment object
+}
+\examples{
+data("dkd_spe_subset")
+spe_filtered <- addQCstat(dkd_spe_subset)
+spe_filtered
+
 }

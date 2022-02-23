@@ -86,14 +86,6 @@ plot2dimensionPCA <- function(spe_object, featureToPlot, featureToShape = NA,
 
 
 
-#' Set up the grid for multiple-panel PCA plots
-#'
-#' @param x x
-#' @param y y
-#' @param include.equals Logical
-#'
-#' @export
-#'
 expand.grid.rmdup <- function(x, y, include.equals=FALSE)
 {
   x <- unique(x)

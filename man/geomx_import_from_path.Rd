@@ -2,13 +2,13 @@
 % Please edit documentation in R/geomx_import_data.R
 \name{geomx_import_from_path}
 \alias{geomx_import_from_path}
-\title{Import GeoMX DSP data into a saptial experiment object from path}
+\title{Import GeoMX DSP data into a saptial experiment object from file paths}
 \usage{
 geomx_import_from_path(
   dirPath,
   countFile,
   sampleAnnoFile,
-  featureAnnoFile,
+  featureAnnoFile = NA,
   hasNegProbe = TRUE,
   NegProbeName = "NegProbe-WTX",
   colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
@@ -36,5 +36,13 @@ geomx_import_from_path(
 A SpatialExperiment object.
 }
 \description{
-Import GeoMX DSP data into a saptial experiment object from path
+Import GeoMX DSP data into a saptial experiment object from file paths
+}
+\examples{
+dirPath <- ""
+countFile <- system.file("extdata", "dkd_subset_TargetCountMatrix.txt", package = "standR")
+sampleAnnoFile <- system.file("extdata", "dkd_subset_Sample_Annotations.txt", package = "standR")
+
+spe <- geomx_import_from_path(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
+
 }

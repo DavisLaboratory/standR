@@ -31,7 +31,7 @@ rpkm2tpm <- function(x){
 #' Perform normalisation to GeoMX data
 #'
 #' @param spe_object A spatial experiment object.
-#' @param method Normalisation method to use.
+#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, deseq2norm
 #' @param log Log-transformed or not.
 #'
 #' @return A spatial experiment object.

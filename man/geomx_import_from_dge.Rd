@@ -7,7 +7,7 @@
 geomx_import_from_dge(dge_object, spatialCoord = NULL)
 }
 \arguments{
-\item{dge_object}{a DGEList object.}
+\item{dge_object}{a DGEList object (created using edgeR::DGEList).}
 
 \item{spatialCoord}{a matrix with coordinates of samples, rowname must be cosistent with the colnames of dge_object.}
 }
@@ -16,4 +16,18 @@ A SpatialExperiment object.
 }
 \description{
 Import GeoMX DSP data into a saptial experiment object from DGEList object
+}
+\examples{
+# making a simple DGEList object
+ng <- 1000
+ns <- 10
+Counts <- matrix(rnbinom(ng*ns,mu=5,size=2),ng,ns)
+rownames(Counts) <- 1:ng
+y <- edgeR::DGEList(counts=Counts, group=rep(1:2,each=5))
+
+# transfer into spatial experiment object
+coords <- matrix(rnorm(2*ns),10,2)
+spe <- geomx_import_from_dge(dge_object = y, spatialCoord = coords)
+spe
+
 }

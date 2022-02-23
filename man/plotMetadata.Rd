@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotMetadata.R
 \name{plotMetadata}
 \alias{plotMetadata}
-\title{Plot the meta data using alluvium plot}
+\title{Plot the user-defined meta data using alluvium plot}
 \usage{
 plotMetadata(spe_object, column2plot, textsize = 3)
 }
@@ -17,5 +17,11 @@ plotMetadata(spe_object, column2plot, textsize = 3)
 A ggplot object
 }
 \description{
-Plot the meta data using alluvium plot
+Plot the user-defined meta data using alluvium plot
+}
+\examples{
+library(ggalluvial)
+data("dkd_spe_subset")
+plotMetadata(dkd_spe_subset, column2plot = c("SlideName","disease_status","region"))
+
 }

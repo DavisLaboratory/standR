@@ -9,7 +9,7 @@ geomx_normalize(spe_object, method = "TMM", log = TRUE)
 \arguments{
 \item{spe_object}{A spatial experiment object.}
 
-\item{method}{Normalisation method to use.}
+\item{method}{Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, deseq2norm}
 
 \item{log}{Log-transformed or not.}
 }
