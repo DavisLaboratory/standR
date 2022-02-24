@@ -2,7 +2,7 @@
 % Please edit documentation in R/batchCorrection.R
 \name{chooseNegCTRLgenes}
 \alias{chooseNegCTRLgenes}
-\title{Get negative control genes from the data}
+\title{Get negative control genes from each batch of the data}
 \usage{
 chooseNegCTRLgenes(
   spe_object,
@@ -21,8 +21,15 @@ chooseNegCTRLgenes(
 \item{top_n}{Integer indicate how many genes to be included as negative control genes.}
 }
 \value{
-A Spatial Experiment object.
+A Spatial Experiment object, conatining negative control genes in the metadata.
 }
 \description{
-Get negative control genes from the data
+Get negative control genes from each batch of the data
+}
+\examples{
+data("dkd_spe_subset")
+
+spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+S4Vectors::metadata(spe)$negGenes
+
 }
