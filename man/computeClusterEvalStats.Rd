@@ -9,11 +9,18 @@ computeClusterEvalStats(spe_object, foiColumn)
 \arguments{
 \item{spe_object}{A Spatial Experiment object.}
 
-\item{foiColumn}{Factors of interest.}
+\item{foiColumn}{A column name indicating the factor of interest to be tested, can be biological factor or batch factor.}
 }
 \value{
-A Spatial Experiment object.
+A dataframe object containing the clustering evaluating statistics.
 }
 \description{
 Calculate statistics for evaluating batch correction
+}
+\examples{
+library(scater)
+data("dkd_spe_subset")
+spe <- scater::runPCA(dkd_spe_subset)
+computeClusterEvalStats(spe, "SlideName")
+
 }

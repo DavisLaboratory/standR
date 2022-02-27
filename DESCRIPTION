@@ -29,7 +29,8 @@ Imports:
     limma,
     patchwork,
     ggalluvial,
-    S4Vectors
+    S4Vectors,
+    scater
 Suggests:
     ggpubr,
     ggrepel,

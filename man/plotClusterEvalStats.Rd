@@ -2,27 +2,39 @@
 % Please edit documentation in R/batchCorEval.R
 \name{plotClusterEvalStats}
 \alias{plotClusterEvalStats}
-\title{Plot the evaluation statistics}
+\title{Compare and evaluate different batch corrected data with plotting.}
 \usage{
 plotClusterEvalStats(
   spe_list,
   bio_feature_name,
   batch_feature_name,
-  data_names
+  data_names,
+  colors = NA
 )
 }
 \arguments{
-\item{spe_list}{A Spatial Experiment object.}
+\item{spe_list}{A list of Spatial Experiment object.}
 
-\item{bio_feature_name}{Biological variation name.}
+\item{bio_feature_name}{The common biological variation name.}
 
-\item{batch_feature_name}{Batch variation name.}
+\item{batch_feature_name}{The common batch variation name.}
 
 \item{data_names}{Data names.}
+
+\item{colors}{Color values of filing the bars.}
 }
 \value{
 A ggplot object.
 }
 \description{
-Plot the evaluation statistics
+Compare and evaluate different batch corrected data with plotting.
+}
+\examples{
+library(scater)
+data("dkd_spe_subset")
+spe <- scater::runPCA(dkd_spe_subset)
+spe2 <- spe
+spe3 <- spe
+plotClusterEvalStats(list(spe, spe2, spe3), bio_feature_name = "region",
+                           batch_feature_name = "SlideName", c("test1","test2","test3"))
 }

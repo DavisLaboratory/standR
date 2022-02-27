@@ -1,20 +1,31 @@
 #' Calculate statistics for evaluating batch correction
 #'
 #' @param spe_object A Spatial Experiment object.
-#' @param foiColumn Factors of interest.
+#' @param foiColumn A column name indicating the factor of interest to be tested, can be biological factor or batch factor.
 #'
-#' @return A Spatial Experiment object.
+#' @return A dataframe object containing the clustering evaluating statistics.
 #' @export
+#'
+#' @examples
+#' library(scater)
+#' data("dkd_spe_subset")
+#' spe <- scater::runPCA(dkd_spe_subset)
+#' computeClusterEvalStats(spe, "SlideName")
 #'
 computeClusterEvalStats <- function(spe_object, foiColumn){
 
+  stopifnot(foiColumn %in% colnames(SummarizedExperiment::colData(spe_object)))
+
+  # get PCA results
   pca_object <- SingleCellExperiment::reducedDim(spe_object, "PCA")
 
+  # compute euclidean distance
   distm <- stats::dist(pca_object)
 
+  # grouping
   label_by_factors <- SummarizedExperiment::colData(spe_object) %>%
     as.data.frame() %>%
-    dplyr::select(foiColumn) %>%
+    dplyr::select(all_of(foiColumn)) %>%
     rownames_to_column() %>%
     mutate(grp_id = as.numeric(factor(!!sym(foiColumn)))) %>%
     mutate(sample_id = row_number())
@@ -22,17 +33,20 @@ computeClusterEvalStats <- function(spe_object, foiColumn){
   c <- label_by_factors$grp_id
   names(c) <- label_by_factors$sample_id
 
+  # calculate silhouette score
   si <- cluster::silhouette(c, distm)
 
   ss <- mean(si[,3])
 
+  # prepare for other stats to be computed
   k <- SummarizedExperiment::colData(spe_object) %>%
     as.data.frame() %>%
-    dplyr::select(foiColumn)
+    dplyr::select(all_of(foiColumn))
   k <- k[,1] %>%
     unique() %>%
     length()
 
+  # clustering
   set.seed(119)
 
   kc <- stats::kmeans(pca_object[,1:2], k)
@@ -41,6 +55,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn){
 
   types = NULL
 
+  # compute adjrand and jaccard
   df_out <- mclustcomp::mclustcomp(km_clusters, c) %>%
     filter(types %in% c("adjrand","jaccard"))
 
@@ -53,27 +68,40 @@ computeClusterEvalStats <- function(spe_object, foiColumn){
   return(df_out)
 }
 
-#' Plot the evaluation statistics
+
+#' Compare and evaluate different batch corrected data with plotting.
 #'
-#' @param spe_list A Spatial Experiment object.
-#' @param bio_feature_name Biological variation name.
-#' @param batch_feature_name Batch variation name.
+#' @param spe_list A list of Spatial Experiment object.
+#' @param bio_feature_name The common biological variation name.
+#' @param batch_feature_name The common batch variation name.
 #' @param data_names Data names.
+#' @param colors Color values of filing the bars.
 #'
 #' @return A ggplot object.
 #' @export
 #'
+#' @examples
+#' library(scater)
+#' data("dkd_spe_subset")
+#' spe <- scater::runPCA(dkd_spe_subset)
+#' spe2 <- spe
+#' spe3 <- spe
+#' plotClusterEvalStats(list(spe, spe2, spe3), bio_feature_name = "region",
+#'                            batch_feature_name = "SlideName", c("test1","test2","test3"))
 plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
-                                 data_names){
+                                 data_names, colors = NA){
 
   from = scores = types = NULL
 
+
+  # get stat for bio factor
   stat_bio <- lapply(spe_list ,function(x){
     computeClusterEvalStats(x, bio_feature_name)
   }) %>%
     bind_rows() %>%
     mutate(from = rep(data_names, each = 3))
 
+  # get stat for batch factor
   stat_batch <- lapply(spe_list ,function(x){
     computeClusterEvalStats(x, batch_feature_name)
   }) %>%
@@ -103,6 +131,11 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     xlab("Count data") +
     ylab("Scores") +
     ggtitle("Batch")
+
+  if(!is.na(colors)){
+    p_bio <- p_bio + scale_fill_manual(values = colors)
+    p_batch <- p_batch + scale_fill_manual(values = colors)
+  }
 
   print(p_bio + p_batch + patchwork::plot_layout(1, 2))
 }
