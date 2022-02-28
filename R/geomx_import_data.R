@@ -52,7 +52,6 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
                              coord.colnames){
 
   . = NULL
-  datalist <- list()
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
   if(hasNegProbe == TRUE){
@@ -69,6 +68,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
       genemeta <- readr::read_tsv(file.path(dirPath, featureAnnoFile))
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
       genemeta_filtered <- genemeta %>%
+        filter(!!sym(colnames.as.rownames[3])!=NegProbeName) %>%
         tibble::column_to_rownames(colnames.as.rownames[3]) %>%
         .[rownames(countdata_filtered),] # arrange the gene meta, as the same order as count table.
     } else {
