@@ -59,7 +59,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
     countdata <- readr::read_tsv(file.path(dirPath, countFile))
     # raw count without negprobes
     stopifnot(colnames.as.rownames[1] %in% colnames(countdata)) # make sure count data have the gene column name as pre-defined, such as TargetName.
-    stopifnot(NegProbeName %in% as.matrix(c[,colnames.as.rownames[1]])) # make sure the name of negprobe is in the gene column of count data.
+    stopifnot(NegProbeName %in% as.matrix(countdata[,colnames.as.rownames[1]])) # make sure the name of negprobe is in the gene column of count data.
     countdata_filtered <- countdata %>% # filter the count data, remove the negprobe.
       dplyr::filter(!!rlang::sym(colnames.as.rownames[1]) != NegProbeName) %>%
       tibble::column_to_rownames(colnames.as.rownames[1])
