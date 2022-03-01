@@ -16,7 +16,8 @@ Authors@R:
              family = "Mohamed",
              role = c("aut"),
              email = "mohamed.a@wehi.edu.au"))
-Description: This package is providing functions to assist the analysis of Nanostring's GeoMx DSP data. 
+Description: This package is providing functions to assist the analysis of Nanostring's GeoMx DSP data.
+biocViews: GeneExpression
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
