@@ -2,33 +2,40 @@
 % Please edit documentation in R/plotRLE.R
 \name{plotRLE}
 \alias{plotRLE}
-\title{Plot Relative log expression}
+\alias{plotRLE,DGEList-method}
+\alias{plotRLE,ExpressionSet-method}
+\alias{plotRLE,SummarizedExperiment-method}
+\title{Compute and plot relative log expression (RLE) values of gene expression data}
 \usage{
-plotRLE(
-  spe_object,
-  n_assay = 1,
-  colorby = NA,
-  sortby = colorby,
-  font_size = 20,
-  line_cor = "red"
-)
+plotRLE(edata, ordannots = c(), rl = 1, ...)
+
+\S4method{plotRLE}{DGEList}(edata, ordannots = c(), rl = 1, ...)
+
+\S4method{plotRLE}{ExpressionSet}(edata, ordannots = c(), rl = 1, ...)
+
+\S4method{plotRLE}{SummarizedExperiment}(edata, ordannots = c(), rl = 1, ...)
 }
 \arguments{
-\item{spe_object}{A spatial experiment object}
+\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
+containing gene expression data.}
 
-\item{n_assay}{integer. the nth assay in the spe object to plot.}
+\item{ordannots}{variables or computations to sort samples by (tidy style).}
 
-\item{colorby}{feature to color by.}
+\item{rl}{a numeric, specifying the relative scale factor to apply to text on
+the plot.}
 
-\item{sortby}{feature to sort by.}
-
-\item{font_size}{font size.}
-
-\item{line_cor}{line color.}
+\item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
 }
 \value{
-A ggplot object
+a ggplot2 object, containing the RLE plot.
 }
 \description{
-Plot Relative log expression
+Compute and plot relative log expression (RLE) values of gene expression data
+}
+\examples{
+se = emtdata::cursons2018_se()
+dge = emtdata::asDGEList(se)
+plotRLE(dge, colour = Subline, lty = Treatment, lwd = 2, ordannots =
+c(Subline, Treatment))
+
 }

@@ -1,74 +1,158 @@
-#' Plot Relative log expression
+#' Compute and plot relative log expression (RLE) values of gene expression data
 #'
-#' @param spe_object A spatial experiment object
-#' @param n_assay integer. the nth assay in the spe object to plot.
-#' @param colorby feature to color by.
-#' @param sortby feature to sort by.
-#' @param font_size font size.
-#' @param line_cor line color.
+#' @param ordannots variables or computations to sort samples by (tidy style).
 #'
-#' @return A ggplot object
+#' @inheritParams plotPCA
+#' @return a ggplot2 object, containing the RLE plot.
 #' @export
 #'
-plotRLE <- function(spe_object, n_assay = 1, colorby = NA, sortby = colorby, font_size = 20, line_cor = "red"){
+#' @examples
+#' se = emtdata::cursons2018_se()
+#' dge = emtdata::asDGEList(se)
+#' plotRLE(dge, colour = Subline, lty = Treatment, lwd = 2, ordannots =
+#' c(Subline, Treatment))
+#'
+setGeneric("plotRLE",
+           function(edata,
+                    ordannots = c(),
+                    rl = 1,
+                    ...) standardGeneric("plotRLE"))
 
-  . = med = sample = count = NULL
+#' @rdname plotRLE
+setMethod("plotRLE",
+          signature('DGEList','ANY', 'ANY'),
+          function(edata, ordannots, rl, ...){
+            #extract sample data
+            sdata = edata$samples
+            #extract expression data (and transform)
+            edata = edgeR::cpm(edata, log = TRUE)
+            #create data structure
+            samporder = orderSamples(sdata, rlang::enquo(ordannots))
+            rledf = pdataRLE_intl(edata, samporder)
+            p1 = plotRLE_intl(rledf, sdata, rl, FALSE, ...)
 
-  stopifnot(is.numeric(n_assay))
-  stopifnot(n_assay <= length(spe_object@assays))
+            return(p1)
+          })
 
-  pre_rle <- SummarizedExperiment::assay(spe_object, n_assay) %>%
-    as_tibble() %>%
-    mutate(med = rowMeans(.)) %>%
-    mutate_at(vars(-med), funs(. - med)) %>%
-    dplyr::select(-med) %>%
-    tidyr::gather(sample, count) %>%
-    left_join(SummarizedExperiment::colData(spe_object) %>% as.data.frame() %>% rownames_to_column(), by = c("sample"="rowname"))
+#' @rdname plotRLE
+setMethod("plotRLE",
+          signature('ExpressionSet','ANY', 'ANY'),
+          function(edata, ordannots, rl, ...){
+            #extract sample data
+            sdata = Biobase::pData(edata)
+            #extract expression data (and transform)
+            edata = Biobase::exprs(edata)
+            #create data structure
+            samporder = orderSamples(sdata, rlang::enquo(ordannots))
+            rledf = pdataRLE_intl(edata, samporder)
+            p1 = plotRLE_intl(rledf, sdata, rl, FALSE, ...)
 
-  p <- graphics::boxplot(count ~ sample, data = pre_rle, outline = F, plot = FALSE)
+            return(p1)
+          })
 
-  boxstat <- p$stats
+#' @rdname plotRLE
+setMethod("plotRLE",
+          signature('SummarizedExperiment','ANY', 'ANY'),
+          function(edata, ordannots, rl, ...){
+            #extract sample data
+            sdata = BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+            #extract expression data (and transform)
+            edata = SummarizedExperiment::assay(edata)
+            #create data structure
+            samporder = orderSamples(sdata, rlang::enquo(ordannots))
+            rledf = pdataRLE_intl(edata, samporder)
+            p1 = plotRLE_intl(rledf, sdata, rl, FALSE, ...)
 
-  if(!is.na(colorby)){
-    stopifnot(colorby %in% colnames(pre_rle))
-    stopifnot(sortby %in% colnames(pre_rle))
+            return(p1)
+          })
 
-    p1 <- pre_rle %>%
-      arrange((!!sym(sortby))) %>%
-      mutate(sample = factor(sample, levels = unique(.$sample))) %>%
-      ggplot(aes(sample, count)) +
-      geom_boxplot(outlier.shape = NA, aes_string(fill = colorby), col = "black") +
-      #geom_jitter(aes_string(col = colorby)) +
-      #stat_boxplot(geom = "errorbar", linetype = 2, width = .5) +
-      #stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), outlier.shape = NA) +
-      ylim(c(min(boxstat[1,])-1, max(boxstat[5,])+1)) +
-      xlab('Samples') +
-      ylab("Relative log expression") +
-      theme_test() +
-      theme(axis.text.x=element_blank(),
-            axis.ticks.x=element_blank(),
-            text = element_text(size = font_size)) +
-      ggtitle(names(spe_object@assays@data)[n_assay]) +
-      scale_fill_brewer(palette="Dark2") +
-      geom_hline(yintercept = 0, col = line_cor, linetype = "dashed", cex = 1)
+#plot data preparation using MDS results
+pdataRLE_intl <- function(emat, sampord) {
+  #compute RLE
+  rle = emat - Biobase::rowMedians(emat)
+  #order samples
+  rle = rle[, sampord]
+
+  #compute boxplot
+  rledf = t(apply(rle, 2, function(x) grDevices::boxplot.stats(x)$stats))
+  rledf = as.data.frame(rledf)
+  colnames(rledf) = c('ymin', 'lower', 'middle', 'upper', 'ymax')
+  rledf$x = 1:nrow(rledf)
+  rledf$RestoolsMtchID = rownames(rledf)
+
+  return(rledf)
+}
+
+orderSamples <- function(sdata, ordannots) {
+  #add sample IDs
+  sdata$SampleOrderID = rownames(sdata)
+
+  #order samples based on provided annotations
+  sdata = sdata |>
+    dplyr::group_by(dplyr::across(!!ordannots)) |>
+    dplyr::arrange(.by_group = TRUE)
+
+  return(sdata$SampleOrderID)
+}
+
+plotRLE_intl <- function(plotdf, sdata, rl, isSCE = FALSE, ...) {
+  #constant - sample size at which standard plot becomes dense
+  dense_thresh = 50
+
+  #extract aes
+  aesmap = rlang::enquos(...)
+
+  #annotate samples
+  plotdf = addSampleAnnot(plotdf, sdata)
+
+  #compute plot
+  aesmap = aesmap[!names(aesmap) %in% c('x', 'ymin', 'ymin', 'upper', 'middle', 'lower')] #remove fixed mappings if present
+
+  #split aes params into those that are not aes i.e. static parametrisation
+  if (length(aesmap) > 0) {
+    is_aes = sapply(aesmap, rlang::quo_is_symbolic)
+    defaultmap = lapply(aesmap[!is_aes], rlang::eval_tidy)
+    aesmap = aesmap[is_aes]
   } else {
-    p1 <- pre_rle %>%
-      ggplot(aes(sample, count)) +
-      geom_boxplot(outlier.shape = NA, col = "black") +
-      #geom_jitter(aes_string(col = colorby)) +
-      #stat_boxplot(geom = "errorbar", linetype = 2, width = .5) +
-      #stat_boxplot(aes(ymin = ..lower.., ymax = ..upper..), outlier.shape = NA) +
-      ylim(c(min(boxstat[1,]), max(boxstat[5,]))) +
-      xlab('Samples') +
-      ylab("Relative log expression") +
-      theme_test() +
-      theme(axis.text.x=element_blank(),
-            axis.ticks.x=element_blank(),
-            text = element_text(size = font_size)) +
-      ggtitle(names(spe_object@assays@data)[n_assay]) +
-      scale_fill_brewer(palette="Dark2") +
-      geom_hline(yintercept = 0, col = line_cor, linetype = "dashed", cex = 1)
+    defaultmap = list()
+  }
+
+  #build plot
+  if (!isSCE){
+    p1 = ggplot2::ggplot(plotdf, aes(x = x, y = middle, group = x, !!!aesmap)) +
+      ggplot2::geom_boxplot(
+        aes(ymin = ymin, ymax = ymax, upper = upper, middle = middle, lower = lower),
+        stat = 'identity') +
+      ggplot2::geom_hline(yintercept = 0, colour = 2, lty = 2) +
+      ggplot2::ylab('Relative log expression') +
+      ggplot2::update_geom_defaults('boxplot', defaultmap) +
+      bhuvad_theme(rl) +
+      ggplot2::theme(axis.text.x = element_blank())
+
+    #update plot if too many samples are plot
+    if (nrow(plotdf) > dense_thresh) {
+      ## geom_point will inherit relevant aesthetics from top `aes`, include y=middle
+      p1 = p1 + ggplot2::geom_point()
+    }
+  } else {
+    #place-holder for SCE object code
   }
 
   return(p1)
+}
+
+bhuvad_theme <- function (rl = 1.1) {
+  stopifnot(rl > 0)
+  ggplot2::theme_minimal() +
+    ggplot2::theme(
+      panel.border = element_rect(colour = 'black', fill = NA),
+      panel.grid = element_blank(),
+      axis.title = element_text(size = rel(rl) * 1.1),
+      axis.text = element_text(size = rel(rl)),
+      plot.title = element_text(size = rel(rl) * 1.2),
+      strip.background = element_rect(fill = NA, colour = 'black'),
+      strip.text = element_text(size = rel(rl)),
+      legend.text = element_text(size = rel(rl)),
+      legend.title = element_text(size = rel(rl), face = 'italic')
+    )
 }

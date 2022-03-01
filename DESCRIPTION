@@ -1,12 +1,21 @@
 Package: standR
 Title: Spatial transcriptome analyses of Nanostring's DSP data in R
-Version: 0.0.0.9000
+Version: 0.9.0
 Authors@R: 
-    person(given = "Ning",
-           family = "Liu",
-           role = c("aut", "cre"),
-           email = "liu.n@wehi.edu.au",
-           comment = c(ORCID = "0000-0002-9487-9305"))
+    c(person(given = "Ning",
+             family = "Liu",
+             role = c("aut", "cre"),
+             email = "liu.n@wehi.edu.au",
+             comment = c(ORCID = "0000-0002-9487-9305")),
+      person(given = "Dharmesh D",
+             family = "Bhuva",
+             role = c("aut"),
+             email = "bhuva.d@wehi.edu.au",
+             comment = c(ORCID = "0000-0002-6398-9157")),
+      person(given = "Ahmed",
+             family = "Mohamed",
+             role = c("aut"),
+             email = "mohamed.a@wehi.edu.au"))
 Description: This package is providing functions to assist the analysis of Nanostring's GeoMx DSP data. 
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -30,7 +39,12 @@ Imports:
     patchwork,
     ggalluvial,
     S4Vectors,
-    scater
+    scater,
+    Biobase,
+    BiocGenerics,
+    grDevices,
+    ExperimentList,
+    stats
 Suggests:
     ggpubr,
     ggrepel,
