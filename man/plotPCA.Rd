@@ -30,7 +30,7 @@ result in \code{reducedDims(object)} to plot.}
 the plot.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for
-SummarizedExperiment).}
+\code{SummarizedExperiment} and its derivative classes).}
 }
 \value{
 a ggplot2 object

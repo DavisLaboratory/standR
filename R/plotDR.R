@@ -1,13 +1,29 @@
 #' @import ggplot2
 NULL
 
+bhuvad_theme <- function (rl = 1.1) {
+  stopifnot(rl > 0)
+  ggplot2::theme_minimal() +
+    ggplot2::theme(
+      panel.border = element_rect(colour = 'black', fill = NA),
+      panel.grid = element_blank(),
+      axis.title = element_text(size = rel(rl) * 1.1),
+      axis.text = element_text(size = rel(rl)),
+      plot.title = element_text(size = rel(rl) * 1.2),
+      strip.background = element_rect(fill = NA, colour = 'black'),
+      strip.text = element_text(size = rel(rl)),
+      legend.text = element_text(size = rel(rl)),
+      legend.title = element_text(size = rel(rl), face = 'italic')
+    )
+}
+
 #' Compute and plot the results of a PCA analysis on gene expression data
 #'
 #' @param edata a DGEList, SummarizedExperiment or ExpressionSet object
 #'   containing gene expression data.
 #' @param dims a numeric, containing 2 values specifying the dimensions to plot.
 #' @param assay a numeric or character, specifying the assay to use (for
-#'   SummarizedExperiment).
+#'   `SummarizedExperiment` and its derivative classes).
 #' @param precomputed a dimensional reduction results from `stats::prcomp`.
 #'   result in `reducedDims(object)` to plot.
 #' @param rl a numeric, specifying the relative scale factor to apply to text on
@@ -349,6 +365,6 @@ plotDR_intl <- function(drdf, sdata, rl, ...) {
   # tidystyle recommends no explicit return statements at end of functions
   ggplot2::ggplot(plotdf, ggplot2::aes(!!x, !!y, !!!aesmap)) +
     ggplot2::geom_point() +
-    ggplot2::update_geom_defaults('point', defaultmap) +
-    vissE::bhuvad_theme(rl)
+    # ggplot2::update_geom_defaults('point', defaultmap) +
+    bhuvad_theme(rl)
 }
