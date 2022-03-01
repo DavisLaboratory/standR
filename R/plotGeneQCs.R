@@ -16,7 +16,7 @@ NULL
 #' @param text_size Text size.
 #' @param layout_ncol Integer. Column number for layout. Default is 1.
 #' @param layout_nrow Integer. Row number for layout. Default is 2.
-#' @param leyout_height Vector of numerics with length of 2. Default is c(1, .4).
+#' @param layout_height Vector of numerics with length of 2. Default is c(1, .4).
 #' @param ... aesthetic mappings to pass to `ggplot2::aes()` of the dot plots.
 #'
 #' @return A ggplot object
@@ -30,12 +30,12 @@ plotGenewiseQC <- function(spe, top_n = 9, point_size = 1,
                            line_type = "dashed", line_col = "darkred", line_cex = 1,
                            hist_col = "black", hist_fill = "skyblue", bin_num = 30,
                            text_size = 13, layout_ncol = 1, layout_nrow = 2,
-                           leyout_height = c(1, .4), ...){
+                           layout_height = c(1, .4), ...){
   p1 <- suppressWarnings(plotRmGenes(spe, top_n, point_size, line_type, line_col, line_cex, text_size,...))
   p2 <- suppressWarnings(plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size))
 
   suppressWarnings(print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
-                                         heights = leyout_height)))
+                                         heights = layout_height)))
 }
 
 
@@ -65,7 +65,7 @@ plotRmGenes <- function(spe, top_n, point_size, line_type,
     left_join(as.data.frame(SummarizedExperiment::colData(spe)) %>%
                 rownames_to_column(), by = c("sample"="rowname")) %>%
     ggplot(aes(sample, lcpm, !!!aesmap)) +
-    geom_point(size = point_size) +
+    geom_point(size = point_size, alpha = .5) +
     facet_wrap(~rowname) +
     geom_hline(yintercept = spe@metadata$lcpm_threshold, linetype = line_type,
                cex = line_cex, col = line_col, ) +
