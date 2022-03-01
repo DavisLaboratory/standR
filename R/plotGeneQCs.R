@@ -66,6 +66,8 @@ plotRmGenes <- function(spe, top_n, point_size, line_type,
                 rownames_to_column(), by = c("sample"="rowname")) %>%
     ggplot(aes(sample, lcpm, !!!aesmap)) +
     geom_point(size = point_size, alpha = .5) +
+    scale_colour_discrete(na.translate = F) +
+    scale_shape_discrete(na.translate = F) +
     facet_wrap(~rowname) +
     geom_hline(yintercept = spe@metadata$lcpm_threshold, linetype = line_type,
                cex = line_cex, col = line_col, ) +
