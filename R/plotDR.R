@@ -266,8 +266,9 @@ setMethod("plotMDS",
           })
 
 calcPCA <- function(edata, dims) {
+  set.seed(45)
   maxdim = max(dims)
-  if (maxdim < ncol(edata)) {
+  if (requireNamespace("scater") & maxdim < ncol(edata)) {
     pcdata = scater::calculatePCA(edata, ncomponents = maxdim)
   } else {
     pcdata = stats::prcomp(t(edata))
