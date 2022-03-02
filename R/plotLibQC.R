@@ -53,7 +53,7 @@ plotLibrarySizeQC <- function(spe_object,
   p1 <- SummarizedExperiment::colData(spe_object) %>%
     as.data.frame() %>%
     ggplot(aes(!!x_axis, !!y_axis, !!!aesmap)) +
-    geom_point() +
+    geom_point(alpha = .6) +
     geom_smooth(method='loess', se = FALSE, col = regression_col) +
     theme_test() +
     xlab(x_lab) +

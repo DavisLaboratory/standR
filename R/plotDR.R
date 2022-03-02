@@ -1,4 +1,5 @@
 #' @import ggplot2
+#' @importFrom methods is
 NULL
 
 checkPackages <- function(...) {

@@ -17,7 +17,7 @@ plotGenewiseQC(
   text_size = 13,
   layout_ncol = 1,
   layout_nrow = 2,
-  leyout_height = c(1, 0.4),
+  layout_height = c(1, 0.4),
   ...
 )
 }
@@ -46,7 +46,7 @@ plotGenewiseQC(
 
 \item{layout_nrow}{Integer. Row number for layout. Default is 2.}
 
-\item{leyout_height}{Vector of numerics with length of 2. Default is c(1, .4).}
+\item{layout_height}{Vector of numerics with length of 2. Default is c(1, .4).}
 
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes()} of the dot plots.}
 }

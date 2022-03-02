@@ -74,7 +74,7 @@ setMethod("plotRLE",
 #plot data preparation using MDS results
 pdataRLE_intl <- function(emat, sampord) {
   #compute RLE
-  rle = emat - Biobase::rowMedians(emat)
+  rle = emat - Biobase::rowMedians(as.matrix(emat))
   #order samples
   rle = rle[, sampord]
 
@@ -101,6 +101,9 @@ orderSamples <- function(sdata, ordannots) {
 }
 
 plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
+
+  upper = lower = middle = x = ymin = ymax = NULL
+
   #constant - sample size at which standard plot becomes dense
   dense_thresh = 50
   sce_thresh = 1000

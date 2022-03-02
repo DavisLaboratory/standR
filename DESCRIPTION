@@ -38,21 +38,23 @@ Imports:
     ruv,
     limma,
     patchwork,
-    ggalluvial,
     S4Vectors,
-    scater,
     Biobase,
     BiocGenerics,
     grDevices,
     ExperimentList,
-    stats
+    stats,
+    methods
 Suggests:
+    scater,
+    ggalluvial,
     ggpubr,
     ggrepel,
     sva,
     cluster,
     mclustcomp,
+    emtdata,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1)

@@ -1,44 +1,43 @@
 test_that("plotRLE works with Eset", {
-  library(ALL)
-  data(ALL)
+  data("dkd_spe_subset")
 
   #Default param
-  p <- plotRLE(ALL)
+  p <- plotRLE(dkd_spe_subset)
   expect_silent(print(p))
 
   #color with column
-  p <- plotRLE(ALL, color=age)
+  p <- plotRLE(dkd_spe_subset, color=SlideName)
   expect_silent(print(p))
 
   #color with expression
-  p <- plotRLE(ALL, color=age > 50)
+  p <- plotRLE(dkd_spe_subset, color=SequencingSaturation > 90)
   expect_silent(print(p))
 
   #multiple aesthetics
-  p <- plotRLE(ALL, color=age > 50, shape=sex)
+  p <- plotRLE(dkd_spe_subset, color=SequencingSaturation > 90, shape=disease_status)
   expect_error(print(p), NA)
 
   #order with one column
-  p <- plotRLE(ALL, ordannots=age)
+  p <- plotRLE(dkd_spe_subset, ordannots="region")
   expect_silent(print(p))
-  p <- plotRLE(ALL, ordannots=c(age))
+  p <- plotRLE(dkd_spe_subset, ordannots=c("disease_status"), color = disease_status)
   expect_silent(print(p))
 
   #order with multiple columns
-  p <- plotRLE(ALL, ordannots=c(sex, age))
+  p <- plotRLE(dkd_spe_subset, ordannots=c("region", "disease_status"), color = disease_status)
   expect_silent(print(p))
 
   #error when the column is not in the data
-  p <- plotRLE(ALL, color=age2)
+  p <- plotRLE(dkd_spe_subset, color=region2)
   expect_error(
     # We need to force eval here to throw the error
     print(p),
-    "object 'age2' not found"
+    "object 'region2' not found"
   )
 
   #will not error if the variable is present in the parent env
-  age2 <- ALL$age
-  p <- plotRLE(ALL, color=age2)
+  region2 <- dkd_spe_subset$region
+  p <- plotRLE(dkd_spe_subset, color=region2)
   expect_error(print(p), NA)
 
   #SCE

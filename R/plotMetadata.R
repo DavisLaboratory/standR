@@ -1,4 +1,3 @@
-#' @importFrom ggalluvial stat_stratum
 #' @import ggplot2
 NULL
 
@@ -7,6 +6,7 @@ NULL
 #' @param spe_object A spatial experiment object.
 #' @param column2plot Which columns to plot.
 #' @param textsize text size.
+#'
 #'
 #' @return A ggplot object
 #' @export
@@ -17,6 +17,9 @@ NULL
 #' plotMetadata(dkd_spe_subset, column2plot = c("SlideName","disease_status","region"))
 #'
 plotMetadata <- function(spe_object, column2plot, textsize = 3){
+
+  checkPackages("ggalluvial")
+
   stopifnot(all(column2plot %in% colnames(SummarizedExperiment::colData(spe_object))))
   x = stratum = alluvium = NULL
 
