@@ -7,13 +7,13 @@
 \alias{plotRLE,SummarizedExperiment-method}
 \title{Compute and plot relative log expression (RLE) values of gene expression data}
 \usage{
-plotRLE(edata, ordannots = c(), rl = 1, ...)
+plotRLE(edata, ordannots = c(), ...)
 
-\S4method{plotRLE}{DGEList}(edata, ordannots = c(), rl = 1, ...)
+\S4method{plotRLE}{DGEList}(edata, ordannots = c(), ...)
 
-\S4method{plotRLE}{ExpressionSet}(edata, ordannots = c(), rl = 1, ...)
+\S4method{plotRLE}{ExpressionSet}(edata, ordannots = c(), ...)
 
-\S4method{plotRLE}{SummarizedExperiment}(edata, ordannots = c(), rl = 1, ...)
+\S4method{plotRLE}{SummarizedExperiment}(edata, ordannots, assay = 1, ...)
 }
 \arguments{
 \item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -21,10 +21,10 @@ containing gene expression data.}
 
 \item{ordannots}{variables or computations to sort samples by (tidy style).}
 
-\item{rl}{a numeric, specifying the relative scale factor to apply to text on
-the plot.}
-
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
+
+\item{assay}{a numeric or character, specifying the assay to use (for
+\code{SummarizedExperiment} and its derivative classes).}
 }
 \value{
 a ggplot2 object, containing the RLE plot.

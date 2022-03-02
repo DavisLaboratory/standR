@@ -40,4 +40,10 @@ test_that("plotRLE works with Eset", {
   age2 <- ALL$age
   p <- plotRLE(ALL, color=age2)
   expect_error(print(p), NA)
+
+  #SCE
+  sce = SingleCellExperiment::SingleCellExperiment(list('a' = matrix(rnorm(6e3), 3)))
+  expect_silent(print(plotRLE(sce[, 1:10])))
+  expect_silent(print(plotRLE(sce[, 1:100])))
+  expect_silent(print(plotRLE(sce)))
 })
