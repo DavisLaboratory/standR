@@ -188,7 +188,8 @@ setMethod("plotDR",
 #'
 #' @param precomputed a dimensional reduction results from either
 #'   `limma::plotMDS`.
-#'
+#' @param assay a numeric or character, specifying the assay to use (for
+#'   `SummarizedExperiment` and its derivative classes).
 #' @inheritParams plotPCA
 #' @return a ggplot2 object
 #' @export
@@ -248,10 +249,10 @@ setMethod("plotMDS",
 #' @rdname plotMDS
 setMethod("plotMDS",
           signature('SummarizedExperiment','ANY', 'ANY', 'ANY'),
-          function(edata, dims, precomputed, rl, ...){
+          function(edata, assay = 1, dims, precomputed, rl, ...){
             #compute PCA
             if (is.null(precomputed)) {
-              mdsdata = limma::plotMDS(SummarizedExperiment::assay(edata), plot = FALSE)
+              mdsdata = limma::plotMDS(SummarizedExperiment::assay(edata, assay), plot = FALSE)
             } else {
               mdsdata = checkPrecomputedMDS(edata, precomputed)
             }

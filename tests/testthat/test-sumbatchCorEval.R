@@ -1,20 +1,18 @@
 test_that("Testing the function of computing evaluation statistics for batch correction", {
   library(scater)
   data("dkd_spe_subset")
-  spe <- scater::runPCA(dkd_spe_subset)
-  eval_out <- computeClusterEvalStats(spe, "SlideName")
+  eval_out <- computeClusterEvalStats(dkd_spe_subset, "SlideName")
 
   expect_equal(nrow(eval_out), 3)
   expect_equal(ncol(eval_out), 2)
 
-  expect_error(computeClusterEvalStats(spe, "xyz"))
-  expect_error(computeClusterEvalStats(dkd_spe_subset, "SlideName"))
+  expect_error(computeClusterEvalStats(dkd_spe_subset, "xyz"))
 })
 
 test_that("Testing the function of plotting and comparing different batch-corrected data", {
   library(scater)
   data("dkd_spe_subset")
-  spe <- scater::runPCA(dkd_spe_subset)
+  spe <- dkd_spe_subset
   spe2 <- spe
   spe3 <- spe
 

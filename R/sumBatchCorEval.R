@@ -2,6 +2,12 @@
 #'
 #' @param spe_object A Spatial Experiment object.
 #' @param foiColumn A column name indicating the factor of interest to be tested, can be biological factor or batch factor.
+#' @param n_dimension The top n dimensions to be plotted
+#' @param precomputed a dimensional reduction results from `stats::prcomp`.
+#'   result in `reducedDims(object)` to plot. Default is NULL,
+#'   we will compute for you.
+#' @param assay a numeric or character, specifying the assay to use (for
+#'   `SummarizedExperiment` and its derivative classes).
 #'
 #' @return A dataframe object containing the clustering evaluating statistics.
 #' @export
@@ -12,12 +18,21 @@
 #' spe <- scater::runPCA(dkd_spe_subset)
 #' computeClusterEvalStats(spe, "SlideName")
 #'
-computeClusterEvalStats <- function(spe_object, foiColumn){
+computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
+                                    n_dimension = c(1,2), assay = 2){
 
   stopifnot(foiColumn %in% colnames(SummarizedExperiment::colData(spe_object)))
 
   # get PCA results
-  pca_object <- SingleCellExperiment::reducedDim(spe_object, "PCA")
+
+  #compute PCA
+  if (is.null(precomputed)) {
+    pcdata = calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
+  } else {
+    pcdata = checkPrecomputedPCA(spe_object, precomputed)
+  }
+
+  pca_object <- pcdata
 
   # compute euclidean distance
   distm <- stats::dist(pca_object)

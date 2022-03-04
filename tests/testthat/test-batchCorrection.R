@@ -1,7 +1,7 @@
 test_that("Testing negative control gene function", {
   data("dkd_spe_subset")
 
-  spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+  spe <- findNCGs(dkd_spe_subset, top_n = 100)
 
   expect_identical(dim(spe), dim(dkd_spe_subset))
   expect_true("mean_zscore" %in% colnames(rowData(spe)))
@@ -9,9 +9,9 @@ test_that("Testing negative control gene function", {
   expect_true("negGenes" %in% names(metadata(spe)))
   expect_equal(length(metadata(spe)$negGenes), 100)
 
-  expect_error(chooseNegCTRLgenes(dkd_spe_subset, n_assay = 3))
-  expect_error(chooseNegCTRLgenes(dkd_spe_subset, batch_name = "xyz"))
-  expect_error(chooseNegCTRLgenes(dkd_spe_subset, top_n = 3001))
+  expect_error(findNCGs(dkd_spe_subset, n_assay = 3))
+  expect_error(findNCGs(dkd_spe_subset, batch_name = "xyz"))
+  expect_error(findNCGs(dkd_spe_subset, top_n = 3001))
 
 })
 
@@ -19,7 +19,7 @@ test_that("Testing negative control gene function", {
 test_that("Testing ruv4 batch correction function", {
   data("dkd_spe_subset")
 
-  spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+  spe <- findNCGs(dkd_spe_subset, top_n = 100)
   spe_ruv <- runRUV4(spe, k = 3, factors = c("disease_status","region"),
                      negctrlGenes = metadata(spe)$negGenes)
 

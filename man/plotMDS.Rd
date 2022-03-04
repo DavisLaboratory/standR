@@ -13,7 +13,7 @@ plotMDS(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
 \S4method{plotMDS}{ExpressionSet}(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotMDS}{SummarizedExperiment}(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+\S4method{plotMDS}{SummarizedExperiment}(edata, assay = 1, dims, precomputed, rl, ...)
 }
 \arguments{
 \item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -28,6 +28,9 @@ containing gene expression data.}
 the plot.}
 
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
+
+\item{assay}{a numeric or character, specifying the assay to use (for
+\code{SummarizedExperiment} and its derivative classes).}
 }
 \value{
 a ggplot2 object

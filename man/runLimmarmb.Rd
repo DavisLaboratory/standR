@@ -4,7 +4,13 @@
 \alias{runLimmarmb}
 \title{Limma batch correction}
 \usage{
-runLimmarmb(spe_object, n_assay = 2, batch)
+runLimmarmb(
+  spe_object,
+  n_assay = 2,
+  batch,
+  covariates = NULL,
+  design = matrix(1, ncol(spe_object), 1)
+)
 }
 \arguments{
 \item{spe_object}{A Spatial Experiment object.}
@@ -12,6 +18,10 @@ runLimmarmb(spe_object, n_assay = 2, batch)
 \item{n_assay}{Integer, choose the assay from spe_object.}
 
 \item{batch}{A vector indicating batches.}
+
+\item{covariates}{A matrix or vector of numeric covariates to be adjusted for.}
+
+\item{design}{A design matrix relating to treatment conditions to be preserved, can be generated using \code{stats::model.matrix} function with all biological factors included.}
 }
 \value{
 A Spatial Experiment object.

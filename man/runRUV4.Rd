@@ -23,7 +23,7 @@ RUV4 batch correction
 }
 \examples{
 data("dkd_spe_subset")
-spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+spe <- findNCGs(dkd_spe_subset, top_n = 100)
 spe_ruv <- runRUV4(spe, k = 3,
                   factors = c("disease_status","region"),
                   negctrlGenes = S4Vectors::metadata(spe)$negGenes)

@@ -11,10 +11,10 @@
 #' @examples
 #' data("dkd_spe_subset")
 #'
-#' spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+#' spe <- findNCGs(dkd_spe_subset, top_n = 100)
 #' S4Vectors::metadata(spe)$negGenes
 #'
-chooseNegCTRLgenes <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 200){
+findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 200){
 
   . = samples = count = sd = m = cv = rowname = mean_zscore = NULL
 
@@ -26,7 +26,7 @@ chooseNegCTRLgenes <- function(spe_object, n_assay = 2, batch_name = "SlideName"
   spe <- spe_object
 
   # compute coefficient of variance for each batch
-  gene_with_mzscore <- SummarizedExperiment::assay(spe, 2) %>%
+  gene_with_mzscore <- suppressMessages(SummarizedExperiment::assay(spe, 2) %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     tidyr::gather(samples, count, -rowname) %>%
@@ -50,7 +50,7 @@ chooseNegCTRLgenes <- function(spe_object, n_assay = 2, batch_name = "SlideName"
     scale() %>% # compute z-score
     as.data.frame() %>%
     mutate(mean_zscore = rowMeans(.)) %>%
-    dplyr::select(mean_zscore)
+    dplyr::select(mean_zscore))
 
   SummarizedExperiment::rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe),]
   SummarizedExperiment::rowData(spe)$mean_expr <- SummarizedExperiment::assay(spe, 2) %>% # get mean expression
@@ -81,7 +81,7 @@ chooseNegCTRLgenes <- function(spe_object, n_assay = 2, batch_name = "SlideName"
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' spe <- chooseNegCTRLgenes(dkd_spe_subset, top_n = 100)
+#' spe <- findNCGs(dkd_spe_subset, top_n = 100)
 #' spe_ruv <- runRUV4(spe, k = 3,
 #'                   factors = c("disease_status","region"),
 #'                   negctrlGenes = S4Vectors::metadata(spe)$negGenes)
@@ -177,6 +177,8 @@ runCombat <- function(spe_object, n_assay = 2, batch, bio_factor){
 #' @param spe_object A Spatial Experiment object.
 #' @param n_assay Integer, choose the assay from spe_object.
 #' @param batch A vector indicating batches.
+#' @param covariates A matrix or vector of numeric covariates to be adjusted for.
+#' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
 #'
 #' @return A Spatial Experiment object.
 #' @export
@@ -187,10 +189,12 @@ runCombat <- function(spe_object, n_assay = 2, batch, bio_factor){
 #'                     batch = SummarizedExperiment::colData(dkd_spe_subset)$SlideName)
 #' SummarizedExperiment::assay(spe_limmarmb, 2)
 #'
-runLimmarmb <- function(spe_object, n_assay = 2, batch){
+runLimmarmb <- function(spe_object, n_assay = 2, batch, covariates = NULL, design = matrix(1,ncol(spe_object),1)){
   spe_limma_rmb <- spe_object
   spe_limma_rmb@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe_object,n_assay),
-                                                                  batch = batch)
+                                                                  batch = batch,
+                                                                  covariates = covariates,
+                                                                  design = design)
 
   return(spe_limma_rmb)
 }
