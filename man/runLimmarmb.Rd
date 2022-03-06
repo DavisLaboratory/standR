@@ -6,7 +6,7 @@
 \usage{
 runLimmarmb(
   spe_object,
-  n_assay = 2,
+  n_assay = 1,
   batch,
   covariates = NULL,
   design = matrix(1, ncol(spe_object), 1)

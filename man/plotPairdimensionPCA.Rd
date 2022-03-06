@@ -9,6 +9,8 @@ plotPairdimensionPCA(
   n_dimension = 3,
   precomputed = NULL,
   assay = 1,
+  title = NA,
+  title.size = 14,
   ...
 )
 }
@@ -23,6 +25,10 @@ we will compute for you.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for
 \code{SummarizedExperiment} and its derivative classes).}
+
+\item{title}{Character vector, title to put at the top.}
+
+\item{title.size}{Numeric vector, size of the title.}
 
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes()}.}
 }

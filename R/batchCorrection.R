@@ -189,7 +189,7 @@ runCombat <- function(spe_object, n_assay = 2, batch, bio_factor){
 #'                     batch = SummarizedExperiment::colData(dkd_spe_subset)$SlideName)
 #' SummarizedExperiment::assay(spe_limmarmb, 2)
 #'
-runLimmarmb <- function(spe_object, n_assay = 2, batch, covariates = NULL, design = matrix(1,ncol(spe_object),1)){
+runLimmarmb <- function(spe_object, n_assay = 1, batch, covariates = NULL, design = matrix(1,ncol(spe_object),1)){
   spe_limma_rmb <- spe_object
   spe_limma_rmb@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe_object,n_assay),
                                                                   batch = batch,

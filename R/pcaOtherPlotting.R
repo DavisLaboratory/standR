@@ -25,6 +25,8 @@ expand.grid.rmdup <- function(x, y, include.equals=FALSE)
 #' @param assay a numeric or character, specifying the assay to use (for
 #'   `SummarizedExperiment` and its derivative classes).
 #' @param ... aesthetic mappings to pass to `ggplot2::aes()`.
+#' @param title Character vector, title to put at the top.
+#' @param title.size Numeric vector, size of the title.
 #'
 #' @return A ggplot object.
 #' @export
@@ -34,7 +36,7 @@ expand.grid.rmdup <- function(x, y, include.equals=FALSE)
 #' plotPairdimensionPCA(dkd_spe_subset)
 plotPairdimensionPCA <- function(spe_object, n_dimension = 3,
                                  precomputed = NULL,
-                                 assay = 1, ...){
+                                 assay = 1, title = NA, title.size = 14, ...){
 
   set.seed(44)
 
@@ -87,6 +89,15 @@ plotPairdimensionPCA <- function(spe_object, n_dimension = 3,
   PCApairplot <- ggpubr::ggarrange(plotlist = plotting_list,
                                    ncol = n-1,nrow = n-1,
                                    common.legend = TRUE, legend = "top")
+
+  if(!is.na(title)){
+    PCApairplot <- ggpubr::annotate_figure(PCApairplot,
+                                   top = ggpubr::text_grob(title,
+                                                   color = "black",
+                                                   face = "bold",
+                                                   size = title.size))
+  }
+
 
   return(PCApairplot)
 }

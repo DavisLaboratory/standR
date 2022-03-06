@@ -74,7 +74,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
   df_out <- mclustcomp::mclustcomp(km_clusters, c) %>%
     filter(types %in% c("adjrand","jaccard"))
 
-  df_out[3,] <- c("Silhouette Coefficient",ss)
+  df_out[3,] <- c("Silhouette Coefficient",abs(ss))
 
   df_out <- df_out %>%
     mutate(types = ifelse(types == "adjrand", "Adjusted Rand Index",
