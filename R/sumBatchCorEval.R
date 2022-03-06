@@ -39,7 +39,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   # grouping
   label_by_factors <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     dplyr::select(all_of(foiColumn)) %>%
     rownames_to_column() %>%
     mutate(grp_id = as.numeric(factor(!!sym(foiColumn)))) %>%
@@ -55,7 +55,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   # prepare for other stats to be computed
   k <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     dplyr::select(all_of(foiColumn))
   k <- k[,1] %>%
     unique() %>%

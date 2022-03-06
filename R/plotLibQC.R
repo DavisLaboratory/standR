@@ -51,7 +51,7 @@ plotLibrarySizeQC <- function(spe_object,
 
   # plot dot plot
   p1 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     ggplot(aes(!!x_axis, !!y_axis, !!!aesmap)) +
     geom_point(alpha = .6) +
     geom_smooth(method='loess', se = FALSE, col = regression_col) +
@@ -61,7 +61,7 @@ plotLibrarySizeQC <- function(spe_object,
 
   # plot distribution of y axis
   p2 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     ggplot(aes(!!y_axis)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +
@@ -75,7 +75,7 @@ plotLibrarySizeQC <- function(spe_object,
 
   # plot distribution of x axis
   p3 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     ggplot(aes(!!x_axis)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +

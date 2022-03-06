@@ -31,7 +31,7 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
     rownames_to_column() %>%
     tidyr::gather(samples, count, -rowname) %>%
     left_join(SummarizedExperiment::colData(spe) %>%
-                as.data.frame() %>%
+                as.data.frame(optional = TRUE) %>%
                 dplyr::select(c(batch_name)) %>%
                 rownames_to_column(),
               by = c("samples"="rowname")) %>%
@@ -103,7 +103,7 @@ runRUV4 <- function(spe_object, k, factors, negctrlGenes){
 
   # get factor of interest matrix
   factorOfInterest <- SummarizedExperiment::colData(spe) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     dplyr::select(all_of(factors))
 
   test <- ruv::design.matrix(factorOfInterest)

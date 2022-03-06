@@ -25,7 +25,7 @@ plotMetadata <- function(spe_object, column2plot, textsize = 3){
 
   #using alluvium plot to visualise user-defined metadata in the data.
   SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame() %>%
+    as.data.frame(optional = TRUE) %>%
     dplyr::select(column2plot) %>%
     ggalluvial::to_lodes_form() %>%
     ggplot(aes(x = x, stratum = stratum,
