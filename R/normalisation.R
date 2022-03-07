@@ -1,5 +1,5 @@
 # DEseq2 normalisation
-calDESeq2NormCount <- function(spe_object, log = TRUE){
+calNormCount <- function(spe_object, log = TRUE){
   # get raw count
   count_df <- SummarizedExperiment::assay(spe_object,1)
 
@@ -37,7 +37,7 @@ rpkm2tpm <- function(x) {
 #' Perform normalisation to GeoMX data
 #'
 #' @param spe_object A spatial experiment object.
-#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, deseq2norm. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
+#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
 #' @param log Log-transformed or not.
 #'
 #' @return A spatial experiment object, with the second assay being the normalised count matrix.
@@ -50,13 +50,13 @@ rpkm2tpm <- function(x) {
 #' head(SummarizedExperiment::assay(spe_tmm, 2))
 #' spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile")
 #' head(SummarizedExperiment::assay(spe_upq, 2))
-#' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "deseq2norm")
+#' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
 #' head(SummarizedExperiment::assay(spe_deseqnorm, 2))
 #'
 geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
-  if(!(method %in% c("TMM","RPKM","TPM","CPM","upperquartile","deseq2norm"))){
-    stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,deseq2")
+  if(!(method %in% c("TMM","RPKM","TPM","CPM","upperquartile","sizefactor"))){
+    stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,sizefactor")
   }
 
   . <- NULL
@@ -112,13 +112,13 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
   }
 
 
-  ## normalisation methods from deseq2
+  ## calculating size factor based on geomean
 
-  if(method == "deseq2norm"){
+  if(method == "sizefactor"){
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- calDESeq2NormCount(spe, log = TRUE)
+      spe@assays@data$logcounts <- calNormCount(spe, log = TRUE)
     } else {
-      spe@assays@data$logcounts <- calDESeq2NormCount(spe, log = FALSE)
+      spe@assays@data$logcounts <- calNormCount(spe, log = FALSE)
     }
   }
 

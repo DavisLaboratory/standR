@@ -9,7 +9,7 @@ test_that("Testing normalisation function", {
   spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile")
   expect_equal(dim(SummarizedExperiment::assay(spe_upq, 2)), dim(dkd_spe_subset))
   expect_equal(typeof(SummarizedExperiment::assay(spe_upq, 2)), "double")
-  spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "deseq2norm")
+  spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
   expect_equal(dim(SummarizedExperiment::assay(spe_deseqnorm, 2)), dim(dkd_spe_subset))
   expect_equal(typeof(SummarizedExperiment::assay(spe_deseqnorm, 2)), "double")
 
