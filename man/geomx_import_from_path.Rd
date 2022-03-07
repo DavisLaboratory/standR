@@ -40,9 +40,9 @@ Import GeoMX DSP data into a saptial experiment object from file paths
 }
 \examples{
 dirPath <- ""
-countFile <- system.file("extdata", "dkd_subset_TargetCountMatrix.txt", package = "standR")
-sampleAnnoFile <- system.file("extdata", "dkd_subset_Sample_Annotations.txt", package = "standR")
+countFile <- system.file("extdata", "Kidney_Raw_TargetCountMatrix.txt.gz", package = "standR")
+sampleAnnoFile <- system.file("extdata", "Kidney_Sample_Annotations.txt.gz", package = "standR")
 
-spe <- geomx_import_from_path(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
+spe <- geomx_import_from_path(dirPath, countFile, sampleAnnoFile, hasNegProbe = TRUE)
 
 }
