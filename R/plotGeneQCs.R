@@ -24,9 +24,9 @@ NULL
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' spe <- addQCstat(dkd_spe_subset)
-#' plotGenewiseQC(spe)
-plotGenewiseQC <- function(spe, top_n = 9, point_size = 1,
+#' spe <- addPerROIQC(dkd_spe_subset)
+#' plotGeneQC(spe)
+plotGeneQC <- function(spe, top_n = 9, point_size = 1,
                            line_type = "dashed", line_col = "darkred", line_cex = 1,
                            hist_col = "black", hist_fill = "skyblue", bin_num = 30,
                            text_size = 13, layout_ncol = 1, layout_nrow = 2,

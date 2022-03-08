@@ -10,10 +10,10 @@
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' spe_filtered <- addQCstat(dkd_spe_subset)
+#' spe_filtered <- addPerROIQC(dkd_spe_subset)
 #' spe_filtered
 #'
-addQCstat <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5){
+addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5){
 
   . = NULL
   spe <- spe_object

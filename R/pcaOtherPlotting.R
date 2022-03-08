@@ -33,8 +33,8 @@ expand.grid.rmdup <- function(x, y, include.equals=FALSE)
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' plotPairdimensionPCA(dkd_spe_subset)
-plotPairdimensionPCA <- function(spe_object, n_dimension = 3,
+#' plotPairPCA(dkd_spe_subset)
+plotPairPCA <- function(spe_object, n_dimension = 3,
                                  precomputed = NULL,
                                  assay = 1, title = NA, title.size = 14, ...){
 

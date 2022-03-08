@@ -25,9 +25,9 @@
 #' countFile <- system.file("extdata", "dkd_subset_TargetCountMatrix.txt", package = "standR")
 #' sampleAnnoFile <- system.file("extdata", "dkd_subset_Sample_Annotations.txt", package = "standR")
 #'
-#' spe <- geomx_import_from_path(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
+#' spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'
-geomx_import_from_path <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
+readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
                               hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
                               colnames.as.rownames = c("TargetName","SegmentDisplayName","TargetName"),
                               coord.colnames = c("ROICoordinateX", "ROICoordinateY")){
@@ -159,10 +159,10 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 #'
 #' # transfer into spatial experiment object
 #' coords <- matrix(rnorm(2*ns),10,2)
-#' spe <- geomx_import_from_dge(dge_object = y, spatialCoord = coords)
+#' spe <- readGeoMxFromDGE(dge_object = y, spatialCoord = coords)
 #' spe
 #'
-geomx_import_from_dge <- function(dge_object, spatialCoord = NULL){
+readGeoMxFromDGE <- function(dge_object, spatialCoord = NULL){
   spe <- SpatialExperiment::SpatialExperiment(assays = list(counts = dge_object$counts,
                                                             logcounts = edgeR::cpm(dge_object, log = TRUE)),
                                               colData = dge_object$samples,

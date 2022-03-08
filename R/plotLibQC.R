@@ -26,7 +26,7 @@ NULL
 #' @return A ggplot object.
 #' @export
 #'
-plotLibrarySizeQC <- function(spe_object,
+plotROIQC <- function(spe_object,
                               x_axis = "AOINucleiCount",
                               y_axis = "lib_size",
                               x_lab = "AOINucleiCount",

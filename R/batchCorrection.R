@@ -27,30 +27,30 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
 
   # compute coefficient of variance for each batch
   gene_with_mzscore <- suppressMessages(SummarizedExperiment::assay(spe, 2) %>%
-    as.data.frame() %>%
-    rownames_to_column() %>%
-    tidyr::gather(samples, count, -rowname) %>%
-    left_join(SummarizedExperiment::colData(spe) %>%
-                as.data.frame(optional = TRUE) %>%
-                dplyr::select(c(batch_name)) %>%
-                rownames_to_column(),
-              by = c("samples"="rowname")) %>%
-    split( ., f = .[,all_of(batch_name)]) %>% # split data into list of batches
-    lapply(., function(x)
-      x %>%
-        tidyr::spread(samples, count) %>%
-        dplyr::select(-batch_name) %>%
-        column_to_rownames("rowname") %>%
-        mutate(sd = apply(., 1, stats::sd),
-               m = rowMeans(.),
-               cv = log(100*sqrt(exp(sd^2)-1))) %>% # compute log cv
-        dplyr::select(cv)) %>%
-    bind_cols() %>%
-    magrittr::set_colnames(paste0("cv",seq(ncol(.)))) %>%
-    scale() %>% # compute z-score
-    as.data.frame() %>%
-    mutate(mean_zscore = rowMeans(.)) %>%
-    dplyr::select(mean_zscore))
+                                          as.data.frame() %>%
+                                          rownames_to_column() %>%
+                                          tidyr::gather(samples, count, -rowname) %>%
+                                          left_join(SummarizedExperiment::colData(spe) %>%
+                                                      as.data.frame(optional = TRUE) %>%
+                                                      dplyr::select(c(batch_name)) %>%
+                                                      rownames_to_column(),
+                                                    by = c("samples"="rowname")) %>%
+                                          split( ., f = .[,all_of(batch_name)]) %>% # split data into list of batches
+                                          lapply(., function(x)
+                                            x %>%
+                                              tidyr::spread(samples, count) %>%
+                                              dplyr::select(-batch_name) %>%
+                                              column_to_rownames("rowname") %>%
+                                              mutate(sd = apply(., 1, stats::sd),
+                                                     m = rowMeans(.),
+                                                     cv = log(100*sqrt(exp(sd^2)-1))) %>% # compute log cv
+                                              dplyr::select(cv)) %>%
+                                          bind_cols() %>%
+                                          magrittr::set_colnames(paste0("cv",seq(ncol(.)))) %>%
+                                          scale() %>% # compute z-score
+                                          as.data.frame() %>%
+                                          mutate(mean_zscore = rowMeans(.)) %>%
+                                          dplyr::select(mean_zscore))
 
   SummarizedExperiment::rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe),]
   SummarizedExperiment::rowData(spe)$mean_expr <- SummarizedExperiment::assay(spe, 2) %>% # get mean expression
@@ -63,18 +63,23 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
     rownames() %>%
     .[1:top_n]
 
-  S4Vectors::metadata(spe)$negGenes <- negative.ctrl.genes
+  S4Vectors::metadata(spe)$NCGs <- negative.ctrl.genes
 
   return(spe)
 }
 
 
-#' RUV4 batch correction
+#' Batch correction for GeoMX data
 #'
 #' @param spe_object A Spatial Experiment object.
-#' @param k The number of unwanted factors to use. Can be 0.
-#' @param factors Column name(s) to indicate the factors of interest.
-#' @param negctrlGenes Negative control genes.
+#' @param k The number of unwanted factors to use. Can be 0. This is required for the RUV4 method.
+#' @param factors Column name(s) to indicate the factors of interest. This is required for the RUV4 method.
+#' @param NCGs Negative control genes. This is required for the RUV4 method.
+#' @param n_assay Integer to indicate the nth count table in the assay(spe) to be used.
+#' @param batch A vector indicating batches. This is required for the Limma mehtod.
+#' @param covariates A matrix or vector of numeric covariates to be adjusted for.
+#' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
+#' @param method Can be either RUV4 or Limma, by default is RUV4.
 #'
 #' @return A Spatial Experiment object, containing the ruv4-normalised count and normalisation factor.
 #' @export
@@ -82,120 +87,71 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
 #' @examples
 #' data("dkd_spe_subset")
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)
-#' spe_ruv <- runRUV4(spe, k = 3,
+#' spe_ruv <- geomxBatchCorrection(spe, k = 3,
 #'                   factors = c("disease_status","region"),
-#'                   negctrlGenes = S4Vectors::metadata(spe)$negGenes)
+#'                   NCGs = S4Vectors::metadata(spe)$NCGs)
 #'
-runRUV4 <- function(spe_object, k, factors, negctrlGenes){
+geomxBatchCorrection <- function(spe_object, k, factors, NCGs, n_assay = 2,
+                                 batch, covariates = NULL, design = matrix(1,ncol(spe_object),1),
+                                 method = c("RUV4","Limma")){
 
   spe <- spe_object
 
-  k <- as.integer(k)
-
-  stopifnot(k>0)
-
-  # get count matrix, and transpose
-  tmat <- spe@assays@data$logcounts %>%
-    as.matrix() %>%
-    t
-
-  stopifnot(all(factors %in% colnames(SummarizedExperiment::colData(spe))))
-
-  # get factor of interest matrix
-  factorOfInterest <- SummarizedExperiment::colData(spe) %>%
-    as.data.frame(optional = TRUE) %>%
-    dplyr::select(all_of(factors))
-
-  test <- ruv::design.matrix(factorOfInterest)
-
-  # run ruv4
-  ruv.out <- ruv::RUV4(tmat,
-                  test,
-                  ctl = rownames(spe) %in% negctrlGenes,
-                  k = k, Z = NULL)
-
-  # store results
-  ruv_w <- ruv.out$W %>%
-    as.data.frame() %>%
-    magrittr::set_colnames(paste0("ruv_W",seq(k)))
-
-  for(i in seq(ncol(ruv_w))){
-    n <- colnames(ruv_w)[i]
-    #print(n)
-    SummarizedExperiment::colData(spe)[,n] <- ruv_w[,i]
+  if(length(method) == 2){
+    method = "RUV4"
+  } else {
+    stopifnot(method %in% c("RUV4","Limma"))
+    stopifnot(length(method) == 1)
   }
 
-  summary <- ruv::ruv_summary(tmat, ruv.out)
+  if(method == "RUV4"){
+    k <- as.integer(k)
 
-  ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") %>% t
+    stopifnot(k>0)
 
-  spe@assays@data$logcounts <- ruv_norm_count
+    # get count matrix, and transpose
+    tmat <- SummarizedExperiment::assay(spe,n_assay) %>%
+      as.matrix() %>%
+      t
+
+    stopifnot(all(factors %in% colnames(SummarizedExperiment::colData(spe))))
+
+    # get factor of interest matrix
+    factorOfInterest <- SummarizedExperiment::colData(spe) %>%
+      as.data.frame(optional = TRUE) %>%
+      dplyr::select(all_of(factors))
+
+    test <- ruv::design.matrix(factorOfInterest)
+
+    # run ruv4
+    ruv.out <- ruv::RUV4(tmat,
+                         test,
+                         ctl = rownames(spe) %in% NCGs,
+                         k = k, Z = NULL)
+
+    # store results
+    ruv_w <- ruv.out$W %>%
+      as.data.frame() %>%
+      magrittr::set_colnames(paste0("ruv_W",seq(k)))
+
+    for(i in seq(ncol(ruv_w))){
+      n <- colnames(ruv_w)[i]
+      #print(n)
+      SummarizedExperiment::colData(spe)[,n] <- ruv_w[,i]
+    }
+
+    summary <- ruv::ruv_summary(tmat, ruv.out)
+
+    ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") %>% t
+
+    spe@assays@data$logcounts <- ruv_norm_count
+  } else if(method == "Limma"){
+    spe@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe,n_assay),
+                                                          batch = batch,
+                                                          covariates = covariates,
+                                                          design = design)
+  }
 
   return(spe)
-
-}
-
-
-#' Combat batch correction
-#'
-#' @param spe_object A Spatial Experiment object.
-#' @param n_assay Integer, choose the assay from spe_object.
-#' @param batch A vector indicating batches.
-#' @param bio_factor A vector indicating biology.
-#'
-#' @return A Spatial Experiment object.
-#' @export
-#'
-#' @examples
-#' data("dkd_spe_subset")
-#' spe_combat <- runCombat(dkd_spe_subset,
-#'                     batch = SummarizedExperiment::colData(dkd_spe_subset)$SlideName,
-#'                     bio_factor = SummarizedExperiment::colData(dkd_spe_subset)$region)
-#' SummarizedExperiment::assay(spe_combat, 2)
-#'
-runCombat <- function(spe_object, n_assay = 2, batch, bio_factor){
-
-  stopifnot(is.numeric(n_assay))
-  stopifnot(n_assay <= length(spe_object@assays))
-  stopifnot(length(batch)==ncol(spe_object))
-  stopifnot(length(bio_factor)==ncol(spe_object))
-
-  # run combat
-  corrected_data <- sva::ComBat_seq(as.matrix(SummarizedExperiment::assay(spe_object, n_assay)),
-                                    batch = batch, group = bio_factor)
-
-  spe_combat <- spe_object
-
-  spe_combat@assays@data$logcounts <- corrected_data
-
-  return(spe_combat)
-}
-
-
-#' Limma batch correction
-#'
-#' @param spe_object A Spatial Experiment object.
-#' @param n_assay Integer, choose the assay from spe_object.
-#' @param batch A vector indicating batches.
-#' @param covariates A matrix or vector of numeric covariates to be adjusted for.
-#' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
-#'
-#' @return A Spatial Experiment object.
-#' @export
-#'
-#' @examples
-#' data("dkd_spe_subset")
-#' spe_limmarmb <- runLimmarmb(dkd_spe_subset,
-#'                     batch = SummarizedExperiment::colData(dkd_spe_subset)$SlideName)
-#' SummarizedExperiment::assay(spe_limmarmb, 2)
-#'
-runLimmarmb <- function(spe_object, n_assay = 1, batch, covariates = NULL, design = matrix(1,ncol(spe_object),1)){
-  spe_limma_rmb <- spe_object
-  spe_limma_rmb@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe_object,n_assay),
-                                                                  batch = batch,
-                                                                  covariates = covariates,
-                                                                  design = design)
-
-  return(spe_limma_rmb)
 }
 
