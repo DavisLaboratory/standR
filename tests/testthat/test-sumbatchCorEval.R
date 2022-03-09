@@ -3,7 +3,7 @@ test_that("Testing the function of computing evaluation statistics for batch cor
   data("dkd_spe_subset")
   eval_out <- computeClusterEvalStats(dkd_spe_subset, "SlideName")
 
-  expect_equal(nrow(eval_out), 3)
+  expect_equal(nrow(eval_out), 8)
   expect_equal(ncol(eval_out), 2)
 
   expect_error(computeClusterEvalStats(dkd_spe_subset, "xyz"))

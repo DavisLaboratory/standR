@@ -2,6 +2,7 @@
 
 export(addPerROIQC)
 export(computeClusterEvalStats)
+export(findBestK)
 export(findNCGs)
 export(geomxBatchCorrection)
 export(geomxNorm)

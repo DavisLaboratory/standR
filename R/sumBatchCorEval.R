@@ -34,24 +34,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   pca_object <- pcdata
 
-  # compute euclidean distance
-  distm <- stats::dist(pca_object)
-
-  # grouping
-  label_by_factors <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
-    dplyr::select(all_of(foiColumn)) %>%
-    rownames_to_column() %>%
-    mutate(grp_id = as.numeric(factor(!!sym(foiColumn)))) %>%
-    mutate(sample_id = row_number())
-
-  c <- label_by_factors$grp_id
-  names(c) <- label_by_factors$sample_id
-
-  # calculate silhouette score
-  si <- cluster::silhouette(c, distm)
-
-  ss <- mean(si[,3])
+  ss <- getSilhouette(pca_object, spe_object, foiColumn)[[1]]
 
   # prepare for other stats to be computed
   k <- SummarizedExperiment::colData(spe_object) %>%
@@ -71,14 +54,12 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
   types = NULL
 
   # compute adjrand and jaccard
-  df_out <- mclustcomp::mclustcomp(km_clusters, c) %>%
-    filter(types %in% c("adjrand","jaccard"))
+  df_out <- mclustcomp::mclustcomp(km_clusters, getSilhouette(pca_object, spe_object, foiColumn)[[2]]) %>%
+    filter(types %in% c("adjrand","chisq","jaccard","smc","mhm","mirkin","vi")) %>%
+    mutate(types = c("Adjusted Rand Index", "Chi-Squared Coefficient", "Jaccard Index",
+                     "Simple Matching Coefficient", "Meila-Heckerman Measure", "Mirkin Distance", "Variation of Information"))
 
-  df_out[3,] <- c("Silhouette Coefficient",abs(ss))
-
-  df_out <- df_out %>%
-    mutate(types = ifelse(types == "adjrand", "Adjusted Rand Index",
-                          ifelse(types == "jaccard", "Jaccard Similarity Coefficient", types)))
+  df_out[8,] <- c("Silhouette Coefficient",ss)
 
   return(df_out)
 }
@@ -114,21 +95,21 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     computeClusterEvalStats(x, bio_feature_name)
   }) %>%
     bind_rows() %>%
-    mutate(from = rep(data_names, each = 3))
+    mutate(from = rep(data_names, each = 8))
 
   # get stat for batch factor
   stat_batch <- lapply(spe_list ,function(x){
     computeClusterEvalStats(x, batch_feature_name)
   }) %>%
     bind_rows() %>%
-    mutate(from = rep(data_names, each = 3))
+    mutate(from = rep(data_names, each = 8))
 
   p_bio <- stat_bio %>%
     mutate(from = factor(from, levels = data_names)) %>%
     mutate(scores = as.numeric(scores)) %>%
     ggplot(aes(from, scores, fill = types)) +
     geom_bar(stat = "identity", col = "black", width = .7) +
-    facet_wrap(~types, scales = "free_y") +
+    facet_wrap(~types, scales = "free_y", ncol = 4) +
     theme_bw() +
     theme(legend.position = "none") +
     xlab("Count data") +
@@ -140,7 +121,7 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     mutate(scores = as.numeric(scores)) %>%
     ggplot(aes(from, scores, fill = types)) +
     geom_bar(stat = "identity", col = "black", width = .7) +
-    facet_wrap(~types, scales = "free_y") +
+    facet_wrap(~types, scales = "free_y", ncol = 4) +
     theme_bw() +
     theme(legend.position = "none") +
     xlab("Count data") +

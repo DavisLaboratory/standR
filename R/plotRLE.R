@@ -88,18 +88,6 @@ pdataRLE_intl <- function(emat, sampord) {
   return(rledf)
 }
 
-orderSamples <- function(sdata, ordannots) {
-  #add sample IDs
-  sdata$SampleOrderID = seq(nrow(sdata))
-
-  #order samples based on provided annotations
-  sdata = sdata %>%
-    dplyr::group_by(dplyr::across(!!ordannots)) %>%
-    dplyr::arrange(.by_group = TRUE)
-
-  return(sdata$SampleOrderID)
-}
-
 plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
 
   upper = lower = middle = x = ymin = ymax = NULL

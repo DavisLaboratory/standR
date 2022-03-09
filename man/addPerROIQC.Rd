@@ -4,7 +4,13 @@
 \alias{addPerROIQC}
 \title{Add QC statistics to the Spatial Experiment object}
 \usage{
-addPerROIQC(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5)
+addPerROIQC(
+  spe_object,
+  sample_fraction = 0.9,
+  rm_genes = TRUE,
+  min_count = 5,
+  design = NULL
+)
 }
 \arguments{
 \item{spe_object}{A spatial experiment object}
@@ -14,6 +20,8 @@ addPerROIQC(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5)
 \item{rm_genes}{Logical. Decide whether genes with low count in more than sample_fraction of the samples are removed from the dataset. Default is TRUE.}
 
 \item{min_count}{Interger. Minimum read count to calculate count threshold. Default is 5.}
+
+\item{design}{Generate using \code{model.matrix}, if this is specify, \code{edgeR::filterByExpr} will be used to filter genes.}
 }
 \value{
 A spatial experiment object

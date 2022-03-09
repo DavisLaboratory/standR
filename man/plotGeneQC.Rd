@@ -7,6 +7,7 @@
 plotGeneQC(
   spe,
   top_n = 9,
+  ordannots = c(),
   point_size = 1,
   line_type = "dashed",
   line_col = "darkred",
@@ -25,6 +26,8 @@ plotGeneQC(
 \item{spe}{A spatial experiment object.}
 
 \item{top_n}{Integer. Indicating the top n genes will be plotted. Default is 9.}
+
+\item{ordannots}{variables or computations to sort samples by (tidy style).}
 
 \item{point_size}{Numeric. Point size.}
 

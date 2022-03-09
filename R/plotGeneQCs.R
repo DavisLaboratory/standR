@@ -2,6 +2,18 @@
 #' @import patchwork
 NULL
 
+orderSamples <- function(sdata, ordannots) {
+  #add sample IDs
+  sdata$SampleOrderID = seq(nrow(sdata))
+
+  #order samples based on provided annotations
+  sdata = sdata %>%
+    dplyr::group_by(dplyr::across(!!ordannots)) %>%
+    dplyr::arrange(.by_group = TRUE)
+
+  return(sdata$SampleOrderID)
+}
+
 #' Plot gene-wise QC plot
 #'
 #' @param spe A spatial experiment object.
@@ -18,6 +30,7 @@ NULL
 #' @param layout_nrow Integer. Row number for layout. Default is 2.
 #' @param layout_height Vector of numerics with length of 2. Default is c(1, .4).
 #' @param ... aesthetic mappings to pass to `ggplot2::aes()` of the dot plots.
+#' @param ordannots variables or computations to sort samples by (tidy style).
 #'
 #' @return A ggplot object
 #' @export
@@ -26,12 +39,12 @@ NULL
 #' data("dkd_spe_subset")
 #' spe <- addPerROIQC(dkd_spe_subset)
 #' plotGeneQC(spe)
-plotGeneQC <- function(spe, top_n = 9, point_size = 1,
+plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
                            line_type = "dashed", line_col = "darkred", line_cex = 1,
                            hist_col = "black", hist_fill = "skyblue", bin_num = 30,
                            text_size = 13, layout_ncol = 1, layout_nrow = 2,
                            layout_height = c(1, .4), ...){
-  p1 <- suppressWarnings(plotRmGenes(spe, top_n, point_size, line_type, line_col, line_cex, text_size,...))
+  p1 <- suppressWarnings(plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size,...))
   p2 <- suppressWarnings(plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size))
 
   suppressWarnings(print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
@@ -40,16 +53,23 @@ plotGeneQC <- function(spe, top_n = 9, point_size = 1,
 
 
 # plot removed genes
-plotRmGenes <- function(spe, top_n, point_size, line_type,
+plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
                         line_col, line_cex, text_size, ...){
 
   . = sample = lcpm = rowname = NULL
+
+  # get order
+
+  sampleorder <- SummarizedExperiment::colData(spe) %>%
+    as.data.frame(optional = TRUE) %>%
+    orderSamples(., ordannots)
 
   # get removed genes and order by mean expression
   data <- spe@metadata$genes_rm_logCPM %>%
     as.data.frame() %>%
     mutate(m = rowMeans(.)) %>%
-    arrange(-.$m)
+    arrange(-.$m) %>%
+    .[,sampleorder]
 
   # top N genes to plot
   top_n <- min(nrow(data), top_n)

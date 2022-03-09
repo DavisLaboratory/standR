@@ -266,19 +266,6 @@ setMethod("plotMDS",
             return(p1)
           })
 
-calcPCA <- function(edata, dims) {
-  set.seed(45)
-  maxdim = max(dims)
-  if (requireNamespace("scater") & maxdim < ncol(edata)) {
-    pcdata = scater::calculatePCA(edata, ncomponents = maxdim)
-  } else {
-    pcdata = stats::prcomp(t(edata))
-    pcdata = checkPrecomputedPCA(edata, pcdata)
-  }
-
-  return(pcdata)
-}
-
 checkPrecomputedPCA <- function(edata, pcdata) {
   if (is(pcdata, 'prcomp')) {
     stopifnot(all(rownames(pcdata$x) == colnames(edata)))

@@ -155,3 +155,92 @@ geomxBatchCorrection <- function(spe_object, k, factors, NCGs, n_assay = 2,
   return(spe)
 }
 
+
+# calculate silhouette score
+getSilhouette <- function(pca_object, spe_object, foiColumn){
+  # compute euclidean distance
+  distm <- stats::dist(pca_object)
+
+  # grouping
+  label_by_factors <- SummarizedExperiment::colData(spe_object) %>%
+    as.data.frame(optional = TRUE) %>%
+    dplyr::select(all_of(foiColumn)) %>%
+    rownames_to_column() %>%
+    mutate(grp_id = as.numeric(factor(!!sym(foiColumn))))
+
+  c <- label_by_factors$grp_id
+  names(c) <- label_by_factors$rowname
+
+  # calculate silhouette score
+  si <- cluster::silhouette(c, distm)
+
+  ss <- mean(si[,3])
+
+  return(list(ss, c))
+}
+
+calcPCA <- function(edata, dims) {
+  set.seed(45)
+  maxdim = max(dims)
+  if (requireNamespace("scater") & maxdim < ncol(edata)) {
+    pcdata = scater::calculatePCA(edata, ncomponents = maxdim)
+  } else {
+    pcdata = stats::prcomp(t(edata))
+    pcdata = checkPrecomputedPCA(edata, pcdata)
+  }
+
+  return(pcdata)
+}
+
+int_breaks <- function(x, n = 5) {
+  l <- pretty(x, n)
+  l[abs(l %% 1) < .Machine$double.eps ^ 0.5]
+}
+
+#' Testing multiple K for RUV4 batch correction to find the best K.
+#'
+#' @param spe A Spatial Experiment object.
+#' @param maxK Integer. The max k to test, will test k from 1 to maxK, by default is 10.
+#' @param factor_of_int Column name(s) to indicate the factors of interest. This is required for the RUV4 method.
+#' @param factor_batch Column name to indicate the batch.
+#' @param NCGs Negative control genes. This is required for the RUV4 method.
+#' @param point_size Numeric. Plotting parameter.
+#' @param line_col Character. Plotting parameter.
+#' @param point_col Character. Plotting parameter.
+#' @param text_size Numeric. Plotting parameter.
+#'
+#' @return A ggplot object.
+#' @export
+#'
+#' @examples
+#' data("dkd_spe_subset")
+#' spe <- findNCGs(dkd_spe_subset, top_n = 100)
+#' findBestK(spe, factor_of_int = c("disease_status"),
+#'          factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs)
+#'
+findBestK <-function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3, line_col = "black", point_col = "black", text_size = 13){
+
+  k = silhouette = NULL
+
+  kdata <- data.frame()
+  for(i in seq(maxK)){
+    spe_ruv <- geomxBatchCorrection(spe, k = i, factors = factor_of_int, NCGs = NCGs)
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_ruv, 2), dims = c(1,2))
+    ss <- getSilhouette(pca_object, spe_ruv, foiColumn = factor_batch)[[1]]
+    kdata <- rbind(kdata, data.frame("k" = i, "silhouette" = ss))
+  }
+
+  kdata %>%
+    ggplot(aes(k, silhouette)) +
+    geom_path(col = line_col) +
+    geom_point(size = point_size, col = point_col) +
+    scale_x_continuous(breaks = function(x) int_breaks(x, n = 10)) +
+    theme_bw() +
+    xlab("K") +
+    ylab("Silhouette Score") +
+    theme(text = element_text(size = text_size))
+}
+
+
+
+

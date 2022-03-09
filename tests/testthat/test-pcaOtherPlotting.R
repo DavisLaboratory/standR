@@ -34,7 +34,7 @@ test_that("Testing PCA biplot function", {
   p <- plotPCAbiplot(dkd_spe_subset)
   expect_silent(print(p))
 
-  p <- plotPCAbiplot(dkd_spe_subset, n_loadings = c("RPL7A","ATP5MC2"))
+  p <- plotPCAbiplot(dkd_spe_subset, n_loadings = c("RPS20","CD74"))
   expect_silent(print(p))
 
 })
