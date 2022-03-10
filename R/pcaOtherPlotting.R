@@ -147,8 +147,8 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
     as.data.frame() %>%
     magrittr::set_colnames(c("ev")) %>%
     rownames_to_column() %>%
-    mutate(rowname = factor(.$rowname, levels = .$rowname)) %>%
-    mutate(csum = cumsum(.$ev)) %>%
+    mutate(rowname = factor(rowname, levels = pull(.,"rowname"))) %>%
+    mutate(csum = cumsum(ev)) %>%
     ggplot(aes(rowname, ev)) +
     geom_bar(stat = "identity", col = bar_color, fill = bar_fill, width = bar_width) +
     geom_point(aes(x = rowname, y = csum), size = point_size, col = point_col) +

@@ -1,6 +1,6 @@
 #' Get negative control genes from each batch of the data
 #'
-#' @param spe_object A Spatial Experiment object.
+#' @param spe A Spatial Experiment object.
 #' @param n_assay Integer to indicate the nth count table in the assay(spe) to be used.
 #' @param batch_name Column name indicating batches.
 #' @param top_n Integer indicate how many genes to be included as negative control genes.
@@ -14,14 +14,12 @@
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)
 #' S4Vectors::metadata(spe)$negGenes
 #'
-findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 200){
+findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200){
 
   stopifnot(is.numeric(n_assay))
-  stopifnot(n_assay <= length(spe_object@assays))
-  stopifnot(batch_name %in% colnames(SummarizedExperiment::colData(spe_object)))
-  stopifnot(top_n <= nrow(spe_object))
-
-  spe <- spe_object
+  stopifnot(n_assay <= length(SummarizedExperiment::assayNames(spe)))
+  stopifnot(batch_name %in% colnames(SummarizedExperiment::colData(spe)))
+  stopifnot(top_n <= nrow(spe))
 
   # compute coefficient of variance for each batch
   gene_with_mzscore <- suppressMessages(SummarizedExperiment::assay(spe, 2) %>%
@@ -54,7 +52,7 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
   SummarizedExperiment::rowData(spe)$mean_expr <- SummarizedExperiment::assay(spe, 2) %>% # get mean expression
     as.data.frame() %>%
     mutate(m = rowMeans(.)) %>%
-    .$m
+    pull(., "m")
 
   negative.ctrl.genes <- gene_with_mzscore %>%  # arrange by z-score, top N genes as negative control genes
     arrange(mean_zscore) %>%
@@ -69,7 +67,7 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
 
 #' Batch correction for GeoMX data
 #'
-#' @param spe_object A Spatial Experiment object.
+#' @param spe A Spatial Experiment object.
 #' @param k The number of unwanted factors to use. Can be 0. This is required for the RUV4 method.
 #' @param factors Column name(s) to indicate the factors of interest. This is required for the RUV4 method.
 #' @param NCGs Negative control genes. This is required for the RUV4 method.
@@ -89,11 +87,9 @@ findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 
 #'                   factors = c("disease_status","region"),
 #'                   NCGs = S4Vectors::metadata(spe)$NCGs)
 #'
-geomxBatchCorrection <- function(spe_object, k, factors, NCGs, n_assay = 2,
-                                 batch, covariates = NULL, design = matrix(1,ncol(spe_object),1),
+geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
+                                 batch, covariates = NULL, design = matrix(1,ncol(spe),1),
                                  method = c("RUV4","Limma")){
-
-  spe <- spe_object
 
   if(length(method) == 2){
     method = "RUV4"
@@ -142,12 +138,13 @@ geomxBatchCorrection <- function(spe_object, k, factors, NCGs, n_assay = 2,
 
     ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") %>% t
 
-    spe@assays@data$logcounts <- ruv_norm_count
+    SummarizedExperiment::assay(spe,2) <- ruv_norm_count[rownames(spe), colnames(spe)]
   } else if(method == "Limma"){
-    spe@assays@data$logcounts <- limma::removeBatchEffect(SummarizedExperiment::assay(spe,n_assay),
+    SummarizedExperiment::assay(spe,2) <- limma::removeBatchEffect(SummarizedExperiment::assay(spe,n_assay),
                                                           batch = batch,
                                                           covariates = covariates,
-                                                          design = design)
+                                                          design = design) %>%
+      .[rownames(spe), colnames(spe)]
   }
 
   return(spe)
@@ -155,12 +152,12 @@ geomxBatchCorrection <- function(spe_object, k, factors, NCGs, n_assay = 2,
 
 
 # calculate silhouette score
-getSilhouette <- function(pca_object, spe_object, foiColumn){
+getSilhouette <- function(pca_object, spe, foiColumn){
   # compute euclidean distance
   distm <- stats::dist(pca_object)
 
   # grouping
-  label_by_factors <- SummarizedExperiment::colData(spe_object) %>%
+  label_by_factors <- SummarizedExperiment::colData(spe) %>%
     as.data.frame(optional = TRUE) %>%
     dplyr::select(all_of(foiColumn)) %>%
     rownames_to_column() %>%
@@ -175,24 +172,6 @@ getSilhouette <- function(pca_object, spe_object, foiColumn){
   ss <- mean(si[,3])
 
   return(list(ss, c))
-}
-
-calcPCA <- function(edata, dims) {
-  set.seed(45)
-  maxdim = max(dims)
-  if (requireNamespace("scater") & maxdim < ncol(edata)) {
-    pcdata = scater::calculatePCA(edata, ncomponents = maxdim)
-  } else {
-    pcdata = stats::prcomp(t(edata))
-    pcdata = checkPrecomputedPCA(edata, pcdata)
-  }
-
-  return(pcdata)
-}
-
-int_breaks <- function(x, n = 5) {
-  l <- pretty(x, n)
-  l[abs(l %% 1) < .Machine$double.eps ^ 0.5]
 }
 
 #' Testing multiple K for RUV4 batch correction to find the best K.

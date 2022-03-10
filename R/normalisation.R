@@ -67,12 +67,12 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
   ## TMM
 
   if(method == "TMM"){
-    spe@metadata$norm.factor <- edgeR::calcNormFactors(y)$samples$norm.factors
+   S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y)$samples$norm.factors
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- edgeR::calcNormFactors(y) %>%
+      SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y) %>%
         edgeR::cpm(., log = TRUE)
     } else {
-      spe@assays@data$logcounts <- edgeR::calcNormFactors(y) %>%
+      SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y) %>%
         edgeR::cpm(.)
     }
   }
@@ -81,9 +81,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   if(method == "RPKM"){
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- edgeR::rpkm(y, log = TRUE, prior.count = 0)
+      SummarizedExperiment::assay(spe, 2) <- edgeR::rpkm(y, log = TRUE, prior.count = 0)
     } else {
-      spe@assays@data$logcounts <- edgeR::rpkm(y, log = FALSE, prior.count = 0)
+      SummarizedExperiment::assay(spe, 2) <- edgeR::rpkm(y, log = FALSE, prior.count = 0)
     }
   }
 
@@ -92,9 +92,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   if(method == "TPM"){
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- log(rpkm2tpm(edgeR::rpkm(y))+1, 2)
+      SummarizedExperiment::assay(spe, 2) <- log(rpkm2tpm(edgeR::rpkm(y))+1, 2)
     } else {
-      spe@assays@data$logcounts <- rpkm2tpm(edgeR::rpkm(y))
+      SummarizedExperiment::assay(spe, 2) <- rpkm2tpm(edgeR::rpkm(y))
     }
   }
 
@@ -102,12 +102,12 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
   ## upper quantile
 
   if(method == "upperquartile"){
-    spe@metadata$norm.factor <- edgeR::calcNormFactors(y, method = "upperquartile")$samples$norm.factors
+   S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y, method = "upperquartile")$samples$norm.factors
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- edgeR::calcNormFactors(y, method = "upperquartile") %>%
+      SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y, method = "upperquartile") %>%
         edgeR::cpm(., log = TRUE)
     } else {
-      spe@assays@data$logcounts <- edgeR::calcNormFactors(y, method = "upperquartile") %>%
+      SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y, method = "upperquartile") %>%
         edgeR::cpm(.)
     }
   }
@@ -116,11 +116,11 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
   ## calculating size factor based on geomean
 
   if(method == "sizefactor"){
-    spe@metadata$norm.factor <- calNormCount(spe, log = TRUE)[[2]]
+   S4Vectors::metadata(spe)$norm.factor <- calNormCount(spe, log = TRUE)[[2]]
     if(isTRUE(log)){
-      spe@assays@data$logcounts <- calNormCount(spe, log = TRUE)[[1]]
+      SummarizedExperiment::assay(spe, 2) <- calNormCount(spe, log = TRUE)[[1]]
     } else {
-      spe@assays@data$logcounts <- calNormCount(spe, log = FALSE)[[1]]
+      SummarizedExperiment::assay(spe, 2) <- calNormCount(spe, log = FALSE)[[1]]
     }
   }
 

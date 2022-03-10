@@ -62,10 +62,10 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     orderSamples(., ordannots)
 
   # get removed genes and order by mean expression
-  data <- spe@metadata$genes_rm_logCPM %>%
+  data <- S4Vectors::metadata(spe)$genes_rm_logCPM %>%
     as.data.frame() %>%
     mutate(m = rowMeans(.)) %>%
-    arrange(-.$m) %>%
+    arrange(m) %>%
     .[,sampleorder]
 
   # top N genes to plot
@@ -86,7 +86,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     scale_colour_discrete(na.translate = F) +
     scale_shape_discrete(na.translate = F) +
     facet_wrap(~rowname) +
-    geom_hline(yintercept = spe@metadata$lcpm_threshold, linetype = line_type,
+    geom_hline(yintercept = S4Vectors::metadata(spe)$lcpm_threshold, linetype = line_type,
                cex = line_cex, col = line_col, ) +
     theme_test() +
     theme(axis.text.x = element_blank(),
@@ -107,7 +107,7 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
     as.data.frame() %>%
     rownames_to_column() %>%
     magrittr::set_colnames(c("sample","percent")) %>%
-    ggplot(aes(.$percent)) +
+    ggplot(aes(percent)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +
     xlab("Percentage of non-expressed genes in each sample (%)") +
@@ -118,4 +118,4 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
   return(p2)
 }
 
-utils::globalVariables(c(".","sample","lcpm","rowname"))
+utils::globalVariables(c(".","sample","lcpm","rowname","m","percent"))

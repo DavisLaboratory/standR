@@ -4,10 +4,10 @@
 \alias{findNCGs}
 \title{Get negative control genes from each batch of the data}
 \usage{
-findNCGs(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 200)
+findNCGs(spe, n_assay = 2, batch_name = "SlideName", top_n = 200)
 }
 \arguments{
-\item{spe_object}{A Spatial Experiment object.}
+\item{spe}{A Spatial Experiment object.}
 
 \item{n_assay}{Integer to indicate the nth count table in the assay(spe) to be used.}
 

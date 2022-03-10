@@ -5,19 +5,19 @@
 \title{Batch correction for GeoMX data}
 \usage{
 geomxBatchCorrection(
-  spe_object,
+  spe,
   k,
   factors,
   NCGs,
   n_assay = 2,
   batch,
   covariates = NULL,
-  design = matrix(1, ncol(spe_object), 1),
+  design = matrix(1, ncol(spe), 1),
   method = c("RUV4", "Limma")
 )
 }
 \arguments{
-\item{spe_object}{A Spatial Experiment object.}
+\item{spe}{A Spatial Experiment object.}
 
 \item{k}{The number of unwanted factors to use. Can be 0. This is required for the RUV4 method.}
 

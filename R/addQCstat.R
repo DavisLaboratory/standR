@@ -31,7 +31,7 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
   L <- mean(SummarizedExperiment::colData(spe)$lib_size) * 1e-6
   M <- stats::median(SummarizedExperiment::colData(spe)$lib_size) * 1e-6
   lcpm_threshold <- log2(min_count/M + 2/L)
-  spe@metadata$lcpm_threshold <- lcpm_threshold
+  S4Vectors::metadata(spe)$lcpm_threshold <- lcpm_threshold
 
   ## Feature-wise QC & Filter
   ###### Genes with low count in more than the threshold of the samples will be removed
@@ -45,8 +45,8 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
 
   # remove genes and store the removed genes to metadata
   if(rm_genes == TRUE){
-    spe@metadata$genes_rm_rawCount <- SummarizedExperiment::assay(spe,1)[SummarizedExperiment::rowData(spe)$genes_lowCount_overNsamples,]
-    spe@metadata$genes_rm_logCPM <- SummarizedExperiment::assay(spe,2)[SummarizedExperiment::rowData(spe)$genes_lowCount_overNsamples,]
+    S4Vectors::metadata(spe)$genes_rm_rawCount <- SummarizedExperiment::assay(spe,1)[SummarizedExperiment::rowData(spe)$genes_lowCount_overNsamples,]
+    S4Vectors::metadata(spe)$genes_rm_logCPM <- SummarizedExperiment::assay(spe,2)[SummarizedExperiment::rowData(spe)$genes_lowCount_overNsamples,]
     spe <- spe[!SummarizedExperiment::rowData(spe)$genes_lowCount_overNsamples,]
   }
 

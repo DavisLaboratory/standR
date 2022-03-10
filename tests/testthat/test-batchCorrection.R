@@ -21,7 +21,7 @@ test_that("Testing ruv4 batch correction function", {
 
   spe <- findNCGs(dkd_spe_subset, top_n = 100)
   spe_ruv <- geomxBatchCorrection(spe, k = 3, factors = c("disease_status","region"),
-                                  NCGs = metadata(spe)$NCGs)
+                                  NCGs = S4Vectors::metadata(spe)$NCGs)
 
   expect_identical(dim(spe_ruv), dim(dkd_spe_subset))
   expect_gt(ncol(colData(spe_ruv)), ncol(colData(spe)))

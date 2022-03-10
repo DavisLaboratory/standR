@@ -2,7 +2,18 @@
 #' @importFrom methods is
 NULL
 
+calcPCA <- function(edata, dims) {
+  set.seed(45)
+  maxdim = max(dims)
+  if (requireNamespace("scater") & maxdim < ncol(edata)) {
+    pcdata = scater::calculatePCA(edata, ncomponents = maxdim)
+  } else {
+    pcdata = stats::prcomp(t(edata))
+    pcdata = checkPrecomputedPCA(edata, pcdata)
+  }
 
+  return(pcdata)
+}
 
 bhuvad_theme <- function (rl = 1.1) {
   stopifnot(rl > 0)
