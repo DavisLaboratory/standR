@@ -1,19 +1,3 @@
-#' @import ggplot2
-#' @import patchwork
-NULL
-
-orderSamples <- function(sdata, ordannots) {
-  #add sample IDs
-  sdata$SampleOrderID = seq(nrow(sdata))
-
-  #order samples based on provided annotations
-  sdata = sdata %>%
-    dplyr::group_by(dplyr::across(!!ordannots)) %>%
-    dplyr::arrange(.by_group = TRUE)
-
-  return(sdata$SampleOrderID)
-}
-
 #' Plot gene-wise QC plot
 #'
 #' @param spe A spatial experiment object.

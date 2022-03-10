@@ -1,7 +1,4 @@
-#' @import ggplot2
-#' @importFrom methods is
-NULL
-
+# compuate PCA
 calcPCA <- function(edata, dims) {
   set.seed(45)
   maxdim = max(dims)
@@ -13,22 +10,6 @@ calcPCA <- function(edata, dims) {
   }
 
   return(pcdata)
-}
-
-bhuvad_theme <- function (rl = 1.1) {
-  stopifnot(rl > 0)
-  ggplot2::theme_minimal() +
-    ggplot2::theme(
-      panel.border = element_rect(colour = 'black', fill = NA),
-      panel.grid = element_blank(),
-      axis.title = element_text(size = rel(rl) * 1.1),
-      axis.text = element_text(size = rel(rl)),
-      plot.title = element_text(size = rel(rl) * 1.2),
-      strip.background = element_rect(fill = NA, colour = 'black'),
-      strip.text = element_text(size = rel(rl)),
-      legend.text = element_text(size = rel(rl)),
-      legend.title = element_text(size = rel(rl), face = 'italic')
-    )
 }
 
 #' Compute and plot the results of a PCA analysis on gene expression data

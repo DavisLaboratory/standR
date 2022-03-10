@@ -1,7 +1,3 @@
-#' @import ggplot2
-#' @import patchwork
-NULL
-
 #' Plot Sample-wise QC plot
 #'
 #' @param spe_object A spatial experiment object.

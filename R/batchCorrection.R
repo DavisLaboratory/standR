@@ -80,6 +80,10 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200){
 #' @return A Spatial Experiment object, containing the ruv4-normalised count and normalisation factor.
 #' @export
 #'
+#' @references Gagnon-Bartsch, J. A., Jacob, L., & Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.
+#' @references Ritchie, M. E., Phipson, B., Wu, D. I., Hu, Y., Law, C. W., Shi, W., & Smyth, G. K. (2015). limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic acids research, 43(7), e47-e47.
+
+#'
 #' @examples
 #' data("dkd_spe_subset")
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)

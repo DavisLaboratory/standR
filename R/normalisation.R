@@ -43,6 +43,9 @@ rpkm2tpm <- function(x) {
 #' @return A spatial experiment object, with the second assay being the normalised count matrix.
 #' @export
 #'
+#' @references Robinson, M. D., McCarthy, D. J., & Smyth, G. K. (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26(1), 139-140.
+#' @references Love, M., Anders, S., & Huber, W. (2014). Differential analysis of count data–the DESeq2 package. Genome Biol, 15(550), 10-1186.
+#'
 #' @examples
 #' data("dkd_spe_subset")
 #'

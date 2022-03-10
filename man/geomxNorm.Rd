@@ -30,3 +30,8 @@ spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
 head(SummarizedExperiment::assay(spe_deseqnorm, 2))
 
 }
+\references{
+Robinson, M. D., McCarthy, D. J., & Smyth, G. K. (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26(1), 139-140.
+
+Love, M., Anders, S., & Huber, W. (2014). Differential analysis of count data–the DESeq2 package. Genome Biol, 15(550), 10-1186.
+}

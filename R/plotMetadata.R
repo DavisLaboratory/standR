@@ -1,5 +1,3 @@
-#' @import ggplot2
-NULL
 
 #' Plot the user-defined meta data using alluvium plot
 #'

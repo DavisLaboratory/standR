@@ -1,11 +1,3 @@
-#' @import dplyr
-#' @importFrom tibble rownames_to_column
-#' @importFrom tibble column_to_rownames
-
-# a handy function opposite to %in%
-`%ni` <- Negate(`%in%`)
-
-
 #' Import GeoMX DSP data into a saptial experiment object from file paths
 #'
 #' @param dirPath The folder path to all necessary tsv files.

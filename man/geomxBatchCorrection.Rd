@@ -49,3 +49,8 @@ spe_ruv <- geomxBatchCorrection(spe, k = 3,
                   NCGs = S4Vectors::metadata(spe)$NCGs)
 
 }
+\references{
+Gagnon-Bartsch, J. A., Jacob, L., & Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.
+
+Ritchie, M. E., Phipson, B., Wu, D. I., Hu, Y., Law, C. W., Shi, W., & Smyth, G. K. (2015). limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic acids research, 43(7), e47-e47.
+}
