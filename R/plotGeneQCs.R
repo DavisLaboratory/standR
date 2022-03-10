@@ -55,9 +55,6 @@ plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
 # plot removed genes
 plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
                         line_col, line_cex, text_size, ...){
-
-  . = sample = lcpm = rowname = NULL
-
   # get order
 
   sampleorder <- SummarizedExperiment::colData(spe) %>%
@@ -106,7 +103,6 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
 
 # plot non-expressed gene percentage histogram
 plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
-  . = NULL
   p2 <- SummarizedExperiment::colData(spe)$percentOfLowEprGene %>%
     as.data.frame() %>%
     rownames_to_column() %>%
@@ -122,4 +118,4 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
   return(p2)
 }
 
-
+utils::globalVariables(c(".","sample","lcpm","rowname"))

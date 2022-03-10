@@ -51,8 +51,6 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
                              colnames.as.rownames,
                              coord.colnames){
 
-  . = NULL
-
   # remove the NegProbe gene from the count matrix and save it in the metadata
   if(hasNegProbe == TRUE){
     countdata <- readr::read_tsv(file.path(dirPath, countFile))
@@ -170,3 +168,5 @@ readGeoMxFromDGE <- function(dge_object, spatialCoord = NULL){
                                               spatialCoords = spatialCoord)
 }
 
+
+utils::globalVariables(c("."))

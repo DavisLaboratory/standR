@@ -16,8 +16,6 @@
 #'
 findNCGs <- function(spe_object, n_assay = 2, batch_name = "SlideName", top_n = 200){
 
-  . = samples = count = sd = m = cv = rowname = mean_zscore = NULL
-
   stopifnot(is.numeric(n_assay))
   stopifnot(n_assay <= length(spe_object@assays))
   stopifnot(batch_name %in% colnames(SummarizedExperiment::colData(spe_object)))
@@ -220,8 +218,6 @@ int_breaks <- function(x, n = 5) {
 #'
 findBestK <-function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3, line_col = "black", point_col = "black", text_size = 13){
 
-  k = silhouette = NULL
-
   kdata <- data.frame()
   for(i in seq(maxK)){
     spe_ruv <- geomxBatchCorrection(spe, k = i, factors = factor_of_int, NCGs = NCGs)
@@ -242,5 +238,8 @@ findBestK <-function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_si
 }
 
 
+# in findNCGs function
+utils::globalVariables(c(".","samples","count","sd","m","cv","rowname","mean_zscore"))
 
-
+# in findBestK
+utils::globalVariables(c("k", "silhouette"))

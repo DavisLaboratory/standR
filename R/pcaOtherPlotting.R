@@ -40,8 +40,6 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
   set.seed(44)
 
-  . = NULL
-
   stopifnot(is.numeric(n_dimension))
 
   #compute PCA
@@ -132,8 +130,6 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
                          point_col = "tomato3", line_col = "tomato3",
                          point_size = 2){
 
-  . = rowname = ev = csum = NULL
-
   #compute PCA
   if (is.null(precomputed)) {
     pcdata = calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
@@ -198,8 +194,6 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
                           dims = c(1,2), precomputed = NULL, assay = 1,
                           arrow_x = 0, arrow_y = 0,
                           ...){
-
-  . = rowname = x_end = y_end = NULL
 
   #compute PCA
   if (is.null(precomputed)) {
@@ -266,4 +260,11 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
                              color = "black",
                              size = 3)
 }
+
+#plotScreePCA
+utils::globalVariables(c(".","rowname","ev","csum"))
+
+
+# plotPCAbiplot
+utils::globalVariables(c(".","rowname","x_end","y_end"))
 

@@ -86,10 +86,6 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 #'                            batch_feature_name = "SlideName", c("test1","test2","test3"))
 plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
                                  data_names, colors = NA){
-
-  from = scores = types = NULL
-
-
   # get stat for bio factor
   stat_bio <- lapply(spe_list ,function(x){
     computeClusterEvalStats(x, bio_feature_name)
@@ -135,3 +131,6 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
 
   print(p_bio + p_batch + patchwork::plot_layout(1, 2))
 }
+
+
+utils::globalVariables(c("from","scores","types"))

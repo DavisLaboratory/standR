@@ -21,7 +21,6 @@ plotMetadata <- function(spe_object, column2plot, textsize = 3){
   checkPackages("ggalluvial")
 
   stopifnot(all(column2plot %in% colnames(SummarizedExperiment::colData(spe_object))))
-  x = stratum = alluvium = NULL
 
   #using alluvium plot to visualise user-defined metadata in the data.
   SummarizedExperiment::colData(spe_object) %>%
@@ -39,3 +38,5 @@ plotMetadata <- function(spe_object, column2plot, textsize = 3){
     xlab("Metadata") +
     ylab("Frequency")
 }
+
+utils::globalVariables(c("x","stratum","alluvium"))

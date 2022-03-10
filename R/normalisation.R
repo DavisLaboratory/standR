@@ -59,7 +59,6 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
     stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,sizefactor")
   }
 
-  . <- NULL
   # spe object to dgelist
   spe <- spe_object
 
@@ -128,3 +127,5 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
   return(spe)
 }
 
+
+utils::globalVariables(c("."))

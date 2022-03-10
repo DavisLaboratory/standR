@@ -39,9 +39,6 @@ plotROIQC <- function(spe_object,
                               layout_ncol = 2, layout_nrow = 2,
                               leyout_height = c(0.8, 2.5), layout_width = c(2.5, 0.8),
                               ...){
-
-  . = NULL
-
   stopifnot(x_axis %in% colnames(SummarizedExperiment::colData(spe_object)))
   stopifnot(y_axis %in% colnames(SummarizedExperiment::colData(spe_object)))
 
@@ -102,3 +99,5 @@ plotROIQC <- function(spe_object,
                                                         heights = leyout_height, guides = "collect"))
 }
 
+
+utils::globalVariables(c("."))

@@ -15,8 +15,6 @@
 #' spe_filtered
 #'
 addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_count = 5, design = NULL){
-
-  . = NULL
   spe <- spe_object
 
   stopifnot(nrow(spe)>0)
@@ -31,7 +29,7 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
 
   ## calculate lcpm threshold for a gene to be expressed
   L <- mean(SummarizedExperiment::colData(spe)$lib_size) * 1e-6
-  M <- stats:: median(SummarizedExperiment::colData(spe)$lib_size) * 1e-6
+  M <- stats::median(SummarizedExperiment::colData(spe)$lib_size) * 1e-6
   lcpm_threshold <- log2(min_count/M + 2/L)
   spe@metadata$lcpm_threshold <- lcpm_threshold
 
@@ -58,4 +56,6 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
 
   return(spe)
 }
+
+utils::globalVariables(c("."))
 

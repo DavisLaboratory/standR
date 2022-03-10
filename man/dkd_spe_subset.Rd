@@ -11,7 +11,7 @@ A spatial experiment object with 3000 rows and 70 samples:
 \url{http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/}
 }
 \usage{
-dkd_spe_subset
+data("dkd_spe_subset")
 }
 \description{
 A dataset containing 3000 genes and 70 ROIs

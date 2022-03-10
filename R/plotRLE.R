@@ -90,8 +90,6 @@ pdataRLE_intl <- function(emat, sampord) {
 
 plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
 
-  upper = lower = middle = x = ymin = ymax = NULL
-
   #constant - sample size at which standard plot becomes dense
   dense_thresh = 50
   sce_thresh = 1000
@@ -143,3 +141,5 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
   return(p1)
 }
 
+
+utils::globalVariables(c("upper","lower","middle","x","ymin","ymax"))
