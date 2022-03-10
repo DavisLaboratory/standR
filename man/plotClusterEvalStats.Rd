@@ -35,6 +35,8 @@ data("dkd_spe_subset")
 spe <- scater::runPCA(dkd_spe_subset)
 spe2 <- spe
 spe3 <- spe
-plotClusterEvalStats(list(spe, spe2, spe3), bio_feature_name = "region",
-                           batch_feature_name = "SlideName", c("test1","test2","test3"))
+plotClusterEvalStats(list(spe, spe2, spe3),
+  bio_feature_name = "region",
+  batch_feature_name = "SlideName", c("test1", "test2", "test3")
+)
 }

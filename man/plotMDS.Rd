@@ -39,8 +39,8 @@ a ggplot2 object
 Compute and plot the results of a MDS analysis on gene expression data
 }
 \examples{
-se = emtdata::cursons2018_se()
-dge = emtdata::asDGEList(se)
+se <- emtdata::cursons2018_se()
+dge <- emtdata::asDGEList(se)
 plotMDS(dge, colour = Subline)
 
 }

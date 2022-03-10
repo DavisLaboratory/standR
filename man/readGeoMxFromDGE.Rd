@@ -21,12 +21,12 @@ Import GeoMX DSP data into a saptial experiment object from DGEList object
 # making a simple DGEList object
 ng <- 1000
 ns <- 10
-Counts <- matrix(rnbinom(ng*ns,mu=5,size=2),ng,ns)
+Counts <- matrix(rnbinom(ng * ns, mu = 5, size = 2), ng, ns)
 rownames(Counts) <- 1:ng
-y <- edgeR::DGEList(counts=Counts, group=rep(1:2,each=5))
+y <- edgeR::DGEList(counts = Counts, group = rep(1:2, each = 5))
 
 # transfer into spatial experiment object
-coords <- matrix(rnorm(2*ns),10,2)
+coords <- matrix(rnorm(2 * ns), 10, 2)
 spe <- readGeoMxFromDGE(dge_object = y, spatialCoord = coords)
 spe
 

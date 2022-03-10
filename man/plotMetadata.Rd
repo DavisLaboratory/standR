@@ -22,6 +22,6 @@ Plot the user-defined meta data using alluvium plot
 \examples{
 library(ggalluvial)
 data("dkd_spe_subset")
-plotMetadata(dkd_spe_subset, column2plot = c("SlideName","disease_status","region"))
+plotMetadata(dkd_spe_subset, column2plot = c("SlideName", "disease_status", "region"))
 
 }

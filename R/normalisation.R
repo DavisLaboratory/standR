@@ -1,7 +1,7 @@
 # DEseq2 normalisation
-calNormCount <- function(spe_object, log = TRUE){
+calNormCount <- function(spe_object, log = TRUE) {
   # get raw count
-  count_df <- SummarizedExperiment::assay(spe_object,1)
+  count_df <- SummarizedExperiment::assay(spe_object, 1)
 
   # compute geometric mean
   loggeomeans <- rowMeans(log(count_df))
@@ -12,9 +12,9 @@ calNormCount <- function(spe_object, log = TRUE){
   })
 
   # normalise by size factor
-  norm_count <- t(t(count_df)/sf)
+  norm_count <- t(t(count_df) / sf)
 
-  if(isTRUE(log)){
+  if (isTRUE(log)) {
     lognorm_count <- log2(norm_count + 1)
   } else {
     lognorm_count <- norm_count
@@ -27,8 +27,9 @@ calNormCount <- function(spe_object, log = TRUE){
 
 rpkm2tpm <- function(x) {
   colSumMat <- edgeR::expandAsMatrix(colSums(x, na.rm = TRUE),
-                                     byrow = TRUE,
-                                     dim = dim(x))
+    byrow = TRUE,
+    dim = dim(x)
+  )
   tpm <- x / colSumMat * 1e6
   return(tpm)
 }
@@ -56,9 +57,8 @@ rpkm2tpm <- function(x) {
 #' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
 #' head(SummarizedExperiment::assay(spe_deseqnorm, 2))
 #'
-geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
-
-  if(!(method %in% c("TMM","RPKM","TPM","CPM","upperquartile","sizefactor"))){
+geomxNorm <- function(spe_object, method = "TMM", log = TRUE) {
+  if (!(method %in% c("TMM", "RPKM", "TPM", "CPM", "upperquartile", "sizefactor"))) {
     stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,sizefactor")
   }
 
@@ -69,9 +69,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   ## TMM
 
-  if(method == "TMM"){
-   S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y)$samples$norm.factors
-    if(isTRUE(log)){
+  if (method == "TMM") {
+    S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y)$samples$norm.factors
+    if (isTRUE(log)) {
       SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y) %>%
         edgeR::cpm(., log = TRUE)
     } else {
@@ -82,8 +82,8 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   ## RPKM
 
-  if(method == "RPKM"){
-    if(isTRUE(log)){
+  if (method == "RPKM") {
+    if (isTRUE(log)) {
       SummarizedExperiment::assay(spe, 2) <- edgeR::rpkm(y, log = TRUE, prior.count = 0)
     } else {
       SummarizedExperiment::assay(spe, 2) <- edgeR::rpkm(y, log = FALSE, prior.count = 0)
@@ -93,9 +93,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   ## TPM
 
-  if(method == "TPM"){
-    if(isTRUE(log)){
-      SummarizedExperiment::assay(spe, 2) <- log(rpkm2tpm(edgeR::rpkm(y))+1, 2)
+  if (method == "TPM") {
+    if (isTRUE(log)) {
+      SummarizedExperiment::assay(spe, 2) <- log(rpkm2tpm(edgeR::rpkm(y)) + 1, 2)
     } else {
       SummarizedExperiment::assay(spe, 2) <- rpkm2tpm(edgeR::rpkm(y))
     }
@@ -104,9 +104,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   ## upper quantile
 
-  if(method == "upperquartile"){
-   S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y, method = "upperquartile")$samples$norm.factors
-    if(isTRUE(log)){
+  if (method == "upperquartile") {
+    S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y, method = "upperquartile")$samples$norm.factors
+    if (isTRUE(log)) {
       SummarizedExperiment::assay(spe, 2) <- edgeR::calcNormFactors(y, method = "upperquartile") %>%
         edgeR::cpm(., log = TRUE)
     } else {
@@ -118,9 +118,9 @@ geomxNorm <- function(spe_object, method = "TMM", log = TRUE){
 
   ## calculating size factor based on geomean
 
-  if(method == "sizefactor"){
-   S4Vectors::metadata(spe)$norm.factor <- calNormCount(spe, log = TRUE)[[2]]
-    if(isTRUE(log)){
+  if (method == "sizefactor") {
+    S4Vectors::metadata(spe)$norm.factor <- calNormCount(spe, log = TRUE)[[2]]
+    if (isTRUE(log)) {
       SummarizedExperiment::assay(spe, 2) <- calNormCount(spe, log = TRUE)[[1]]
     } else {
       SummarizedExperiment::assay(spe, 2) <- calNormCount(spe, log = FALSE)[[1]]

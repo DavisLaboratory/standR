@@ -25,5 +25,4 @@ test_that("Testing normalisation function", {
 
   # check weird parameter input
   expect_error(geomxNorm(dkd_spe_subset, method = "x"))
-
 })

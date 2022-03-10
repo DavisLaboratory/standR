@@ -24,21 +24,22 @@
 #' spe <- addPerROIQC(dkd_spe_subset)
 #' plotGeneQC(spe)
 plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
-                           line_type = "dashed", line_col = "darkred", line_cex = 1,
-                           hist_col = "black", hist_fill = "skyblue", bin_num = 30,
-                           text_size = 13, layout_ncol = 1, layout_nrow = 2,
-                           layout_height = c(1, .4), ...){
-  p1 <- suppressWarnings(plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size,...))
+                       line_type = "dashed", line_col = "darkred", line_cex = 1,
+                       hist_col = "black", hist_fill = "skyblue", bin_num = 30,
+                       text_size = 13, layout_ncol = 1, layout_nrow = 2,
+                       layout_height = c(1, .4), ...) {
+  p1 <- suppressWarnings(plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...))
   p2 <- suppressWarnings(plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size))
 
   suppressWarnings(print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
-                                         heights = layout_height)))
+    heights = layout_height
+  )))
 }
 
 
 # plot removed genes
 plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
-                        line_col, line_cex, text_size, ...){
+                        line_col, line_cex, text_size, ...) {
   # get order
 
   sampleorder <- SummarizedExperiment::colData(spe) %>%
@@ -50,35 +51,39 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     as.data.frame() %>%
     mutate(m = rowMeans(.)) %>%
     arrange(m) %>%
-    .[,sampleorder]
+    .[, sampleorder]
 
   # top N genes to plot
   top_n <- min(nrow(data), top_n)
 
-  #plotting
+  # plotting
 
-  aesmap = rlang::enquos(...)
+  aesmap <- rlang::enquos(...)
 
-  p1 <- data[1:top_n,] %>%
+  p1 <- data[1:top_n, ] %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     tidyr::gather(sample, lcpm, -rowname) %>%
     left_join(as.data.frame(SummarizedExperiment::colData(spe)) %>%
-                rownames_to_column(), by = c("sample"="rowname")) %>%
+      rownames_to_column(), by = c("sample" = "rowname")) %>%
     ggplot(aes(sample, lcpm, !!!aesmap)) +
     geom_point(size = point_size, alpha = .5) +
     scale_colour_discrete(na.translate = F) +
     scale_shape_discrete(na.translate = F) +
     facet_wrap(~rowname) +
-    geom_hline(yintercept = S4Vectors::metadata(spe)$lcpm_threshold, linetype = line_type,
-               cex = line_cex, col = line_col, ) +
+    geom_hline(
+      yintercept = S4Vectors::metadata(spe)$lcpm_threshold, linetype = line_type,
+      cex = line_cex, col = line_col,
+    ) +
     theme_test() +
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          text = element_text(size = text_size)) +
-    xlab(paste0("Samples (n=", ncol(spe),")")) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      text = element_text(size = text_size)
+    ) +
+    xlab(paste0("Samples (n=", ncol(spe), ")")) +
     ylab("Expression (logCPM)") +
-    ggtitle(paste0("Removed genes (top",as.integer(top_n),")"))
+    ggtitle(paste0("Removed genes (top", as.integer(top_n), ")"))
 
   return(p1)
 }
@@ -90,7 +95,7 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
   p2 <- SummarizedExperiment::colData(spe)$percentOfLowEprGene %>%
     as.data.frame() %>%
     rownames_to_column() %>%
-    magrittr::set_colnames(c("sample","percent")) %>%
+    magrittr::set_colnames(c("sample", "percent")) %>%
     ggplot(aes(percent)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +
@@ -102,4 +107,4 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
   return(p2)
 }
 
-utils::globalVariables(c(".","sample","lcpm","rowname","m","percent"))
+utils::globalVariables(c(".", "sample", "lcpm", "rowname", "m", "percent"))

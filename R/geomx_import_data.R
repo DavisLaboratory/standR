@@ -20,19 +20,21 @@
 #' spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'
 readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
-                              hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
-                              colnames.as.rownames = c("TargetName","SegmentDisplayName","TargetName"),
-                              coord.colnames = c("ROICoordinateX", "ROICoordinateY")){
+                      hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
+                      colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
+                      coord.colnames = c("ROICoordinateX", "ROICoordinateY")) {
   stopifnot(file.exists(file.path(dirPath, countFile)))
   stopifnot(file.exists(file.path(dirPath, sampleAnnoFile)))
-  if(!is.na(featureAnnoFile)){
+  if (!is.na(featureAnnoFile)) {
     stopifnot(file.exists(file.path(dirPath, featureAnnoFile)))
   }
   stopifnot(is.character(NegProbeName))
   stopifnot(length(colnames.as.rownames) == 3)
   stopifnot(length(coord.colnames) == 2)
-  spe <- suppressMessages(geomx_import_fun(dirPath, countFile, sampleAnnoFile, featureAnnoFile,
-                                       hasNegProbe, NegProbeName, colnames.as.rownames, coord.colnames))
+  spe <- suppressMessages(geomx_import_fun(
+    dirPath, countFile, sampleAnnoFile, featureAnnoFile,
+    hasNegProbe, NegProbeName, colnames.as.rownames, coord.colnames
+  ))
   return(spe)
 }
 
@@ -41,28 +43,28 @@ readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
 geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile,
                              hasNegProbe, NegProbeName,
                              colnames.as.rownames,
-                             coord.colnames){
+                             coord.colnames) {
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
-  if(hasNegProbe == TRUE){
+  if (hasNegProbe == TRUE) {
     countdata <- readr::read_tsv(file.path(dirPath, countFile))
     # raw count without negprobes
     stopifnot(colnames.as.rownames[1] %in% colnames(countdata)) # make sure count data have the gene column name as pre-defined, such as TargetName.
-    stopifnot(NegProbeName %in% as.matrix(countdata[,colnames.as.rownames[1]])) # make sure the name of negprobe is in the gene column of count data.
+    stopifnot(NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])) # make sure the name of negprobe is in the gene column of count data.
     countdata_filtered <- countdata %>% # filter the count data, remove the negprobe.
       dplyr::filter(!!rlang::sym(colnames.as.rownames[1]) != NegProbeName) %>%
       tibble::column_to_rownames(colnames.as.rownames[1])
 
     # gene meta without negprobes
-    if(!is.na(featureAnnoFile)){
+    if (!is.na(featureAnnoFile)) {
       genemeta <- readr::read_tsv(file.path(dirPath, featureAnnoFile))
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
       genemeta_filtered <- genemeta %>%
         filter(!!rlang::sym(colnames.as.rownames[3]) != NegProbeName) %>%
         tibble::column_to_rownames(colnames.as.rownames[3]) %>%
-        .[rownames(countdata_filtered),] # arrange the gene meta, as the same order as count table.
+        .[rownames(countdata_filtered), ] # arrange the gene meta, as the same order as count table.
     } else {
-      genemeta_filtered <- data.frame(Type = rep("gene",nrow(countdata_filtered)))
+      genemeta_filtered <- data.frame(Type = rep("gene", nrow(countdata_filtered)))
     }
 
     # sample meta
@@ -70,7 +72,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta)) # make sure column name is there.
     samplemeta_filtered <- samplemeta %>%
       tibble::column_to_rownames(colnames.as.rownames[2]) %>%
-      .[colnames(countdata_filtered),] # arrange acoording to count table.
+      .[colnames(countdata_filtered), ] # arrange acoording to count table.
 
     # negprobe raw count
     negprobecount <- countdata %>%
@@ -83,14 +85,17 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 
     # output spe
     spe <- SpatialExperiment::SpatialExperiment(
-      assay = list(counts = countdata_filtered,
-                   logcounts = countdata_filtered_lcpm),
+      assay = list(
+        counts = countdata_filtered,
+        logcounts = countdata_filtered_lcpm
+      ),
       colData = samplemeta_filtered,
       rowData = genemeta_filtered,
       metadata = list(NegProbes = negprobecount),
       spatialCoords = samplemeta_filtered %>%
         dplyr::select(coord.colnames) %>%
-        as.matrix())
+        as.matrix()
+    )
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
     # raw count
@@ -99,32 +104,36 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
     countdata <- countdata %>%
       tibble::column_to_rownames(colnames.as.rownames[1])
     # gene meta check
-    if(!is.na(featureAnnoFile)){
-      gene_meta <-  readr::read_tsv(file.path(dirPath, featureAnnoFile))%>%
+    if (!is.na(featureAnnoFile)) {
+      gene_meta <- readr::read_tsv(file.path(dirPath, featureAnnoFile)) %>%
         tibble::column_to_rownames(colnames.as.rownames[3]) %>%
-        .[rownames(countdata),]
+        .[rownames(countdata), ]
     } else {
-      gene_meta <- data.frame(Type = rep("gene",nrow(countdata)))
+      gene_meta <- data.frame(Type = rep("gene", nrow(countdata)))
     }
 
     # sample meta
     samplemeta <- readr::read_tsv(file.path(dirPath, sampleAnnoFile))
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
-    samplemeta<- samplemeta %>%
+    samplemeta <- samplemeta %>%
       tibble::column_to_rownames(colnames.as.rownames[2]) %>%
-      .[colnames(countdata),]
+      .[colnames(countdata), ]
     # negprobe raw count
     countdata_lcpm <- countdata %>%
       edgeR::cpm(log = TRUE)
 
 
-    spe <- SpatialExperiment::SpatialExperiment(assays = list(counts = countdata,
-                                                              logcounts = countdata_lcpm),
-                                                colData = samplemeta,
-                                                rowData = gene_meta,
-                                                spatialCoords = samplemeta %>%
-                                                  dplyr::select(c(coord.colnames)) %>%
-                                                  as.matrix())
+    spe <- SpatialExperiment::SpatialExperiment(
+      assays = list(
+        counts = countdata,
+        logcounts = countdata_lcpm
+      ),
+      colData = samplemeta,
+      rowData = gene_meta,
+      spatialCoords = samplemeta %>%
+        dplyr::select(c(coord.colnames)) %>%
+        as.matrix()
+    )
   }
   return(spe)
 }
@@ -143,21 +152,25 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 #' # making a simple DGEList object
 #' ng <- 1000
 #' ns <- 10
-#' Counts <- matrix(rnbinom(ng*ns,mu=5,size=2),ng,ns)
+#' Counts <- matrix(rnbinom(ng * ns, mu = 5, size = 2), ng, ns)
 #' rownames(Counts) <- 1:ng
-#' y <- edgeR::DGEList(counts=Counts, group=rep(1:2,each=5))
+#' y <- edgeR::DGEList(counts = Counts, group = rep(1:2, each = 5))
 #'
 #' # transfer into spatial experiment object
-#' coords <- matrix(rnorm(2*ns),10,2)
+#' coords <- matrix(rnorm(2 * ns), 10, 2)
 #' spe <- readGeoMxFromDGE(dge_object = y, spatialCoord = coords)
 #' spe
 #'
-readGeoMxFromDGE <- function(dge_object, spatialCoord = NULL){
-  spe <- SpatialExperiment::SpatialExperiment(assays = list(counts = dge_object$counts,
-                                                            logcounts = edgeR::cpm(dge_object, log = TRUE)),
-                                              colData = dge_object$samples,
-                                              rowData = dge_object$genes,
-                                              spatialCoords = spatialCoord)
+readGeoMxFromDGE <- function(dge_object, spatialCoord = NULL) {
+  spe <- SpatialExperiment::SpatialExperiment(
+    assays = list(
+      counts = dge_object$counts,
+      logcounts = edgeR::cpm(dge_object, log = TRUE)
+    ),
+    colData = dge_object$samples,
+    rowData = dge_object$genes,
+    spatialCoords = spatialCoord
+  )
 }
 
 

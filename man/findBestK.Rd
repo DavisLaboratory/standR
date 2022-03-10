@@ -44,7 +44,9 @@ Testing multiple K for RUV4 batch correction to find the best K.
 \examples{
 data("dkd_spe_subset")
 spe <- findNCGs(dkd_spe_subset, top_n = 100)
-findBestK(spe, factor_of_int = c("disease_status"),
-         factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs)
+findBestK(spe,
+  factor_of_int = c("disease_status"),
+  factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs
+)
 
 }

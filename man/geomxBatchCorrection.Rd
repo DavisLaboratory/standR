@@ -44,9 +44,11 @@ Batch correction for GeoMX data
 \examples{
 data("dkd_spe_subset")
 spe <- findNCGs(dkd_spe_subset, top_n = 100)
-spe_ruv <- geomxBatchCorrection(spe, k = 3,
-                  factors = c("disease_status","region"),
-                  NCGs = S4Vectors::metadata(spe)$NCGs)
+spe_ruv <- geomxBatchCorrection(spe,
+  k = 3,
+  factors = c("disease_status", "region"),
+  NCGs = S4Vectors::metadata(spe)$NCGs
+)
 
 }
 \references{

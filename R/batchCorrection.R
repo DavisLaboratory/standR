@@ -14,8 +14,7 @@
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)
 #' S4Vectors::metadata(spe)$negGenes
 #'
-findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200){
-
+findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   stopifnot(is.numeric(n_assay))
   stopifnot(n_assay <= length(SummarizedExperiment::assayNames(spe)))
   stopifnot(batch_name %in% colnames(SummarizedExperiment::colData(spe)))
@@ -23,38 +22,42 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200){
 
   # compute coefficient of variance for each batch
   gene_with_mzscore <- suppressMessages(SummarizedExperiment::assay(spe, 2) %>%
-                                          as.data.frame() %>%
-                                          rownames_to_column() %>%
-                                          tidyr::gather(samples, count, -rowname) %>%
-                                          left_join(SummarizedExperiment::colData(spe) %>%
-                                                      as.data.frame(optional = TRUE) %>%
-                                                      dplyr::select(c(batch_name)) %>%
-                                                      rownames_to_column(),
-                                                    by = c("samples"="rowname")) %>%
-                                          split( ., f = .[,all_of(batch_name)]) %>% # split data into list of batches
-                                          lapply(., function(x)
-                                            x %>%
-                                              tidyr::spread(samples, count) %>%
-                                              dplyr::select(-batch_name) %>%
-                                              column_to_rownames("rowname") %>%
-                                              mutate(sd = apply(., 1, stats::sd),
-                                                     m = rowMeans(.),
-                                                     cv = log(100*sqrt(exp(sd^2)-1))) %>% # compute log cv
-                                              dplyr::select(cv)) %>%
-                                          bind_cols() %>%
-                                          magrittr::set_colnames(paste0("cv",seq(ncol(.)))) %>%
-                                          scale() %>% # compute z-score
-                                          as.data.frame() %>%
-                                          mutate(mean_zscore = rowMeans(.)) %>%
-                                          dplyr::select(mean_zscore))
+    as.data.frame() %>%
+    rownames_to_column() %>%
+    tidyr::gather(samples, count, -rowname) %>%
+    left_join(SummarizedExperiment::colData(spe) %>%
+      as.data.frame(optional = TRUE) %>%
+      dplyr::select(c(batch_name)) %>%
+      rownames_to_column(),
+    by = c("samples" = "rowname")
+    ) %>%
+    split(., f = .[, all_of(batch_name)]) %>% # split data into list of batches
+    lapply(., function(x) {
+      x %>%
+        tidyr::spread(samples, count) %>%
+        dplyr::select(-batch_name) %>%
+        column_to_rownames("rowname") %>%
+        mutate(
+          sd = apply(., 1, stats::sd),
+          m = rowMeans(.),
+          cv = log(100 * sqrt(exp(sd^2) - 1))
+        ) %>% # compute log cv
+        dplyr::select(cv)
+    }) %>%
+    bind_cols() %>%
+    magrittr::set_colnames(paste0("cv", seq(ncol(.)))) %>%
+    scale() %>% # compute z-score
+    as.data.frame() %>%
+    mutate(mean_zscore = rowMeans(.)) %>%
+    dplyr::select(mean_zscore))
 
-  SummarizedExperiment::rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe),]
+  SummarizedExperiment::rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe), ]
   SummarizedExperiment::rowData(spe)$mean_expr <- SummarizedExperiment::assay(spe, 2) %>% # get mean expression
     as.data.frame() %>%
     mutate(m = rowMeans(.)) %>%
     pull(., "m")
 
-  negative.ctrl.genes <- gene_with_mzscore %>%  # arrange by z-score, top N genes as negative control genes
+  negative.ctrl.genes <- gene_with_mzscore %>% # arrange by z-score, top N genes as negative control genes
     arrange(mean_zscore) %>%
     rownames() %>%
     .[1:top_n]
@@ -87,30 +90,31 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200){
 #' @examples
 #' data("dkd_spe_subset")
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)
-#' spe_ruv <- geomxBatchCorrection(spe, k = 3,
-#'                   factors = c("disease_status","region"),
-#'                   NCGs = S4Vectors::metadata(spe)$NCGs)
+#' spe_ruv <- geomxBatchCorrection(spe,
+#'   k = 3,
+#'   factors = c("disease_status", "region"),
+#'   NCGs = S4Vectors::metadata(spe)$NCGs
+#' )
 #'
 geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
-                                 batch, covariates = NULL, design = matrix(1,ncol(spe),1),
-                                 method = c("RUV4","Limma")){
-
-  if(length(method) == 2){
-    method = "RUV4"
+                                 batch, covariates = NULL, design = matrix(1, ncol(spe), 1),
+                                 method = c("RUV4", "Limma")) {
+  if (length(method) == 2) {
+    method <- "RUV4"
   } else {
-    stopifnot(method %in% c("RUV4","Limma"))
+    stopifnot(method %in% c("RUV4", "Limma"))
     stopifnot(length(method) == 1)
   }
 
-  if(method == "RUV4"){
+  if (method == "RUV4") {
     k <- as.integer(k)
 
-    stopifnot(k>0)
+    stopifnot(k > 0)
 
     # get count matrix, and transpose
-    tmat <- SummarizedExperiment::assay(spe,n_assay) %>%
+    tmat <- SummarizedExperiment::assay(spe, n_assay) %>%
       as.matrix() %>%
-      t
+      t()
 
     stopifnot(all(factors %in% colnames(SummarizedExperiment::colData(spe))))
 
@@ -123,31 +127,33 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
 
     # run ruv4
     ruv.out <- ruv::RUV4(tmat,
-                         test,
-                         ctl = rownames(spe) %in% NCGs,
-                         k = k, Z = NULL)
+      test,
+      ctl = rownames(spe) %in% NCGs,
+      k = k, Z = NULL
+    )
 
     # store results
     ruv_w <- ruv.out$W %>%
       as.data.frame() %>%
-      magrittr::set_colnames(paste0("ruv_W",seq(k)))
+      magrittr::set_colnames(paste0("ruv_W", seq(k)))
 
-    for(i in seq(ncol(ruv_w))){
+    for (i in seq(ncol(ruv_w))) {
       n <- colnames(ruv_w)[i]
-      #print(n)
-      SummarizedExperiment::colData(spe)[,n] <- ruv_w[,i]
+      # print(n)
+      SummarizedExperiment::colData(spe)[, n] <- ruv_w[, i]
     }
 
     summary <- ruv::ruv_summary(tmat, ruv.out)
 
-    ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") %>% t
+    ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") %>% t()
 
-    SummarizedExperiment::assay(spe,2) <- ruv_norm_count[rownames(spe), colnames(spe)]
-  } else if(method == "Limma"){
-    SummarizedExperiment::assay(spe,2) <- limma::removeBatchEffect(SummarizedExperiment::assay(spe,n_assay),
-                                                          batch = batch,
-                                                          covariates = covariates,
-                                                          design = design) %>%
+    SummarizedExperiment::assay(spe, 2) <- ruv_norm_count[rownames(spe), colnames(spe)]
+  } else if (method == "Limma") {
+    SummarizedExperiment::assay(spe, 2) <- limma::removeBatchEffect(SummarizedExperiment::assay(spe, n_assay),
+      batch = batch,
+      covariates = covariates,
+      design = design
+    ) %>%
       .[rownames(spe), colnames(spe)]
   }
 
@@ -156,7 +162,7 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
 
 
 # calculate silhouette score
-getSilhouette <- function(pca_object, spe, foiColumn){
+getSilhouette <- function(pca_object, spe, foiColumn) {
   # compute euclidean distance
   distm <- stats::dist(pca_object)
 
@@ -173,7 +179,7 @@ getSilhouette <- function(pca_object, spe, foiColumn){
   # calculate silhouette score
   si <- cluster::silhouette(c, distm)
 
-  ss <- mean(si[,3])
+  ss <- mean(si[, 3])
 
   return(list(ss, c))
 }
@@ -196,15 +202,16 @@ getSilhouette <- function(pca_object, spe, foiColumn){
 #' @examples
 #' data("dkd_spe_subset")
 #' spe <- findNCGs(dkd_spe_subset, top_n = 100)
-#' findBestK(spe, factor_of_int = c("disease_status"),
-#'          factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs)
+#' findBestK(spe,
+#'   factor_of_int = c("disease_status"),
+#'   factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs
+#' )
 #'
-findBestK <-function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3, line_col = "black", point_col = "black", text_size = 13){
-
+findBestK <- function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3, line_col = "black", point_col = "black", text_size = 13) {
   kdata <- data.frame()
-  for(i in seq(maxK)){
+  for (i in seq(maxK)) {
     spe_ruv <- geomxBatchCorrection(spe, k = i, factors = factor_of_int, NCGs = NCGs)
-    pca_object <- calcPCA(SummarizedExperiment::assay(spe_ruv, 2), dims = c(1,2))
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_ruv, 2), dims = c(1, 2))
     ss <- getSilhouette(pca_object, spe_ruv, foiColumn = factor_batch)[[1]]
     kdata <- rbind(kdata, data.frame("k" = i, "silhouette" = ss))
   }
@@ -222,7 +229,7 @@ findBestK <-function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_si
 
 
 # in findNCGs function
-utils::globalVariables(c(".","samples","count","sd","m","cv","rowname","mean_zscore"))
+utils::globalVariables(c(".", "samples", "count", "sd", "m", "cv", "rowname", "mean_zscore"))
 
 # in findBestK
 utils::globalVariables(c("k", "silhouette"))
