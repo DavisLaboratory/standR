@@ -100,11 +100,11 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      colFun <- ExperimentList::colWithExperimentData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      colFun <- SummarizedExperiment::colData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
     }
-    sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -146,11 +146,11 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      colFun <- ExperimentList::colWithExperimentData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      colFun <- SummarizedExperiment::colData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
     }
-    sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -169,11 +169,11 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      colFun <- ExperimentList::colWithExperimentData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      colFun <- SummarizedExperiment::colData
+      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
     }
-    sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)

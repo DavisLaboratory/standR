@@ -65,13 +65,14 @@ setMethod(
   signature("SummarizedExperiment", "ANY"),
   function(edata, ordannots, assay = 1, ...) {
     isSCE <- is(edata, "SingleCellExperiment")
-    if (is(edata, "ExperimentList")) {
-      cdataFun <- ExperimentList::colWithExperimentData
-    } else {
-      cdataFun <- SummarizedExperiment::colData
-    }
+    
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(cdataFun(edata), optional = TRUE)
+    if (is(edata, "ExperimentList")) {
+      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
+    } else {
+      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+    }
+
     # extract expression data (and transform)
     edata <- SummarizedExperiment::assay(edata, i = assay)
     # create data structure
