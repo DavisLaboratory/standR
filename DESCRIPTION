@@ -42,7 +42,6 @@ Imports:
     Biobase,
     BiocGenerics,
     grDevices,
-    ExperimentList,
     stats,
     methods
 Suggests:
