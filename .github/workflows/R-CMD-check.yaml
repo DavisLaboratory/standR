@@ -46,18 +46,16 @@ jobs:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
     container: ${{ matrix.config.cont }}
-    continue-on-error: ${{ matrix.config.allow_failure }}
     ## Environment variables unique to this job.
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: '4.2', bioc: '3.15', allow_failure: false, cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
-          - { os: macOS-latest, r: '4.1', bioc: '3.14', allow_failure: false}
-          - { os: windows-latest, r: '4.1', bioc: '3.14', allow_failure: true}
-          ## Check https://github.com/r-lib/actions/tree/master/examples
-          ## for examples using the http-user-agent
+          - { os: ubuntu-latest, r: 'devel', bioc: '3.15', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: ubuntu-latest, r: '4.1', bioc: '3.14', cont: "bioconductor/bioconductor_docker:RELEASE_3_14", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: macOS-latest, r: '4.1', bioc: '3.14'}
+          - { os: windows-latest, r: '4.1', bioc: '3.14'}
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
@@ -75,7 +73,6 @@ jobs:
         run: |
           mkdir /__w/_temp/Library
           echo ".libPaths('/__w/_temp/Library')" > ~/.Rprofile
-
       ## Most of these steps are the same as the ones in
       ## https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml
       ## If they update their steps, we will also need to update ours.
@@ -88,7 +85,6 @@ jobs:
         uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
 
       ## pandoc is already included in the Bioconductor docker images
       - name: Setup pandoc from r-lib
@@ -101,21 +97,21 @@ jobs:
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
 
-      - name: Restore R package cache
+      - name: Cache R packages
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os != 'Linux'"
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-4.1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-4.1-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-
 
       - name: Cache R packages on Linux
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "
         uses: actions/cache@v2
         with:
           path: /home/runner/work/_temp/Library
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-4.1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-4.1-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-
 
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
@@ -123,27 +119,19 @@ jobs:
           sysreqs=$(Rscript -e 'cat("apt-get update -y && apt-get install -y", paste(gsub("apt-get install -y ", "", remotes::system_requirements("ubuntu", "20.04")), collapse = " "))')
           echo $sysreqs
           sudo -s eval "$sysreqs"
-
       - name: Install macOS system dependencies
         if: matrix.config.os == 'macOS-latest'
         run: |
           ## Enable installing XML from source if needed
           brew install libxml2
           echo "XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config" >> $GITHUB_ENV
-
           ## Required to install magick as noted at
           ## https://github.com/r-lib/usethis/commit/f1f1e0d10c1ebc75fd4c18fa7e2de4551fd9978f#diff-9bfee71065492f63457918efcd912cf2
           brew install imagemagick@6
-
           ## For textshaping, required by ragg, and required by pkgdown
           brew install harfbuzz fribidi
-
           ## For installing usethis's dependency gert
           brew install libgit2
-
-          ## Required for tcltk
-          brew install xquartz --cask
-
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'
         run: |
@@ -158,7 +146,7 @@ jobs:
 
       - name: Set BiocVersion
         run: |
-          BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE, force = TRUE)
+          BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE)
         shell: Rscript {0}
 
       - name: Install dependencies pass 1
@@ -169,38 +157,22 @@ jobs:
           ## https://stat.ethz.ch/pipermail/bioc-devel/2020-April/016675.html
           ## https://github.com/r-lib/remotes/issues/296
           ## Ideally, all dependencies should get installed in the first pass.
-
-          ## Set the repos source depending on the OS
-          ## Alternatively use https://storage.googleapis.com/bioconductor_docker/packages/
-          ## though based on https://bit.ly/bioc2021-package-binaries
-          ## the Azure link will be the main one going forward.
-          gha_repos <- if(
-              .Platform$OS.type == "unix" && Sys.info()["sysname"] != "Darwin"
-          ) c(
-              "AnVIL" = "https://bioconductordocker.blob.core.windows.net/packages/3.14/bioc",
-              BiocManager::repositories()
-              ) else BiocManager::repositories()
-
-          ## For running the checks
-          message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
-          install.packages(c("rcmdcheck", "BiocCheck"), repos = gha_repos)
-
           ## Pass #1 at installing dependencies
-          ## This pass uses AnVIL-powered fast binaries
-          ## details at https://github.com/nturaga/bioc2021-bioconductor-binaries
-          ## The speed gains only apply to the docker builds.
           message(paste('****', Sys.time(), 'pass number 1 at installing dependencies: local dependencies ****'))
-          remotes::install_local(dependencies = TRUE, repos = gha_repos, build_vignettes = FALSE, upgrade = TRUE)
+          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE)
         continue-on-error: true
         shell: Rscript {0}
 
       - name: Install dependencies pass 2
         run: |
           ## Pass #2 at installing dependencies
-          ## This pass does not use AnVIL and will thus update any packages
-          ## that have seen been updated in Bioconductor
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
-          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
+          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE)
+          
+          ## For running the checks
+          message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
+          remotes::install_cran("rcmdcheck")
+          BiocManager::install("BiocCheck")
         shell: Rscript {0}
 
       - name: Install BiocGenerics
@@ -211,15 +183,15 @@ jobs:
         shell: Rscript {0}
 
       - name: Install covr
-        if: github.ref == 'refs/heads/main' && env.run_covr == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
         run: |
           remotes::install_cran("covr")
         shell: Rscript {0}
 
-      - name: Install pkgdown
-        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+      - name: Install pkgdown and deps
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pkgdown-test' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
         run: |
-          remotes::install_github("r-lib/pkgdown")
+          remotes::install_cran("pkgdown")
         shell: Rscript {0}
 
       - name: Session info
@@ -232,12 +204,10 @@ jobs:
       - name: Run CMD check
         env:
           _R_CHECK_CRAN_INCOMING_: false
-          DISPLAY: 99.0
         run: |
-          options(crayon.enabled = TRUE)
           rcmdcheck::rcmdcheck(
-              args = c("--no-manual", "--no-vignettes", "--timings"),
-              build_args = c("--no-manual", "--keep-empty-dirs", "--no-resave-data"),
+              args = c("--no-build-vignettes", "--no-manual", "--timings"),
+              build_args = c("--no-manual", "--no-resave-data"),
               error_on = "warning",
               check_dir = "check"
           )
@@ -267,28 +237,32 @@ jobs:
         shell: Rscript {0}
 
       - name: Test coverage
-        if: github.ref == 'refs/heads/main' && env.run_covr == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
         run: |
-          covr::codecov()
+          covr::codecov(type="all", commentDontrun=FALSE)
         shell: Rscript {0}
 
       - name: Install package
-        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
         run: R CMD INSTALL .
 
-      - name: Build and deploy pkgdown site
-        if: github.ref == 'refs/heads/main' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+      - name: Deploy package
+        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
           Rscript -e "pkgdown::deploy_to_branch(new_process = FALSE)"
         shell: bash {0}
+        ## Note that you need to run pkgdown::deploy_to_branch(new_process = FALSE)
+        ## at least one locally before this will work. This creates the gh-pages
+        ## branch (erasing anything you haven't version controlled!) and
+        ## makes the git history recognizable by pkgdown.
 
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@master
         with:
-          name: ${{ runner.os }}-biocversion-devel-r-4.1-results
+          name: ${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-results
           path: check
 
       - uses: docker/build-push-action@v1
