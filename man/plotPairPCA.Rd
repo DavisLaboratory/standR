@@ -8,7 +8,7 @@ plotPairPCA(
   spe_object,
   n_dimension = 3,
   precomputed = NULL,
-  assay = 1,
+  assay = 2,
   title = NA,
   title.size = 14,
   ...

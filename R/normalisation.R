@@ -57,7 +57,12 @@ rpkm2tpm <- function(x) {
 #' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
 #' head(SummarizedExperiment::assay(spe_deseqnorm, 2))
 #'
-geomxNorm <- function(spe_object, method = "TMM", log = TRUE) {
+geomxNorm <- function(spe_object, method = c("TMM","RPKM","TPM","CPM",
+                                             "upperquartile","sizefactor"),
+                      log = TRUE) {
+
+  method = match.arg(method)
+
   if (!(method %in% c("TMM", "RPKM", "TPM", "CPM", "upperquartile", "sizefactor"))) {
     stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,sizefactor")
   }

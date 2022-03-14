@@ -60,7 +60,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
 
   aesmap <- rlang::enquos(...)
 
-  p1 <- data[1:top_n, ] %>%
+  data[1:top_n, ] %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     tidyr::gather(sample, lcpm, -rowname) %>%
@@ -85,14 +85,13 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     ylab("Expression (logCPM)") +
     ggtitle(paste0("Removed genes (top", as.integer(top_n), ")"))
 
-  return(p1)
 }
 
 
 
 # plot non-expressed gene percentage histogram
 plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
-  p2 <- SummarizedExperiment::colData(spe)$percentOfLowEprGene %>%
+  SummarizedExperiment::colData(spe)$percentOfLowEprGene %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     magrittr::set_colnames(c("sample", "percent")) %>%
@@ -104,7 +103,6 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
     theme(text = element_text(size = text_size)) +
     ggtitle("Distribution")
 
-  return(p2)
 }
 
 utils::globalVariables(c(".", "sample", "lcpm", "rowname", "m", "percent"))

@@ -31,25 +31,25 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' plotPairPCA(dkd_spe_subset)
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
-                        assay = 1, title = NA, title.size = 14, ...) {
+                        assay = 2, title = NA, title.size = 14, ...) {
   set.seed(44)
 
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
   if (is.null(precomputed)) {
-    pcdata <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
   } else {
-    pcdata <- checkPrecomputedPCA(spe_object, precomputed)
+    pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
-
-  pca_object <- pcdata
 
   n <- n_dimension
 
   PCsToPlot <- expand.grid.rmdup(1:n, 1:n) # get pairs of PCs
 
   m <- matrix(seq((n - 1)^2), n - 1, n - 1, byrow = TRUE) # make position matrix
+
+  d <- diag(m)
 
   index_realPlots <- m[upper.tri(m, diag = TRUE)] %>% sort() # these are the positions of real plots
 
@@ -71,7 +71,17 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
   k <- 1
   for (j in seq((n - 1)^2)) {
     if (j %in% index_realPlots) {
-      plotting_list[[j]] <- realplots[[k]]
+      if (j %in% d) {
+        plotting_list[[j]] <- realplots[[k]]
+      } else {
+        plotting_list[[j]] <- realplots[[k]] +
+          theme(axis.title.x=element_blank(),
+                axis.text.x=element_blank(),
+                axis.ticks.x=element_blank(),
+                axis.title.y=element_blank(),
+                axis.text.y=element_blank(),
+                axis.ticks.y=element_blank())
+      }
       k <- k + 1
     } else if (j %in% index_emptyPlots) {
       plotting_list[[j]] <- plot_blank
@@ -82,7 +92,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
   PCApairplot <- ggpubr::ggarrange(
     plotlist = plotting_list,
-    ncol = n - 1, nrow = n - 1,
+    ncol = n - 1, nrow = n - 1, align = "hv",
     common.legend = TRUE, legend = "top"
   )
 
@@ -132,18 +142,16 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
 
   # compute PCA
   if (is.null(precomputed)) {
-    pcdata <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
   } else {
-    pcdata <- checkPrecomputedPCA(spe_object, precomputed)
+    pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
-
-  pca_object <- pcdata
 
   var_exp <- attr(pca_object, "percentVar") %>%
     round(., 2)
   names(var_exp) <- colnames(pca_object)
 
-  scree_plot <- var_exp %>%
+  var_exp %>%
     as.data.frame() %>%
     magrittr::set_colnames(c("ev")) %>%
     rownames_to_column() %>%
@@ -159,7 +167,6 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ylim(0, 100)
 
-  return(scree_plot)
 }
 
 
@@ -195,14 +202,13 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
                           arrow_x = 0, arrow_y = 0,
                           ...) {
 
+  checkPackages("ggrepel")
   # compute PCA
   if (is.null(precomputed)) {
-    pcdata <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
   } else {
-    pcdata <- checkPrecomputedPCA(spe_object, precomputed)
+    pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
-
-  pca_object <- pcdata
 
   loadings <- attr(pca_object, "rotation")
 

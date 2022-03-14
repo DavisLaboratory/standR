@@ -50,7 +50,6 @@ Suggests:
     ggalluvial,
     ggpubr,
     ggrepel,
-    sva,
     cluster,
     mclustcomp,
     emtdata,

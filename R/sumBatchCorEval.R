@@ -26,12 +26,10 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   # compute PCA
   if (is.null(precomputed)) {
-    pcdata <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
+    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
   } else {
-    pcdata <- checkPrecomputedPCA(spe_object, precomputed)
+    pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
-
-  pca_object <- pcdata
 
   ss <- getSilhouette(pca_object, spe_object, foiColumn)[[1]]
 
@@ -89,6 +87,9 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 #' )
 plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
                                  data_names, colors = NA) {
+  checkPackages("cluster")
+  checkPackages("mclustcomp")
+
   # get stat for bio factor
   stat_bio <- lapply(spe_list, function(x) {
     computeClusterEvalStats(x, bio_feature_name)

@@ -4,7 +4,11 @@
 \alias{geomxNorm}
 \title{Perform normalisation to GeoMX data}
 \usage{
-geomxNorm(spe_object, method = "TMM", log = TRUE)
+geomxNorm(
+  spe_object,
+  method = c("TMM", "RPKM", "TPM", "CPM", "upperquartile", "sizefactor"),
+  log = TRUE
+)
 }
 \arguments{
 \item{spe_object}{A spatial experiment object.}
