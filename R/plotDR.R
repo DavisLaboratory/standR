@@ -100,9 +100,9 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata), optional = TRUE)
     }
 
     # create data structure
@@ -146,9 +146,9 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata), optional = TRUE)
     }
 
     # create data structure
@@ -169,9 +169,9 @@ setMethod(
 
     # extract sample data
     if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata, experimentData = TRUE), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(colFun(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(colData(edata), optional = TRUE)
     }
 
     # create data structure
