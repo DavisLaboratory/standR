@@ -36,9 +36,6 @@ the plot.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for
 \code{SummarizedExperiment} and its derivative classes).}
-
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
-containing gene expression data.}
 }
 \value{
 a ggplot2 object
