@@ -8,13 +8,16 @@
 \alias{plotPCA,SummarizedExperiment-method}
 \title{Compute and plot the results of a PCA analysis on gene expression data}
 \usage{
-\S4method{plotPCA}{DGEList}(object, dims, precomputed = NULL, rl = 1, ...)
+\S4method{plotPCA}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotPCA}{ExpressionSet}(object, dims, precomputed = NULL, rl = 1, ...)
+\S4method{plotPCA}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotPCA}{SummarizedExperiment}(object, dims, assay = 1, precomputed = NULL, rl = 1, ...)
+\S4method{plotPCA}{SummarizedExperiment}(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...)
 }
 \arguments{
+\item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
+containing gene expression data.}
+
 \item{dims}{a numeric, containing 2 values specifying the dimensions to plot.}
 
 \item{precomputed}{a dimensional reduction results from \code{stats::prcomp}.
@@ -27,9 +30,6 @@ the plot.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for
 \code{SummarizedExperiment} and its derivative classes).}
-
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
-containing gene expression data.}
 }
 \value{
 a ggplot2 object
