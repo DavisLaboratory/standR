@@ -53,9 +53,11 @@ jobs:
       matrix:
         config:
           - { os: ubuntu-latest, r: 'devel', bioc: '3.15', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
-          - { os: ubuntu-latest, r: '4.1', bioc: '3.14', cont: "bioconductor/bioconductor_docker:RELEASE_3_14", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
-          - { os: macOS-latest, r: '4.1', bioc: '3.14'}
-          - { os: windows-latest, r: '4.1', bioc: '3.14'}
+          - { os: macOS-latest, r: 'devel', bioc: '3.15'}
+          - { os: windows-latest, r: 'devel', bioc: '3.15'}
+          # - { os: ubuntu-latest, r: '4.1', bioc: '3.14', cont: "bioconductor/bioconductor_docker:RELEASE_3_14", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          # - { os: macOS-latest, r: '4.1', bioc: '3.14'}
+          # - { os: windows-latest, r: '4.1', bioc: '3.14'}
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
@@ -102,16 +104,16 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-${{ runner.bioc }}-r-${{ runner.r }}-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-${{ runner.bioc }}-r-${{ runner.r }}-
 
       - name: Cache R packages on Linux
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "
         uses: actions/cache@v2
         with:
           path: /home/runner/work/_temp/Library
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-${{ runner.bioc }}-r-${{ runner.r }}-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-${{ runner.bioc }}-r-${{ runner.r }}-
 
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
@@ -189,7 +191,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Install pkgdown and deps
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pkgdown-test' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r != 'devel'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pkgdown-test' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r == 'devel'
         run: |
           remotes::install_cran("pkgdown")
         shell: Rscript {0}
@@ -262,7 +264,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@master
         with:
-          name: ${{ runner.os }}-biocversion-RELEASE_3_14-r-4.1-results
+          name: ${{ runner.os }}-biocversion-${{ runner.bioc }}-r-${{ runner.r }}-results
           path: check
 
       - uses: docker/build-push-action@v1
