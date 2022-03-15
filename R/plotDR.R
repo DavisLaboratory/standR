@@ -28,34 +28,30 @@ calcPCA <- function(edata, dims) {
 #' @return a ggplot2 object
 #' @export
 #'
+#' @docType methods
+#' @name plotPCA
+#' @rdname plotPCA
+#' @aliases plotPCA plotPCA,DGEList-method plotPCA,ExpressionSet-method plotPCA,SummarizedExperiment-method
+#' @importFrom BiocGenerics plotPCA
+#'
 #' @examples
 #' se <- emtdata::cursons2018_se()
 #' dge <- emtdata::asDGEList(se)
 #' plotPCA(dge, colour = Subline)
 #'
-setGeneric(
-  "plotPCA",
-  function(edata,
-           dims = c(1, 2),
-           ...) {
-    standardGeneric("plotPCA")
-  }
-)
-
-#' @rdname plotPCA
 setMethod(
   "plotPCA",
-  signature("DGEList", "ANY"),
-  function(edata, dims, precomputed = NULL, rl = 1, ...) {
+  signature("DGEList"),
+  function(object, dims, precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      pcdata <- calcPCA(edgeR::cpm(edata, log = TRUE), dims)
+      pcdata <- calcPCA(edgeR::cpm(object, log = TRUE), dims)
     } else {
-      pcdata <- checkPrecomputedPCA(edata, precomputed)
+      pcdata <- checkPrecomputedPCA(object, precomputed)
     }
 
     # extract sample data
-    sdata <- edata$samples
+    sdata <- object$samples
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -67,17 +63,17 @@ setMethod(
 #' @rdname plotPCA
 setMethod(
   "plotPCA",
-  signature("ExpressionSet", "ANY"),
-  function(edata, dims, precomputed = NULL, rl = 1, ...) {
+  signature("ExpressionSet"),
+  function(object, dims, precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      pcdata <- calcPCA(Biobase::exprs(edata), dims)
+      pcdata <- calcPCA(Biobase::exprs(object), dims)
     } else {
-      pcdata <- checkPrecomputedPCA(edata, precomputed)
+      pcdata <- checkPrecomputedPCA(object, precomputed)
     }
 
     # extract sample data
-    sdata <- Biobase::pData(edata)
+    sdata <- Biobase::pData(object)
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -89,20 +85,20 @@ setMethod(
 #' @rdname plotPCA
 setMethod(
   "plotPCA",
-  signature("SummarizedExperiment", "ANY"),
-  function(edata, dims, assay = 1, precomputed = NULL, rl = 1, ...) {
+  signature("SummarizedExperiment"),
+  function(object, dims, assay = 1, precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      pcdata <- calcPCA(SummarizedExperiment::assay(edata, assay), dims)
+      pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
     } else {
-      pcdata <- checkPrecomputedPCA(edata, precomputed)
+      pcdata <- checkPrecomputedPCA(object, precomputed)
     }
 
     # extract sample data
-    if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata, experimentData = TRUE), optional = TRUE)
+    if (is(object, "ExperimentList")) {
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     }
 
     # create data structure
