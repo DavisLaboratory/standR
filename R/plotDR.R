@@ -14,7 +14,7 @@ calcPCA <- function(edata, dims) {
 
 #' Compute and plot the results of a PCA analysis on gene expression data
 #'
-#' @param edata a DGEList, SummarizedExperiment or ExpressionSet object
+#' @param object a DGEList, SummarizedExperiment or ExpressionSet object
 #'   containing gene expression data.
 #' @param dims a numeric, containing 2 values specifying the dimensions to plot.
 #' @param assay a numeric or character, specifying the assay to use (for

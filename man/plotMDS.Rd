@@ -16,9 +16,6 @@ plotMDS(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 \S4method{plotMDS}{SummarizedExperiment}(edata, assay = 1, dims, precomputed, rl, ...)
 }
 \arguments{
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
-containing gene expression data.}
-
 \item{dims}{a numeric, containing 2 values specifying the dimensions to plot.}
 
 \item{precomputed}{a dimensional reduction results from either

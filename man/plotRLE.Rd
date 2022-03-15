@@ -16,9 +16,6 @@ plotRLE(edata, ordannots = c(), ...)
 \S4method{plotRLE}{SummarizedExperiment}(edata, ordannots, assay = 1, ...)
 }
 \arguments{
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
-containing gene expression data.}
-
 \item{ordannots}{variables or computations to sort samples by (tidy style).}
 
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
