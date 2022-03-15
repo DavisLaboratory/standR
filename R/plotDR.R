@@ -42,7 +42,7 @@ calcPCA <- function(edata, dims) {
 setMethod(
   "plotPCA",
   signature("DGEList"),
-  function(object, dims, precomputed = NULL, rl = 1, ...) {
+  function(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(edgeR::cpm(object, log = TRUE), dims)
@@ -64,7 +64,7 @@ setMethod(
 setMethod(
   "plotPCA",
   signature("ExpressionSet"),
-  function(object, dims, precomputed = NULL, rl = 1, ...) {
+  function(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(Biobase::exprs(object), dims)
@@ -86,7 +86,7 @@ setMethod(
 setMethod(
   "plotPCA",
   signature("SummarizedExperiment"),
-  function(object, dims, assay = 1, precomputed = NULL, rl = 1, ...) {
+  function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
