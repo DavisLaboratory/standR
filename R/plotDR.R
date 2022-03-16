@@ -31,7 +31,8 @@ calcPCA <- function(object, dims) {
 #' @docType methods
 #' @name plotPCA
 #' @rdname plotPCA
-#' @aliases plotPCA plotPCA,DGEList-method plotPCA,ExpressionSet-method plotPCA,SummarizedExperiment-method
+#' @aliases plotPCA plotPCA,DGEList-method plotPCA,ExpressionSet-method
+#' @aliases plotPCA,SummarizedExperiment-method plotPCA,SingleCellExperiment-method plotPCA,SpatialExperiment-method
 #' @importFrom BiocGenerics plotPCA
 #'
 #' @examples
@@ -82,60 +83,36 @@ setMethod(
   }
 )
 
-#' @rdname plotPCA
-setMethod(
-  "plotPCA",
-  signature("SummarizedExperiment"),
-  function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
-    # compute PCA
-    if (is.null(precomputed)) {
-      pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
-    } else {
-      pcdata <- checkPrecomputedPCA(object, precomputed)
-    }
-
-    # extract sample data
-    if (is(object, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-    } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-    }
-
-    # create data structure
-    drdf <- pdataPC_intl(pcdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
-
-    return(p1)
+.plotPCA_se <- function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
+  # compute PCA
+  if (is.null(precomputed)) {
+    pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
+  } else {
+    pcdata <- checkPrecomputedPCA(object, precomputed)
   }
-)
 
-#' #' @rdname plotPCA
-#' setMethod(
-#'   "plotPCA",
-#'   signature("SpatialExperiment"),
-#'   function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
-#'     # compute PCA
-#'     if (is.null(precomputed)) {
-#'       pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
-#'     } else {
-#'       pcdata <- checkPrecomputedPCA(object, precomputed)
-#'     }
-#'
-#'     # extract sample data
-#'     if (is(object, "ExperimentList")) {
-#'       sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-#'     } else {
-#'       sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-#'     }
-#'
-#'     # create data structure
-#'     drdf <- pdataPC_intl(pcdata, dims)
-#'     p1 <- plotDR_intl(drdf, sdata, rl, ...)
-#'
-#'     return(p1)
-#'   }
-#' )
+  # extract sample data
+  if (is(object, "ExperimentList")) {
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
+  } else {
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+  }
 
+  # create data structure
+  drdf <- pdataPC_intl(pcdata, dims)
+  p1 <- plotDR_intl(drdf, sdata, rl, ...)
+
+  return(p1)
+}
+
+#' @rdname plotPCA
+setMethod("plotPCA", signature("SummarizedExperiment"), .plotPCA_se)
+
+#' @rdname plotPCA
+setMethod("plotPCA", signature("SingleCellExperiment"), .plotPCA_se)
+
+#' @rdname plotPCA
+setMethod("plotPCA", signature("SpatialExperiment"), .plotPCA_se)
 
 #' Compute and plot the results of a PCA analysis on gene expression data
 #'
