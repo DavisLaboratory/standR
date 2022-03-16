@@ -45,6 +45,7 @@ Imports:
     stats,
     methods
 Suggests:
+    knitr,
     scater,
     ggalluvial,
     ggpubr,
