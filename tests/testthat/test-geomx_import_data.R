@@ -1,8 +1,8 @@
 test_that("Testing import data from path", {
   library(SpatialExperiment)
-  dirPath <- ""
-  countFile <- system.file("extdata", "dkd_subset_TargetCountMatrix.txt", package = "standR")
-  sampleAnnoFile <- system.file("extdata", "dkd_subset_Sample_Annotations.txt", package = "standR")
+  dirPath <- system.file("extdata", package = "standR")
+  countFile <- "dkd_subset_TargetCountMatrix.txt"
+  sampleAnnoFile <- "dkd_subset_Sample_Annotations.txt"
 
   # default
   spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)

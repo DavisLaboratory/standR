@@ -7,16 +7,16 @@
 \alias{plotMDS,SummarizedExperiment-method}
 \title{Compute and plot the results of a MDS analysis on gene expression data}
 \usage{
-plotMDS(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotMDS}{DGEList}(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotMDS}{ExpressionSet}(edata, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotMDS}{SummarizedExperiment}(edata, assay = 1, dims, precomputed, rl, ...)
+\S4method{plotMDS}{SummarizedExperiment}(object, assay = 1, dims, precomputed, rl, ...)
 }
 \arguments{
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
+\item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
 containing gene expression data.}
 
 \item{dims}{a numeric, containing 2 values specifying the dimensions to plot.}

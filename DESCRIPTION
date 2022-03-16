@@ -26,7 +26,7 @@ RoxygenNote: 7.1.2
 Imports:
     dplyr,
     magrittr,
-    SpatialExperiment,
+    SpatialExperiment (>= 1.5.2),
     SummarizedExperiment,
     SingleCellExperiment,
     edgeR,
@@ -42,10 +42,11 @@ Imports:
     Biobase,
     BiocGenerics,
     grDevices,
-    ExperimentList,
     stats,
     methods
 Suggests:
+    knitr,
+    rmarkdown,
     scater,
     ggalluvial,
     ggpubr,
@@ -57,3 +58,4 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1)
+VignetteBuilder: knitr

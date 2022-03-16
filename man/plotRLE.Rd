@@ -7,16 +7,16 @@
 \alias{plotRLE,SummarizedExperiment-method}
 \title{Compute and plot relative log expression (RLE) values of gene expression data}
 \usage{
-plotRLE(edata, ordannots = c(), ...)
+plotRLE(object, ordannots = c(), ...)
 
-\S4method{plotRLE}{DGEList}(edata, ordannots = c(), ...)
+\S4method{plotRLE}{DGEList}(object, ordannots = c(), ...)
 
-\S4method{plotRLE}{ExpressionSet}(edata, ordannots = c(), ...)
+\S4method{plotRLE}{ExpressionSet}(object, ordannots = c(), ...)
 
-\S4method{plotRLE}{SummarizedExperiment}(edata, ordannots, assay = 1, ...)
+\S4method{plotRLE}{SummarizedExperiment}(object, ordannots, assay = 1, ...)
 }
 \arguments{
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
+\item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
 containing gene expression data.}
 
 \item{ordannots}{variables or computations to sort samples by (tidy style).}

@@ -6,14 +6,14 @@
 \alias{plotDR,SpatialExperiment-method}
 \title{Compute and plot the results of a PCA analysis on gene expression data}
 \usage{
-plotDR(edata, dims = c(1, 2), ...)
+plotDR(object, dims = c(1, 2), ...)
 
-\S4method{plotDR}{SingleCellExperiment}(edata, dims, dimred = "PCA", rl = 1, ...)
+\S4method{plotDR}{SingleCellExperiment}(object, dims, dimred = "PCA", rl = 1, ...)
 
-\S4method{plotDR}{SpatialExperiment}(edata, dims, dimred = "PCA", rl = 1, ...)
+\S4method{plotDR}{SpatialExperiment}(object, dims, dimred = "PCA", rl = 1, ...)
 }
 \arguments{
-\item{edata}{a DGEList, SummarizedExperiment or ExpressionSet object
+\item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
 containing gene expression data.}
 
 \item{dims}{a numeric, containing 2 values specifying the dimensions to plot.}

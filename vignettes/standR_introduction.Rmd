@@ -9,6 +9,10 @@ output:
     theme: cosmo
     highlight: tango
     code_folding: show
+vignette: >
+  %\VignetteIndexEntry{standR_introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 <style type="text/css">
@@ -26,14 +30,7 @@ The `standR` package is short for **S**patial **t**ranscriptomics **a**nalyses a
 
 The data analysis workflow consists of the following steps:
 
-```{r echo=FALSE, fig.width=10}
-image <- imager::load.image("../man/figures/workflow.jpg")
-
-par(mar = c(.5, .5, .5, .5))
-plot(image, axes=FALSE)
-
-rm(image)
-```
+![Workflow Steps](../man/figures/workflow.jpg "Workflow Steps")
 
 The purpose of this vignette is to demonstrate how to use standR to analyse Nanostring GeoMx DSP data.
 
@@ -51,11 +48,10 @@ devtools::install_github("DavisLaboratory/standR")
 We will load the `standR` package. We designed the package and the analysis workflow to be consistent with the BioConductor’s Orchestrating Spatially Resolved Transcriptomics Analysis (OSTA) framework, namely the `SpatialExperiment`. 
 
 ```{r message = FALSE, warning = FALSE}
-#library(standR)
-devtools::load_all()
+library(standR)
 library(SpatialExperiment)
 library(limma)
-library(tidyverse)
+library(magrittr)
 ```
 
 
@@ -74,9 +70,9 @@ dirPath <- tempdir()
 
 url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
 
-download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = paste0(dirPath,"/Kidney_Raw_TargetCountMatrix.txt"))
-download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = paste0(dirPath,"/Kidney_Sample_Annotations.txt"))
-download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = paste0(dirPath,"/Kidney_Feature_Annotations.txt"))
+download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = file.path(dirPath,"Kidney_Raw_TargetCountMatrix.txt"))
+download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Sample_Annotations.txt"))
+download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Feature_Annotations.txt"))
 ```
 
 
@@ -247,8 +243,7 @@ Here we color the PCA with slide information, and shape by regions (tissue type)
 
 
 ```{r}
-standR::plotPCA(spe, assay = 2, col = SlideName, shape = regions)
-
+plotPCA(spe, assay = 2, col = SlideName, shape = regions)
 ```
 
 
@@ -259,7 +254,7 @@ standR::plotPCA(spe, assay = 2, col = SlideName, shape = regions)
 Similarly, `plotMDS` can be used to visualise the multidimension scaling of the data.
 
 ```{r}
-standR::plotMDS(spe, assay = 2, col = SlideName, shape = regions)
+plotMDS(spe, assay = 2, col = SlideName, shape = regions)
 ```
 
 ### UMAP
