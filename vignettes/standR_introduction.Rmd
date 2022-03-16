@@ -9,6 +9,10 @@ output:
     theme: cosmo
     highlight: tango
     code_folding: show
+vignette: >
+  %\VignetteIndexEntry{standR_introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 <style type="text/css">
