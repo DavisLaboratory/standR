@@ -16,7 +16,7 @@
 #'
 setGeneric(
   "plotRLE",
-  function(edata,
+  function(object,
            ordannots = c(),
            ...) {
     standardGeneric("plotRLE")
@@ -27,14 +27,14 @@ setGeneric(
 setMethod(
   "plotRLE",
   signature("DGEList", "ANY"),
-  function(edata, ordannots, ...) {
+  function(object, ordannots, ...) {
     # extract sample data
-    sdata <- edata$samples
+    sdata <- object$samples
     # extract expression data (and transform)
-    edata <- edgeR::cpm(edata, log = TRUE)
+    object <- edgeR::cpm(object, log = TRUE)
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
-    rledf <- pdataRLE_intl(edata, samporder)
+    rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLE_intl(rledf, sdata, isSCE = FALSE, ...)
 
     return(p1)
@@ -45,14 +45,14 @@ setMethod(
 setMethod(
   "plotRLE",
   signature("ExpressionSet", "ANY"),
-  function(edata, ordannots, ...) {
+  function(object, ordannots, ...) {
     # extract sample data
-    sdata <- Biobase::pData(edata)
+    sdata <- Biobase::pData(object)
     # extract expression data (and transform)
-    edata <- Biobase::exprs(edata)
+    object <- Biobase::exprs(object)
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
-    rledf <- pdataRLE_intl(edata, samporder)
+    rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLE_intl(rledf, sdata, isSCE = FALSE, ...)
 
     return(p1)
@@ -63,21 +63,21 @@ setMethod(
 setMethod(
   "plotRLE",
   signature("SummarizedExperiment", "ANY"),
-  function(edata, ordannots, assay = 1, ...) {
-    isSCE <- is(edata, "SingleCellExperiment")
-    
+  function(object, ordannots, assay = 1, ...) {
+    isSCE <- is(object, "SingleCellExperiment")
+
     # extract sample data
-    if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata, experimentData = TRUE), optional = TRUE)
+    if (is(object, "ExperimentList")) {
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     }
 
     # extract expression data (and transform)
-    edata <- SummarizedExperiment::assay(edata, i = assay)
+    object <- SummarizedExperiment::assay(object, i = assay)
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
-    rledf <- pdataRLE_intl(edata, samporder)
+    rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLE_intl(rledf, sdata, isSCE = isSCE, ...)
 
     return(p1)

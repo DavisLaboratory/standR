@@ -1,12 +1,12 @@
 # compuate PCA
-calcPCA <- function(edata, dims) {
+calcPCA <- function(object, dims) {
   set.seed(45)
   maxdim <- max(dims)
-  if (requireNamespace("scater") & maxdim < ncol(edata)) {
-    pcdata <- scater::calculatePCA(edata, ncomponents = maxdim)
+  if (requireNamespace("scater") & maxdim < ncol(object)) {
+    pcdata <- scater::calculatePCA(object, ncomponents = maxdim)
   } else {
-    pcdata <- stats::prcomp(t(edata))
-    pcdata <- checkPrecomputedPCA(edata, pcdata)
+    pcdata <- stats::prcomp(t(object))
+    pcdata <- checkPrecomputedPCA(object, pcdata)
   }
 
   return(pcdata)
@@ -87,6 +87,7 @@ setMethod(
   "plotPCA",
   signature("SummarizedExperiment"),
   function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
+    browser()
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
@@ -109,6 +110,33 @@ setMethod(
   }
 )
 
+#' #' @rdname plotPCA
+#' setMethod(
+#'   "plotPCA",
+#'   signature("SpatialExperiment"),
+#'   function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
+#'     # compute PCA
+#'     if (is.null(precomputed)) {
+#'       pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
+#'     } else {
+#'       pcdata <- checkPrecomputedPCA(object, precomputed)
+#'     }
+#'
+#'     # extract sample data
+#'     if (is(object, "ExperimentList")) {
+#'       sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
+#'     } else {
+#'       sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+#'     }
+#'
+#'     # create data structure
+#'     drdf <- pdataPC_intl(pcdata, dims)
+#'     p1 <- plotDR_intl(drdf, sdata, rl, ...)
+#'
+#'     return(p1)
+#'   }
+#' )
+
 
 #' Compute and plot the results of a PCA analysis on gene expression data
 #'
@@ -126,7 +154,7 @@ setMethod(
 #'
 setGeneric(
   "plotDR",
-  function(edata,
+  function(object,
            dims = c(1, 2),
            ...) {
     standardGeneric("plotDR")
@@ -136,15 +164,15 @@ setGeneric(
 setMethod(
   "plotDR",
   signature("SingleCellExperiment", "ANY"),
-  function(edata, dims, dimred = "PCA", rl = 1, ...) {
+  function(object, dims, dimred = "PCA", rl = 1, ...) {
     # compute PCA
-    pcdata <- SingleCellExperiment::reducedDim(edata, type = dimred)
+    pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata, experimentData = TRUE), optional = TRUE)
+    if (is(object, "ExperimentList")) {
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     }
 
     # create data structure
@@ -159,15 +187,15 @@ setMethod(
 setMethod(
   "plotDR",
   signature("SpatialExperiment", "ANY"),
-  function(edata, dims, dimred = "PCA", rl = 1, ...) {
+  function(object, dims, dimred = "PCA", rl = 1, ...) {
     # compute PCA
-    pcdata <- SingleCellExperiment::reducedDim(edata, type = dimred)
+    pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    if (is(edata, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata, experimentData = TRUE), optional = TRUE)
+    if (is(object, "ExperimentList")) {
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
     } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     }
 
     # create data structure
@@ -195,7 +223,7 @@ setMethod(
 #'
 setGeneric(
   "plotMDS",
-  function(edata,
+  function(object,
            dims = c(1, 2),
            precomputed = NULL,
            rl = 1,
@@ -208,16 +236,16 @@ setGeneric(
 setMethod(
   "plotMDS",
   signature("DGEList", "ANY", "ANY", "ANY"),
-  function(edata, dims, precomputed, rl, ...) {
+  function(object, dims, precomputed, rl, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      mdsdata <- limma::plotMDS(edata, plot = FALSE)
+      mdsdata <- limma::plotMDS(object, plot = FALSE)
     } else {
-      mdsdata <- checkPrecomputedMDS(edata, precomputed)
+      mdsdata <- checkPrecomputedMDS(object, precomputed)
     }
 
     # extract sample data
-    sdata <- edata$samples
+    sdata <- object$samples
     # create data structure
     drdf <- pdataMDS_intl(mdsdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -230,16 +258,16 @@ setMethod(
 setMethod(
   "plotMDS",
   signature("ExpressionSet", "ANY", "ANY", "ANY"),
-  function(edata, dims, precomputed, rl, ...) {
+  function(object, dims, precomputed, rl, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      mdsdata <- limma::plotMDS(edata, plot = FALSE)
+      mdsdata <- limma::plotMDS(object, plot = FALSE)
     } else {
-      mdsdata <- checkPrecomputedMDS(edata, precomputed)
+      mdsdata <- checkPrecomputedMDS(object, precomputed)
     }
 
     # extract sample data
-    sdata <- Biobase::pData(edata)
+    sdata <- Biobase::pData(object)
     # create data structure
     drdf <- pdataMDS_intl(mdsdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -252,16 +280,16 @@ setMethod(
 setMethod(
   "plotMDS",
   signature("SummarizedExperiment", "ANY", "ANY", "ANY"),
-  function(edata, assay = 1, dims, precomputed, rl, ...) {
+  function(object, assay = 1, dims, precomputed, rl, ...) {
     # compute PCA
     if (is.null(precomputed)) {
-      mdsdata <- limma::plotMDS(SummarizedExperiment::assay(edata, assay), plot = FALSE)
+      mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
     } else {
-      mdsdata <- checkPrecomputedMDS(edata, precomputed)
+      mdsdata <- checkPrecomputedMDS(object, precomputed)
     }
 
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(edata), optional = TRUE)
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     # create data structure
     drdf <- pdataMDS_intl(mdsdata, dims)
     p1 <- plotDR_intl(drdf, sdata, rl, ...)
@@ -270,9 +298,9 @@ setMethod(
   }
 )
 
-checkPrecomputedPCA <- function(edata, pcdata) {
+checkPrecomputedPCA <- function(object, pcdata) {
   if (is(pcdata, "prcomp")) {
-    stopifnot(all(rownames(pcdata$x) == colnames(edata)))
+    stopifnot(all(rownames(pcdata$x) == colnames(object)))
 
     # prepare results
     pvar <- pcdata$sdev^2 / sum(pcdata$sdev^2) * 100
@@ -281,7 +309,7 @@ checkPrecomputedPCA <- function(edata, pcdata) {
     attr(pcdata, "percentVar") <- pvar
     attr(pcdata, "rotation") <- rot
   } else if (is(pcdata, "matrix")) {
-    stopifnot(all(rownames(pcdata) == colnames(edata)))
+    stopifnot(all(rownames(pcdata) == colnames(object)))
     stopifnot(c("dim", "dimnames", "varExplained", "percentVar", "rotation") %in% names(attributes(pcdata)))
   } else {
     stop("provide results from prcomp or scater::calculatePCA")
@@ -290,10 +318,10 @@ checkPrecomputedPCA <- function(edata, pcdata) {
   return(pcdata)
 }
 
-checkPrecomputedMDS <- function(edata, mdsdata) {
+checkPrecomputedMDS <- function(object, mdsdata) {
   stopifnot(
     is(mdsdata, "MDS"),
-    all(rownames(mdsdata$distance.matrix.squared) == colnames(edata))
+    all(rownames(mdsdata$distance.matrix.squared) == colnames(object))
   )
   return(mdsdata)
 }
