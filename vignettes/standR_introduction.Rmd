@@ -30,14 +30,7 @@ The `standR` package is short for **S**patial **t**ranscriptomics **a**nalyses a
 
 The data analysis workflow consists of the following steps:
 
-```{r echo=FALSE, fig.width=10}
-image <- imager::load.image("../man/figures/workflow.jpg")
-
-par(mar = c(.5, .5, .5, .5))
-plot(image, axes=FALSE)
-
-rm(image)
-```
+![Workflow Steps](../man/figures/workflow.jpg "Workflow Steps")
 
 The purpose of this vignette is to demonstrate how to use standR to analyse Nanostring GeoMx DSP data.
 
@@ -251,8 +244,7 @@ Here we color the PCA with slide information, and shape by regions (tissue type)
 
 
 ```{r}
-standR::plotPCA(spe, assay = 2, col = SlideName, shape = regions)
-
+plotPCA(spe, assay = 2, col = SlideName, shape = regions)
 ```
 
 
@@ -263,7 +255,7 @@ standR::plotPCA(spe, assay = 2, col = SlideName, shape = regions)
 Similarly, `plotMDS` can be used to visualise the multidimension scaling of the data.
 
 ```{r}
-standR::plotMDS(spe, assay = 2, col = SlideName, shape = regions)
+plotMDS(spe, assay = 2, col = SlideName, shape = regions)
 ```
 
 ### UMAP
