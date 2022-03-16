@@ -87,7 +87,6 @@ setMethod(
   "plotPCA",
   signature("SummarizedExperiment"),
   function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
-    browser()
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
