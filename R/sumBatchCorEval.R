@@ -52,13 +52,13 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   # compute adjrand and jaccard
   df_out <- mclustcomp::mclustcomp(km_clusters, getSilhouette(pca_object, spe_object, foiColumn)[[2]]) %>%
-    filter(types %in% c("adjrand", "chisq", "jaccard", "smc", "mhm", "mirkin", "vi")) %>%
+    filter(types %in% c("adjrand", "chisq", "jaccard", "smc", "mirkin")) %>%
     mutate(types = c(
       "Adjusted Rand Index", "Chi-Squared Coefficient", "Jaccard Index",
-      "Simple Matching Coefficient", "Meila-Heckerman Measure", "Mirkin Distance", "Variation of Information"
+      "Simple Matching Coefficient", "Mirkin Distance"
     ))
 
-  df_out[8, ] <- c("Silhouette Coefficient", ss)
+  df_out[6, ] <- c("Silhouette Coefficient", ss)
 
   return(df_out)
 }
@@ -95,21 +95,21 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     computeClusterEvalStats(x, bio_feature_name)
   }) %>%
     bind_rows() %>%
-    mutate(from = rep(data_names, each = 8))
+    mutate(from = rep(data_names, each = 6))
 
   # get stat for batch factor
   stat_batch <- lapply(spe_list, function(x) {
     computeClusterEvalStats(x, batch_feature_name)
   }) %>%
     bind_rows() %>%
-    mutate(from = rep(data_names, each = 8))
+    mutate(from = rep(data_names, each = 6))
 
   p_bio <- stat_bio %>%
     mutate(from = factor(from, levels = data_names)) %>%
     mutate(scores = as.numeric(scores)) %>%
     ggplot(aes(from, scores, fill = types)) +
-    geom_bar(stat = "identity", col = "black", width = .7) +
-    facet_wrap(~types, scales = "free_y", ncol = 4) +
+    geom_bar(stat = "identity", col = "black", width = .4) +
+    facet_wrap(~types, scales = "free_y", ncol = 3) +
     theme_bw() +
     theme(legend.position = "none") +
     xlab("Count data") +
@@ -120,8 +120,8 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     mutate(from = factor(from, levels = data_names)) %>%
     mutate(scores = as.numeric(scores)) %>%
     ggplot(aes(from, scores, fill = types)) +
-    geom_bar(stat = "identity", col = "black", width = .7) +
-    facet_wrap(~types, scales = "free_y", ncol = 4) +
+    geom_bar(stat = "identity", col = "black", width = .4) +
+    facet_wrap(~types, scales = "free_y", ncol = 3) +
     theme_bw() +
     theme(legend.position = "none") +
     xlab("Count data") +

@@ -223,7 +223,7 @@ findBestK <- function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_s
     scale_x_continuous(breaks = function(x) int_breaks(x, n = 10)) +
     theme_bw() +
     xlab("K") +
-    ylab("Silhouette Score") +
+    ylab("Silhouette Score (Batch cluster)") +
     theme(text = element_text(size = text_size))
 }
 
