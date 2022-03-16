@@ -56,3 +56,4 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1)
+VignetteBuilder: knitr
