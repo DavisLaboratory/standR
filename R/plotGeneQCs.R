@@ -66,6 +66,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     tidyr::gather(sample, lcpm, -rowname) %>%
     left_join(as.data.frame(SummarizedExperiment::colData(spe)) %>%
       rownames_to_column(), by = c("sample" = "rowname")) %>%
+    mutate(sample = factor(sample, levels = colnames(data))) %>%
     ggplot(aes(sample, lcpm, !!!aesmap)) +
     geom_point(size = point_size, alpha = .5) +
     scale_colour_discrete(na.translate = F) +
