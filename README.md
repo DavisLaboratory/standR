@@ -3,7 +3,7 @@ Spatial transcriptomics analyses and decoding in R
 
 ## Overall workflow
 
-<img src="man/figures/workflow.png" width="1200">
+<img src="man/figures/workflow.jpg" width="1200">
 
 ## Example data
 
