@@ -48,8 +48,7 @@ devtools::install_github("DavisLaboratory/standR")
 We will load the `standR` package. We designed the package and the analysis workflow to be consistent with the BioConductor’s Orchestrating Spatially Resolved Transcriptomics Analysis (OSTA) framework, namely the `SpatialExperiment`. 
 
 ```{r message = FALSE, warning = FALSE}
-#library(standR)
-devtools::load_all()
+library(standR)
 library(SpatialExperiment)
 library(limma)
 library(tidyverse)
