@@ -70,9 +70,9 @@ dirPath <- tempdir()
 
 url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
 
-download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = paste0(dirPath,"/Kidney_Raw_TargetCountMatrix.txt"))
-download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = paste0(dirPath,"/Kidney_Sample_Annotations.txt"))
-download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = paste0(dirPath,"/Kidney_Feature_Annotations.txt"))
+download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = file.path(dirPath,"Kidney_Raw_TargetCountMatrix.txt"))
+download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Sample_Annotations.txt"))
+download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Feature_Annotations.txt"))
 ```
 
 
