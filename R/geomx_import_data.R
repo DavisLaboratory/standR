@@ -47,41 +47,63 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
   if (hasNegProbe == TRUE) {
-    countdata <- readr::read_tsv(file.path(dirPath, countFile))
+    countdata <- as.data.frame(readr::read_tsv(file.path(dirPath, countFile)), optional = TRUE)
+
     # raw count without negprobes
-    stopifnot(colnames.as.rownames[1] %in% colnames(countdata)) # make sure count data have the gene column name as pre-defined, such as TargetName.
-    stopifnot(NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])) # make sure the name of negprobe is in the gene column of count data.
-    countdata_filtered <- countdata %>% # filter the count data, remove the negprobe.
-      dplyr::filter(!!rlang::sym(colnames.as.rownames[1]) != NegProbeName) %>%
-      tibble::column_to_rownames(colnames.as.rownames[1])
+    # make sure count data have the gene column name as pre-defined, such as TargetName.
+    if(!colnames.as.rownames[1] %in% colnames(countdata)){
+      stop("colnames.as.rownames[1] is not in the column names of your count file.")
+    }
+    # make sure the name of negprobe is in the gene column of count data.
+    if(!NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])){
+      stop("NegProbeName is not found in your count file.")
+    }
+
+    # filter the count data, remove the negprobe.
+    countdata_filtered0 <- countdata[countdata[,colnames.as.rownames[1]] != NegProbeName,]
+    countdata_filtered <- countdata_filtered0[,!colnames(countdata_filtered0) %in%
+                                                colnames.as.rownames[1]]
+    rownames(countdata_filtered) <- countdata_filtered0[,colnames.as.rownames[1]]
+
 
     # gene meta without negprobes
     if (!is.na(featureAnnoFile)) {
-      genemeta <- readr::read_tsv(file.path(dirPath, featureAnnoFile))
+      genemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, featureAnnoFile)), optional = TRUE)
+
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
-      genemeta_filtered <- genemeta %>%
-        filter(!!rlang::sym(colnames.as.rownames[3]) != NegProbeName) %>%
-        tibble::column_to_rownames(colnames.as.rownames[3]) %>%
-        .[rownames(countdata_filtered), ] # arrange the gene meta, as the same order as count table.
+
+      genemeta_filtered0 <- genemeta[genemeta[,colnames.as.rownames[3]] != NegProbeName,]
+      genemeta_filtered <- genemeta_filtered0[,!colnames(genemeta_filtered0) %in%
+                                                colnames.as.rownames[3]]
+      rownames(genemeta_filtered) <- genemeta_filtered0[,colnames.as.rownames[3]]
+      genemeta_filtered <- genemeta_filtered[rownames(countdata_filtered), ]
+      # arrange the gene meta, as the same order as count table.
     } else {
       genemeta_filtered <- data.frame(Type = rep("gene", nrow(countdata_filtered)))
     }
 
     # sample meta
-    samplemeta <- readr::read_tsv(file.path(dirPath, sampleAnnoFile))
+    samplemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, sampleAnnoFile)), optional = TRUE)
+
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta)) # make sure column name is there.
-    samplemeta_filtered <- samplemeta %>%
-      tibble::column_to_rownames(colnames.as.rownames[2]) %>%
-      .[colnames(countdata_filtered), ] # arrange acoording to count table.
+
+
+    samplemeta_filtered <- samplemeta[,!colnames(samplemeta) %in%
+                                              colnames.as.rownames[2]]
+    rownames(samplemeta_filtered) <- samplemeta[,colnames.as.rownames[2]]
+    samplemeta_filtered <- samplemeta_filtered[colnames(countdata_filtered), ]
+    # arrange according to count table.
 
     # negprobe raw count
-    negprobecount <- countdata %>%
-      dplyr::filter(!!rlang::sym(colnames.as.rownames[1]) == NegProbeName) %>%
-      tibble::column_to_rownames(colnames.as.rownames[1])
+    negprobecount <- countdata[countdata[,colnames.as.rownames[1]] == NegProbeName,]
+    negprobecount <- negprobecount[,!colnames(negprobecount) %in%
+                                  colnames.as.rownames[1]]
+    rownames(negprobecount) <- NegProbeName
+
 
     # logCPM count
-    countdata_filtered_lcpm <- countdata_filtered %>%
-      edgeR::cpm(log = TRUE)
+    countdata_filtered_lcpm <- edgeR::cpm(countdata_filtered, log = TRUE)
+
 
     # output spe
     spe <- SpatialExperiment::SpatialExperiment(
@@ -92,9 +114,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
       colData = samplemeta_filtered,
       rowData = genemeta_filtered,
       metadata = list(NegProbes = negprobecount),
-      spatialCoords = samplemeta_filtered %>%
-        dplyr::select(coord.colnames) %>%
-        as.matrix()
+      spatialCoords = as.matrix(samplemeta_filtered[,coord.colnames])
     )
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
