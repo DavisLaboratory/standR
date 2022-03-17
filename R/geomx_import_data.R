@@ -119,29 +119,32 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
     # raw count
-    countdata <- readr::read_tsv(file.path(dirPath, countFile))
+    countdata <- as.data.frame(readr::read_tsv(file.path(dirPath, countFile)), optional = TRUE)
+
     stopifnot(colnames.as.rownames[1] %in% colnames(countdata))
-    countdata <- countdata %>%
-      tibble::column_to_rownames(colnames.as.rownames[1])
+
+    countdata <- tibble::column_to_rownames(countdata, colnames.as.rownames[1])
     # gene meta check
     if (!is.na(featureAnnoFile)) {
-      gene_meta <- readr::read_tsv(file.path(dirPath, featureAnnoFile)) %>%
-        tibble::column_to_rownames(colnames.as.rownames[3]) %>%
-        .[rownames(countdata), ]
+      gene_meta <- as.data.frame(readr::read_tsv(file.path(dirPath, featureAnnoFile)),
+                                 optional = TRUE)
+      gene_meta <- tibble::column_to_rownames(gene_meta, colnames.as.rownames[3])
+      gene_meta <- gene_meta[rownames(countdata), ]
     } else {
       gene_meta <- data.frame(Type = rep("gene", nrow(countdata)))
     }
 
     # sample meta
-    samplemeta <- readr::read_tsv(file.path(dirPath, sampleAnnoFile))
-    stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
-    samplemeta <- samplemeta %>%
-      tibble::column_to_rownames(colnames.as.rownames[2]) %>%
-      .[colnames(countdata), ]
-    # negprobe raw count
-    countdata_lcpm <- countdata %>%
-      edgeR::cpm(log = TRUE)
+    samplemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, sampleAnnoFile)),
+                                optional = TRUE)
 
+    stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
+
+    samplemeta <- tibble::column_to_rownames(samplemeta, colnames.as.rownames[2])
+    samplemeta <- samplemeta[colnames(countdata), ]
+
+    # negprobe raw count
+    countdata_lcpm <- edgeR::cpm(countdata, log = TRUE)
 
     spe <- SpatialExperiment::SpatialExperiment(
       assays = list(
@@ -150,9 +153,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
       ),
       colData = samplemeta,
       rowData = gene_meta,
-      spatialCoords = samplemeta %>%
-        dplyr::select(c(coord.colnames)) %>%
-        as.matrix()
+      spatialCoords = as.matrix(samplemeta[,coord.colnames])
     )
   }
   return(spe)
