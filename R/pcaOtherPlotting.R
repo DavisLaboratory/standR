@@ -32,7 +32,6 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
                         assay = 2, title = NA, title.size = 14, ...) {
-  set.seed(44)
 
   stopifnot(is.numeric(n_dimension))
 
@@ -45,7 +44,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
   n <- n_dimension
 
-  PCsToPlot <- expand.grid.rmdup(1:n, 1:n) # get pairs of PCs
+  PCsToPlot <- expand.grid.rmdup(seq(n), seq(n)) # get pairs of PCs
 
   m <- matrix(seq((n - 1)^2), n - 1, n - 1, byrow = TRUE) # make position matrix
 
@@ -216,12 +215,12 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
     pc1_genes <- loadings %>%
       as.data.frame() %>%
       arrange(-abs(!!sym(paste0("PC", dims[1])))) %>%
-      .[1:n_loadings, ] %>%
+      .[seq(n_loadings), ] %>%
       rownames()
     pc2_genes <- loadings %>%
       as.data.frame() %>%
       arrange(-abs(!!sym(paste0("PC", dims[2])))) %>%
-      .[1:n_loadings, ] %>%
+      .[seq(n_loadings), ] %>%
       rownames()
   } else if (is(n_loadings, "character")) {
     stopifnot(n_loadings %in% rownames(loadings))

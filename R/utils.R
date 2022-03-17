@@ -1,7 +1,7 @@
 checkPackages <- function(...) {
   pkgs <- list(...)
   names(pkgs) <- pkgs
-  pkgs <- sapply(pkgs, requireNamespace, quietly = TRUE)
+  pkgs <- vapply(pkgs, requireNamespace, FUN.VALUE = logical(1), quietly = TRUE)
   if (!all(pkgs)) {
     pkgs <- names(pkgs)[!pkgs]
     pkgs <- paste(paste0("'", pkgs, "'"), collapse = ", ")

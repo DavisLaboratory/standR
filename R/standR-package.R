@@ -4,6 +4,7 @@
 #' @importFrom tibble rownames_to_column
 #' @importFrom tibble column_to_rownames
 #' @import patchwork
+#' @importFrom SingleCellExperiment reducedDim
 NULL
 
 

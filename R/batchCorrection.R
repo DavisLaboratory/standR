@@ -21,7 +21,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   stopifnot(top_n <= nrow(spe))
 
   # compute coefficient of variance for each batch
-  gene_with_mzscore <- suppressMessages(SummarizedExperiment::assay(spe, 2) %>%
+  gene_with_mzscore <- SummarizedExperiment::assay(spe, 2) %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     tidyr::gather(samples, count, -rowname) %>%
@@ -49,7 +49,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
     scale() %>% # compute z-score
     as.data.frame() %>%
     mutate(mean_zscore = rowMeans(.)) %>%
-    dplyr::select(mean_zscore))
+    dplyr::select(mean_zscore)
 
   SummarizedExperiment::rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe), ]
   SummarizedExperiment::rowData(spe)$mean_expr <- SummarizedExperiment::assay(spe, 2) %>% # get mean expression
@@ -60,7 +60,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   negative.ctrl.genes <- gene_with_mzscore %>% # arrange by z-score, top N genes as negative control genes
     arrange(mean_zscore) %>%
     rownames() %>%
-    .[1:top_n]
+    .[seq(top_n)]
 
   S4Vectors::metadata(spe)$NCGs <- negative.ctrl.genes
 

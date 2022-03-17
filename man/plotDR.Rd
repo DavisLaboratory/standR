@@ -4,7 +4,7 @@
 \alias{plotDR}
 \alias{plotDR,SingleCellExperiment-method}
 \alias{plotDR,SpatialExperiment-method}
-\title{Compute and plot the results of a PCA analysis on gene expression data}
+\title{Compute and plot the results of any dimension reduction methods on gene expression data}
 \usage{
 plotDR(object, dims = c(1, 2), ...)
 
@@ -30,11 +30,12 @@ the plot.}
 a ggplot2 object
 }
 \description{
-Compute and plot the results of a PCA analysis on gene expression data
+Compute and plot the results of any dimension reduction methods on gene expression data
 }
 \examples{
-se <- emtdata::cursons2018_se()
-dge <- emtdata::asDGEList(se)
-plotPCA(dge, colour = Subline)
+library(scater)
+data("dkd_spe_subset")
+spe <- scater::runPCA(dkd_spe_subset)
+plotDR(spe, dimred = "PCA")
 
 }

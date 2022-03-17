@@ -68,3 +68,12 @@ A ggplot object.
 \description{
 Plot Sample-wise QC plot
 }
+\examples{
+library(ggplot2)
+library(patchwork)
+data("dkd_spe_subset")
+spe <- addPerROIQC(dkd_spe_subset)
+
+plotROIQC(spe)
+
+}

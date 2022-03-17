@@ -22,6 +22,14 @@
 #' @return A ggplot object.
 #' @export
 #'
+#' @examples
+#' library(ggplot2)
+#' library(patchwork)
+#' data("dkd_spe_subset")
+#' spe <- addPerROIQC(dkd_spe_subset)
+#'
+#' plotROIQC(spe)
+#'
 plotROIQC <- function(spe_object,
                       x_axis = "AOINucleiCount",
                       y_axis = "lib_size",

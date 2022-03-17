@@ -83,7 +83,7 @@ NanoString GeoMx DSP dataset of diabetic kidney disease (DKD) vs healthy kidney 
 In order to import the data into a spatial experiment object. We use the `readGeoMx` function.
 
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 countFile <- "Kidney_Raw_TargetCountMatrix.txt"
 sampleAnnoFile <- "Kidney_Sample_Annotations.txt"
 featureAnnoFile <- "Kidney_Feature_Annotations.txt"

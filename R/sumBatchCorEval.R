@@ -42,9 +42,8 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
     length()
 
   # clustering
-  set.seed(119)
 
-  kc <- stats::kmeans(pca_object[, 1:2], k)
+  kc <- stats::kmeans(pca_object[, seq(2)], k)
 
   km_clusters <- kc$cluster
 

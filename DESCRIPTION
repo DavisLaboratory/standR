@@ -16,8 +16,12 @@ Authors@R:
              family = "Mohamed",
              role = c("aut"),
              email = "mohamed.a@wehi.edu.au"))
-Description: This package is providing functions to assist the analysis of Nanostring's GeoMx DSP data.
-biocViews: GeneExpression
+Description: standR is an user-friendly R package providing functions to assist conducting 
+    good-practice analysis of Nanostring's GeoMx DSP data. All functions in the package are 
+    built based on the SpatialExperiment object, allowing integration into various spatial
+    transcriptomics-related packages from Bioconductor. standR allows data inspection, quality
+    control, normalization, batch correction and evaluation with informative visualizations.
+biocViews: Spatial, Transcriptomics, GeneExpression, DifferentialExpression, QualityControl
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
@@ -54,7 +58,6 @@ Suggests:
     ggrepel,
     cluster,
     mclustcomp,
-    emtdata,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

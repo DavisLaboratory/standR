@@ -31,10 +31,10 @@ readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
   stopifnot(is.character(NegProbeName))
   stopifnot(length(colnames.as.rownames) == 3)
   stopifnot(length(coord.colnames) == 2)
-  spe <- suppressMessages(geomx_import_fun(
+  spe <- geomx_import_fun(
     dirPath, countFile, sampleAnnoFile, featureAnnoFile,
     hasNegProbe, NegProbeName, colnames.as.rownames, coord.colnames
-  ))
+  )
   return(spe)
 }
 
@@ -153,8 +153,8 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 #' ng <- 1000
 #' ns <- 10
 #' Counts <- matrix(rnbinom(ng * ns, mu = 5, size = 2), ng, ns)
-#' rownames(Counts) <- 1:ng
-#' y <- edgeR::DGEList(counts = Counts, group = rep(1:2, each = 5))
+#' rownames(Counts) <- seq(ng)
+#' y <- edgeR::DGEList(counts = Counts, group = rep(seq(2), each = 5))
 #'
 #' # transfer into spatial experiment object
 #' coords <- matrix(rnorm(2 * ns), 10, 2)

@@ -1,6 +1,5 @@
 # compuate PCA
 calcPCA <- function(object, dims) {
-  set.seed(45)
   maxdim <- max(dims)
   if (requireNamespace("scater") & maxdim < ncol(object)) {
     pcdata <- scater::calculatePCA(object, ncomponents = maxdim)
@@ -36,9 +35,8 @@ calcPCA <- function(object, dims) {
 #' @importFrom BiocGenerics plotPCA
 #'
 #' @examples
-#' se <- emtdata::cursons2018_se()
-#' dge <- emtdata::asDGEList(se)
-#' plotPCA(dge, colour = Subline)
+#' data("dkd_spe_subset")
+#' plotPCA(dkd_spe_subset)
 #'
 setMethod(
   "plotPCA",
@@ -114,7 +112,7 @@ setMethod("plotPCA", signature("SingleCellExperiment"), .plotPCA_se)
 #' @rdname plotPCA
 setMethod("plotPCA", signature("SpatialExperiment"), .plotPCA_se)
 
-#' Compute and plot the results of a PCA analysis on gene expression data
+#' Compute and plot the results of any dimension reduction methods on gene expression data
 #'
 #' @param dimred a string or integer scalar indicating the reduced dimension
 #'   result in `reducedDims(object)` to plot.
@@ -124,9 +122,10 @@ setMethod("plotPCA", signature("SpatialExperiment"), .plotPCA_se)
 #' @export
 #'
 #' @examples
-#' se <- emtdata::cursons2018_se()
-#' dge <- emtdata::asDGEList(se)
-#' plotPCA(dge, colour = Subline)
+#' library(scater)
+#' data("dkd_spe_subset")
+#' spe <- scater::runPCA(dkd_spe_subset)
+#' plotDR(spe, dimred = "PCA")
 #'
 setGeneric(
   "plotDR",
@@ -193,9 +192,8 @@ setMethod(
 #' @export
 #'
 #' @examples
-#' se <- emtdata::cursons2018_se()
-#' dge <- emtdata::asDGEList(se)
-#' plotMDS(dge, colour = Subline)
+#' data("dkd_spe_subset")
+#' plotMDS(dkd_spe_subset)
 #'
 setGeneric(
   "plotMDS",
@@ -256,7 +254,7 @@ setMethod(
 setMethod(
   "plotMDS",
   signature("SummarizedExperiment", "ANY", "ANY", "ANY"),
-  function(object, assay = 1, dims, precomputed, rl, ...) {
+  function(object, dims, precomputed, rl, assay = 1,...) {
     # compute PCA
     if (is.null(precomputed)) {
       mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
@@ -309,7 +307,7 @@ pdataPC_intl <- function(pcdata, dims, relabel = TRUE) {
   # check sample names
   rnames <- rownames(pcdata)
   if (is.null(rnames)) {
-    rnames <- 1:nrow(pcdata)
+    rnames <- seq(nrow(pcdata))
   }
 
   plotdf <- data.frame(
@@ -319,7 +317,7 @@ pdataPC_intl <- function(pcdata, dims, relabel = TRUE) {
   )
   if (relabel) {
     pca_prop <- round(attr(pcdata, "percentVar"), digits = 2)
-    pca_labs <- paste0("PC", 1:length(pca_prop), " (", pca_prop, "%)")
+    pca_labs <- paste0("PC", seq(length(pca_prop)), " (", pca_prop, "%)")
     colnames(plotdf)[-1] <- pca_labs[dims]
   }
 
@@ -336,7 +334,7 @@ pdataMDS_intl <- function(mdsdata, dims) {
     x = mdsdata$eigen.vectors[, dims[1]] * lambda[dims[1]],
     y = mdsdata$eigen.vectors[, dims[2]] * lambda[dims[2]]
   )
-  pca_labs <- paste0("Leading logFC dim ", 1:ncol(mdsdata$eigen.vectors))
+  pca_labs <- paste0("Leading logFC dim ", seq(ncol(mdsdata$eigen.vectors)))
   pca_labs <- paste0(pca_labs, " (", round(mdsdata$var.explained * 100, digits = 2), "%)")
   colnames(plotdf)[-1] <- pca_labs[dims]
 
@@ -360,7 +358,7 @@ plotDR_intl <- function(drdf, sdata, rl, ...) {
 
   # split aes params into those that are not aes i.e. static parametrisation
   if (length(aesmap) > 0) {
-    is_aes <- sapply(aesmap, rlang::quo_is_symbolic)
+    is_aes <- vapply(aesmap, rlang::quo_is_symbolic, FUN.VALUE = logical(1))
     defaultmap <- lapply(aesmap[!is_aes], rlang::eval_tidy)
     aesmap <- aesmap[is_aes]
   } else {

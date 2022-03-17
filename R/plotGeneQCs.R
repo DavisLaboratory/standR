@@ -28,12 +28,12 @@ plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
                        hist_col = "black", hist_fill = "skyblue", bin_num = 30,
                        text_size = 13, layout_ncol = 1, layout_nrow = 2,
                        layout_height = c(1, .4), ...) {
-  p1 <- suppressWarnings(plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...))
-  p2 <- suppressWarnings(plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size))
+  p1 <- plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...)
+  p2 <- plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size)
 
-  suppressWarnings(print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
+  print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
     heights = layout_height
-  )))
+  ))
 }
 
 
@@ -60,7 +60,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
 
   aesmap <- rlang::enquos(...)
 
-  data[1:top_n, ] %>%
+  data[seq(top_n), ] %>%
     as.data.frame() %>%
     rownames_to_column() %>%
     tidyr::gather(sample, lcpm, -rowname) %>%
@@ -69,8 +69,8 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     mutate(sample = factor(sample, levels = colnames(data))) %>%
     ggplot(aes(sample, lcpm, !!!aesmap)) +
     geom_point(size = point_size, alpha = .5) +
-    scale_colour_discrete(na.translate = F) +
-    scale_shape_discrete(na.translate = F) +
+    scale_colour_discrete(na.translate = FALSE) +
+    scale_shape_discrete(na.translate = FALSE) +
     facet_wrap(~rowname) +
     geom_hline(
       yintercept = S4Vectors::metadata(spe)$lcpm_threshold, linetype = line_type,

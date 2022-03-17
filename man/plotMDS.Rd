@@ -13,7 +13,7 @@ plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
 \S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
-\S4method{plotMDS}{SummarizedExperiment}(object, assay = 1, dims, precomputed, rl, ...)
+\S4method{plotMDS}{SummarizedExperiment}(object, dims, precomputed, rl, assay = 1, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -39,8 +39,7 @@ a ggplot2 object
 Compute and plot the results of a MDS analysis on gene expression data
 }
 \examples{
-se <- emtdata::cursons2018_se()
-dge <- emtdata::asDGEList(se)
-plotMDS(dge, colour = Subline)
+data("dkd_spe_subset")
+plotMDS(dkd_spe_subset)
 
 }

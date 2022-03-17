@@ -7,12 +7,8 @@
 #' @export
 #'
 #' @examples
-#' se <- emtdata::cursons2018_se()
-#' dge <- emtdata::asDGEList(se)
-#' plotRLE(dge,
-#'   colour = Subline, lty = Treatment, lwd = 2, ordannots =
-#'     c(Subline, Treatment)
-#' )
+#' data("dkd_spe_subset")
+#' plotRLE(dkd_spe_subset)
 #'
 setGeneric(
   "plotRLE",
@@ -95,7 +91,7 @@ pdataRLE_intl <- function(emat, sampord) {
   rledf <- t(apply(rle, 2, function(x) grDevices::boxplot.stats(x)$stats))
   rledf <- as.data.frame(rledf)
   colnames(rledf) <- c("ymin", "lower", "middle", "upper", "ymax")
-  rledf$x <- 1:nrow(rledf)
+  rledf$x <- seq(nrow(rledf))
   rledf$RestoolsMtchID <- rownames(rledf)
 
   return(rledf)
@@ -118,7 +114,7 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
 
   # split aes params into those that are not aes i.e. static parametrisation
   if (length(aesmap) > 0) {
-    is_aes <- sapply(aesmap, rlang::quo_is_symbolic)
+    is_aes <- vapply(aesmap, rlang::quo_is_symbolic, FUN.VALUE = logical(1))
     defaultmap <- lapply(aesmap[!is_aes], rlang::eval_tidy)
     aesmap <- aesmap[is_aes]
   } else {
