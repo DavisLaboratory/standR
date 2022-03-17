@@ -4,7 +4,6 @@
 \alias{plotMDS}
 \alias{plotMDS,DGEList-method}
 \alias{plotMDS,ExpressionSet-method}
-\alias{plotMDS,SummarizedExperiment-method}
 \title{Compute and plot the results of a MDS analysis on gene expression data}
 \usage{
 plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
@@ -12,8 +11,6 @@ plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 \S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
 
 \S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
-
-\S4method{plotMDS}{SummarizedExperiment}(object, dims, precomputed, rl, assay = 1, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object

@@ -8,6 +8,9 @@
 \alias{plotPCA,SummarizedExperiment-method}
 \alias{plotPCA,SingleCellExperiment-method}
 \alias{plotPCA,SpatialExperiment-method}
+\alias{plotMDS,SummarizedExperiment-method}
+\alias{plotMDS,SingleCellExperiment-method}
+\alias{plotMDS,SpatialExperiment-method}
 \title{Compute and plot the results of a PCA analysis on gene expression data}
 \usage{
 \S4method{plotPCA}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
@@ -19,6 +22,12 @@
 \S4method{plotPCA}{SingleCellExperiment}(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...)
 
 \S4method{plotPCA}{SpatialExperiment}(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...)
+
+\S4method{plotMDS}{SummarizedExperiment}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
+
+\S4method{plotMDS}{SingleCellExperiment}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
+
+\S4method{plotMDS}{SpatialExperiment}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object

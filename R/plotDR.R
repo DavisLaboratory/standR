@@ -250,27 +250,32 @@ setMethod(
   }
 )
 
-#' @rdname plotMDS
-setMethod(
-  "plotMDS",
-  signature("SummarizedExperiment", "ANY", "ANY", "ANY"),
-  function(object, dims, precomputed, rl, assay = 1,...) {
+
+.plotMDS_se <- function(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1,...) {
     # compute PCA
-    if (is.null(precomputed)) {
-      mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
-    } else {
-      mdsdata <- checkPrecomputedMDS(object, precomputed)
-    }
+  if (is.null(precomputed)) {
+    mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
+  } else {
+    mdsdata <- checkPrecomputedMDS(object, precomputed)
+  }
 
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+  sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
     # create data structure
-    drdf <- pdataMDS_intl(mdsdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+  drdf <- pdataMDS_intl(mdsdata, dims)
+  p1 <- plotDR_intl(drdf, sdata, rl, ...)
 
-    return(p1)
-  }
-)
+  return(p1)
+}
+
+#' @rdname plotPCA
+setMethod("plotMDS", signature("SummarizedExperiment"), .plotMDS_se)
+
+#' @rdname plotPCA
+setMethod("plotMDS", signature("SingleCellExperiment"), .plotMDS_se)
+
+#' @rdname plotPCA
+setMethod("plotMDS", signature("SpatialExperiment"), .plotMDS_se)
 
 checkPrecomputedPCA <- function(object, pcdata) {
   if (is(pcdata, "prcomp")) {
