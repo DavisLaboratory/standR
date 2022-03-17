@@ -149,9 +149,9 @@ We therefore merge the region-related annotations to avoid collinearity, which c
 
 ```{r}
 colData(spe)$regions <- paste0(colData(spe)$region,"_",colData(spe)$SegmentLabel) %>%
-  str_replace("_Geometric Segment","") %>%
+  gsub("_Geometric Segment","",.) %>%
   paste0(.,"_",colData(spe)$pathology) %>%
-  str_replace("_NA","_ns")
+  gsub("_NA","_ns",.)
 
 
 plotMetadata(spe, column2plot = c("SlideName","disease_status","regions"))
@@ -254,7 +254,7 @@ plotPCA(spe, assay = 2, col = SlideName, shape = regions)
 Similarly, `plotMDS` can be used to visualise the multidimension scaling of the data.
 
 ```{r}
-plotMDS(spe, assay = 2, col = SlideName, shape = regions)
+standR::plotMDS(spe, assay = 2, col = SlideName, shape = regions)
 ```
 
 ### UMAP
