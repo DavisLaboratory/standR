@@ -222,7 +222,7 @@ We can use function `plotRLE` to visualise the relative log expression (RLE) of 
 By default, we are plotting RLE of the raw count, where most of the variation are from library size differences.
 
 
-```{r fig.width=12, fig.height=4}
+```{r}
 plotRLE(spe)
 ```
 
@@ -230,7 +230,7 @@ Using `assay = 2` to run RLE on the logCPM data, and we can see that most techni
 
 Here we can see obvious variation from slides to slides, and small variations are also observed within each slide.
 
-```{r fig.width=12, fig.height=4}
+```{r}
 plotRLE(spe, ordannots = "SlideName", assay = 2, col = SlideName)
 ```
 
@@ -280,7 +280,7 @@ The `standR` package also provide other functions to visualise the PCA, includin
 plotScreePCA(spe, assay = 2, dims = 10)
 ```
 
-```{r fig.width=12, fig.height=10}
+```{r}
 plotPairPCA(spe, n_dimension = 4, col = regions, 
                      shape = disease_status, assay = 2)
 ```
@@ -312,13 +312,13 @@ Then we use RLE and PCA plot to assess the normalisation count.
 The RLE plot show most of the median of RLE are close to zero, indicating that lots of technical variation are removed.
 
 
-```{r fig.width=12, fig.height=6}
+```{r}
 plotRLE(spe_tmm, assay = 2, color = SlideName) + ggtitle("TMM")
 ```
 
 However, batch effect from the different slides are still observed, confounding the separation between disease and normal.
 
-```{r fig.width=12, fig.height=10}
+```{r}
 plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = SlideName)
 plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = disease_status)
 plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = regions)
@@ -366,7 +366,7 @@ spe_ruv <- geomxBatchCorrection(spe, factors = "biology",
 We can then inspect the PCA of the corrected data with annotations, to inspect the removal of batch effects, and the retaining of the biological factors.
 
 
-```{r fig.width=12, fig.height=10}
+```{r}
 
 plotPairPCA(spe_ruv, assay = 2, color = disease_status, title = "RUV4")
 
@@ -392,7 +392,7 @@ spe_lrb <- geomxBatchCorrection(spe,
 Again, using PCA to inspect the batch correction process.
 
 
-```{r fig.width=12, fig.height=10}
+```{r}
 plotPairPCA(spe_lrb, assay = 2, color = disease_status, title = "Limma removeBatch")
 
 plotPairPCA(spe_lrb, assay = 2, color = regions, title = "Limma removeBatch")
@@ -421,7 +421,7 @@ Moreover, we can also have a look at the RLE plots of the normalised count to de
 
 We can clearly see that RUV4-corrected count have a overall more-closer-to-zero median RLE compared to the limma-corrected data. Therefore, in the downstream differential expression analysis, we would suggest using the RUV4 as the batch correction method for this specific dataset.
 
-```{r fig.width=12, fig.height=6}
+```{r}
 plotRLE(spe_ruv, assay = 2, color = SlideName) + ggtitle("RUV4")
 plotRLE(spe_lrb, assay = 2, color = SlideName) + ggtitle("Limma removeBatch")
 
