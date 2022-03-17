@@ -308,7 +308,7 @@ plotRLE(spe_tmm, assay = 2, color = SlideName) + ggtitle("TMM")
 However, batch effect from the different slides are still observed, confounding the separation between disease and normal.
 
 ```{r}
-plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = disease_status, shape = regions)
+plotPairPCA(spe_tmm, assay = 2, color = disease_status, shape = regions)
 ```
 
 
