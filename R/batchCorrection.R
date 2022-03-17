@@ -75,12 +75,12 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param factors Column name(s) to indicate the factors of interest. This is required for the RUV4 method.
 #' @param NCGs Negative control genes. This is required for the RUV4 method.
 #' @param n_assay Integer to indicate the nth count table in the assay(spe) to be used.
-#' @param batch A vector indicating batches. This is required for the Limma mehtod.
+#' @param batch A vector indicating batches. This is required for the Limma method.
 #' @param covariates A matrix or vector of numeric covariates to be adjusted for.
 #' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
 #' @param method Can be either RUV4 or Limma, by default is RUV4.
 #'
-#' @return A Spatial Experiment object, containing the ruv4-normalised count and normalisation factor.
+#' @return A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
 #' @export
 #'
 #' @references Gagnon-Bartsch, J. A., Jacob, L., & Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.

@@ -26,13 +26,13 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 # Introduction
-The `standR` package is short for **S**patial **t**ranscriptomics **a**nalyses a**n**d **d**ecoding in **R**, it aims at providing good practice pipeline and useful functions for users to analyse Nanostring's GeoMx DSP data, including data with GeoMX protein (~30-60 markers), CTA (cancer transcriptome atlas, ~1800 genes) and WTA (whole transcriptome atlas, ~18000 genes) panels.
+The `standR` package is short for **S**patial **t**ranscriptomics **a**nalyzes a**n**d **d**ecoding in **R**, it aims at providing good practice pipeline and useful functions for users to analyze Nanostring's GeoMx DSP data, including data with GeoMX protein (~30-60 markers), CTA (cancer transcriptome atlas, ~1800 genes) and WTA (whole transcriptome atlas, ~18000 genes) panels.
 
 The data analysis workflow consists of the following steps:
 
 ![Workflow Steps](../man/figures/workflow.jpg "Workflow Steps")
 
-The purpose of this vignette is to demonstrate how to use standR to analyse Nanostring GeoMx DSP data.
+The purpose of this vignette is to demonstrate how to use standR to analyze Nanostring GeoMx DSP data.
 
 # Installation
 
@@ -88,7 +88,7 @@ countFile <- "Kidney_Raw_TargetCountMatrix.txt"
 sampleAnnoFile <- "Kidney_Sample_Annotations.txt"
 featureAnnoFile <- "Kidney_Feature_Annotations.txt"
 
-spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = T)
+spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
 
 ```
 
@@ -177,14 +177,10 @@ metadata(spe) %>% names()
 
 Using the `plotGeneQC` function, we can have a look at which were the genes removed and the overall distribution of percentage of non-expressed genes in all ROIs. By default, top 9 genes are plotted here (arranging by mean expression), user can increase the number of plotted genes by changing the `top_n` parameter.
 
-```{r fig.width=10, fig.height=8}
-plotGeneQC(spe)
-```
-
 Moreover, users can order the samples (using parameter `ordannots`) and color/shape the dots with annotation to find out if these genes are specifically expressed in some samples (e.g. in some tissue types or in some treatment group) so that we may need to retain them. 
 
 
-```{r fig.width=10, fig.height=8}
+```{r}
 plotGeneQC(spe, ordannots = "regions", col = regions, point_size = 2)
 ```
 
@@ -193,10 +189,6 @@ In this case we don't see any specific biological pattern for the samples expres
 ## ROI level QC
 
 Using the `plotROIQC` function, we are able to visualise some QC statistics in the ROI level, such as library size and cell count (AOINucleiCount) (the default settinngs for this function).
-
-```{r}
-plotROIQC(spe)
-```
 
 In the ROI level QC, we first aim to identify (if any) ROI(s) that have relatively low library size and low cell count because they are considered as low quality samples due to insufficient sequencing depth or lack of RNA in the chosen region. 
 
@@ -222,7 +214,7 @@ We can use function `plotRLE` to visualise the relative log expression (RLE) of 
 By default, we are plotting RLE of the raw count, where most of the variation are from library size differences.
 
 
-```{r}
+```{r eval=FALSE}
 plotRLE(spe)
 ```
 
@@ -261,18 +253,17 @@ standR::plotMDS(spe, assay = 2, col = SlideName, shape = regions)
 
 Further more, to be consistent with the `scater` package, which is commonly used in single cell data and visium data analysis, we provide the function `plotDR` to visualise any kinds of dimension reduction results generated from `scater::run*`, such as UMAP, TSNE and NMF, by specifying the `dimred` parameter. 
 
-Here we plot the UMAP of our data. Similar variation can be observed like PCA and MDS aboved.
+Here we plot the UMAP of our data. Similar variation can be observed like PCA and MDS above.
 
 
 ```{r}
 spe <- scater::runUMAP(spe)
 
 plotDR(spe, dimred = "UMAP", col = regions)
-plotDR(spe, dimred = "UMAP", col = disease_status)
 ```
 
 
-### Other PCA-related visualisations
+### Other PCA-related visualizations
 
 The `standR` package also provide other functions to visualise the PCA, including the PCA scree plot, pair-dimension PCA plot and PCA bi-plot.
 
@@ -281,24 +272,22 @@ plotScreePCA(spe, assay = 2, dims = 10)
 ```
 
 ```{r}
-plotPairPCA(spe, n_dimension = 4, col = regions, 
-                     shape = disease_status, assay = 2)
+plotPairPCA(spe, col = regions, 
+            shape = disease_status, assay = 2)
 ```
 
 ```{r}
-
 plotPCAbiplot(spe, n_loadings = 10, assay = 2, col = regions)
-
 ```
 
 
-# Normalisation
+# Normalization
 
-As we observed the technical variations in the data in both RLE and PCA plots. It is necessary to perform normalisation in the data.
+As we observed the technical variations in the data in both RLE and PCA plots. It is necessary to perform normalization in the data.
 
-In the `standR` package, we offer normalisation options including TMM, RPKM, TPM, CPM, upperquartile and sizefactor. Among them, RPKM and TPM required gene length information (add `genelength` column to the `rowData` of the object). For TMM, upperquartile and sizefactor, their normalised factor will be stored their `metadata`.
+In the `standR` package, we offer normalization options including TMM, RPKM, TPM, CPM, upperquartile and sizefactor. Among them, RPKM and TPM required gene length information (add `genelength` column to the `rowData` of the object). For TMM, upperquartile and sizefactor, their normalized factor will be stored their `metadata`.
 
-Here we used TMM to normalise the data.
+Here we used TMM to normalize the data.
 
 ```{r}
 colData(spe)$biology <- paste0(colData(spe)$disease_status, "_", colData(spe)$regions)
@@ -307,7 +296,7 @@ spe_tmm <- geomxNorm(spe, method = "TMM")
 ```
 
 
-Then we use RLE and PCA plot to assess the normalisation count.
+Then we use RLE and PCA plot to assess the normalization count.
 
 The RLE plot show most of the median of RLE are close to zero, indicating that lots of technical variation are removed.
 
@@ -319,9 +308,7 @@ plotRLE(spe_tmm, assay = 2, color = SlideName) + ggtitle("TMM")
 However, batch effect from the different slides are still observed, confounding the separation between disease and normal.
 
 ```{r}
-plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = SlideName)
-plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = disease_status)
-plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = regions)
+plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = disease_status, shape = regions)
 ```
 
 
@@ -329,7 +316,7 @@ plotPairPCA(spe_tmm, assay = 2, n_dimension = 4, color = regions)
 
 In the Nanostring's GeoMX DSP protocol, due to the fact that one slide is only big enough for a handful of tissue segments (ROIs), it is common that we see the DSP data being confounded by the batch effect introduced by different slides. In order to establish fair comparison between ROIs later on, it is necessary to remove this batch effect from the data.
 
-In the `standR` package, we provide three approaches of removing batch effects, including RUV4, combat and limma.
+In the `standR` package, we provide two approaches of removing batch effects, including RUV4 and Limma.
 
 ## Correction method : RUV4
 
@@ -345,9 +332,9 @@ metadata(spe) %>% names()
 ```
 
 
-Now we can run RUV4 on the data using function `geomxBatchCorrection`. By default this function will use `RUV4` to normalise the data. For RUV4 correction, the function is requiring 3 parameters other than the input object, including `factors`: the factor of interest, i.e. the biological variation we plan to keep; `NCGs`: the list of negative control genes detected using the function `findNCGs`; and `k`: is the number of unwanted factors to use, in the RUV documentation, it is suggest that we should use the smallest k once we don't observe technical variation in the data.
+Now we can run RUV4 on the data using function `geomxBatchCorrection`. By default this function will use `RUV4` to normalize the data. For RUV4 correction, the function is requiring 3 parameters other than the input object, including `factors`: the factor of interest, i.e. the biological variation we plan to keep; `NCGs`: the list of negative control genes detected using the function `findNCGs`; and `k`: is the number of unwanted factors to use, in the RUV documentation, it is suggest that we should use the smallest k once we don't observe technical variation in the data.
 
-Here we can find the best k by using function `findBestK` to examine the silhouette score of ruv4-normalised count data clustering according to batch from k = 1 to 10, where the score is closing to zero means we are more likely to successfully remove the batch effect from the data. In this case, k = 5 is the satisfied k.
+Here we can find the best k by using function `findBestK` to examine the silhouette score of ruv4-normalized count data clustering according to batch from k = 1 to 10, where the score is closing to zero means we are more likely to successfully remove the batch effect from the data. In this case, k = 5 is the satisfied k.
 
 ```{r}
 findBestK(spe, maxK = 10, factor_of_int = "biology", NCGs = metadata(spe)$NCGs, factor_batch = "SlideName")
@@ -359,7 +346,6 @@ We therefore will choose k=5 for this dataset.
 ```{r}
 spe_ruv <- geomxBatchCorrection(spe, factors = "biology", 
                    NCGs = metadata(spe)$NCGs, k = 5)
-
 ```
 
 
@@ -367,11 +353,7 @@ We can then inspect the PCA of the corrected data with annotations, to inspect t
 
 
 ```{r}
-
-plotPairPCA(spe_ruv, assay = 2, color = disease_status, title = "RUV4")
-
-plotPairPCA(spe_ruv, assay = 2, color = regions, title = "RUV4")
-
+plotPairPCA(spe_ruv, assay = 2, color = disease_status, shape = regions, title = "RUV4")
 ```
 
 
@@ -393,18 +375,16 @@ Again, using PCA to inspect the batch correction process.
 
 
 ```{r}
-plotPairPCA(spe_lrb, assay = 2, color = disease_status, title = "Limma removeBatch")
-
-plotPairPCA(spe_lrb, assay = 2, color = regions, title = "Limma removeBatch")
+plotPairPCA(spe_lrb, assay = 2, color = disease_status, shape = regions, title = "Limma removeBatch")
 ```
 
 ## Evaluation
 
 ### Summary statistics
 
-Besides looking at the PCA plots of normalised count, another way to evaluate the batch correction is by summarising statistics such as adjusted rand index, jaccard similarity coefficient, silhouette coefficient and etc. We can do this by using the `plotClusterEvalStats` function. In the biology section, higher the score is better while in the batch section, lower is better.
+Besides looking at the PCA plots of normalized count, another way to evaluate the batch correction is by summarising statistics such as adjusted rand index, jaccard similarity coefficient, silhouette coefficient and etc. We can do this by using the `plotClusterEvalStats` function. In the biology section, higher the score is better while in the batch section, lower is better.
 
-We can see that when it comes to stratifying for biology factors (disease status and tissue regions), the comBat-correted method has the highest score in ARI and Jaccard (both are measuring the similarity of clusters), while in the silhouette score, which is measuring the disease between each dot to the cluster, RUV4 outperform others in displaying biological variations. On the other hand, when it comes to measuring batch clustering, RUV4 outperform others in all three statistics for this dataset.
+We can see that when it comes to stratifying for biology factors (disease status and tissue regions) or measuring batch clustering for this dataset, RUV4 outperform Limma in most statistics. 
 
 ```{r}
 spe_list <- list(spe, spe_ruv, spe_lrb)
@@ -417,14 +397,13 @@ plotClusterEvalStats(spe_list = spe_list,
 
 ### RLE plots
 
-Moreover, we can also have a look at the RLE plots of the normalised count to determine which batch correction performs better for this dataset.
+Moreover, we can also have a look at the RLE plots of the normalized count to determine which batch correction performs better for this dataset.
 
 We can clearly see that RUV4-corrected count have a overall more-closer-to-zero median RLE compared to the limma-corrected data. Therefore, in the downstream differential expression analysis, we would suggest using the RUV4 as the batch correction method for this specific dataset.
 
 ```{r}
 plotRLE(spe_ruv, assay = 2, color = SlideName) + ggtitle("RUV4")
 plotRLE(spe_lrb, assay = 2, color = SlideName) + ggtitle("Limma removeBatch")
-
 ```
 
 
@@ -433,5 +412,3 @@ plotRLE(spe_lrb, assay = 2, color = SlideName) + ggtitle("Limma removeBatch")
 ```{r}
 sessionInfo()
 ```
-
-

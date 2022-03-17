@@ -2,7 +2,7 @@
 % Please edit documentation in R/geomx_import_data.R
 \name{readGeoMxFromDGE}
 \alias{readGeoMxFromDGE}
-\title{Import GeoMX DSP data into a saptial experiment object from DGEList object}
+\title{Import GeoMX DSP data into a spatial experiment object from DGEList object}
 \usage{
 readGeoMxFromDGE(dge_object, spatialCoord = NULL)
 }
@@ -15,7 +15,7 @@ readGeoMxFromDGE(dge_object, spatialCoord = NULL)
 A SpatialExperiment object.
 }
 \description{
-Import GeoMX DSP data into a saptial experiment object from DGEList object
+Import GeoMX DSP data into a spatial experiment object from DGEList object
 }
 \examples{
 # making a simple DGEList object

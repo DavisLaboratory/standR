@@ -140,7 +140,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 
 
 
-#' Import GeoMX DSP data into a saptial experiment object from DGEList object
+#' Import GeoMX DSP data into a spatial experiment object from DGEList object
 #'
 #' @param dge_object a DGEList object (created using edgeR::DGEList).
 #' @param spatialCoord a matrix with coordinates of samples, rowname must be cosistent with the colnames of dge_object.

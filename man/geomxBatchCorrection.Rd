@@ -27,7 +27,7 @@ geomxBatchCorrection(
 
 \item{n_assay}{Integer to indicate the nth count table in the assay(spe) to be used.}
 
-\item{batch}{A vector indicating batches. This is required for the Limma mehtod.}
+\item{batch}{A vector indicating batches. This is required for the Limma method.}
 
 \item{covariates}{A matrix or vector of numeric covariates to be adjusted for.}
 
@@ -36,7 +36,7 @@ geomxBatchCorrection(
 \item{method}{Can be either RUV4 or Limma, by default is RUV4.}
 }
 \value{
-A Spatial Experiment object, containing the ruv4-normalised count and normalisation factor.
+A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
 }
 \description{
 Batch correction for GeoMX data

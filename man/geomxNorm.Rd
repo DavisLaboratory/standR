@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalisation.R
 \name{geomxNorm}
 \alias{geomxNorm}
-\title{Perform normalisation to GeoMX data}
+\title{Perform normalization to GeoMX data}
 \usage{
 geomxNorm(
   spe_object,
@@ -13,15 +13,15 @@ geomxNorm(
 \arguments{
 \item{spe_object}{A spatial experiment object.}
 
-\item{method}{Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.}
+\item{method}{Normalization method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.}
 
 \item{log}{Log-transformed or not.}
 }
 \value{
-A spatial experiment object, with the second assay being the normalised count matrix.
+A spatial experiment object, with the second assay being the normalized count matrix.
 }
 \description{
-Perform normalisation to GeoMX data
+Perform normalization to GeoMX data
 }
 \examples{
 data("dkd_spe_subset")

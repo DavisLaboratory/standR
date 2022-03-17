@@ -19,7 +19,7 @@ addPerROIQC(
 
 \item{rm_genes}{Logical. Decide whether genes with low count in more than sample_fraction of the samples are removed from the dataset. Default is TRUE.}
 
-\item{min_count}{Interger. Minimum read count to calculate count threshold. Default is 5.}
+\item{min_count}{Integer. Minimum read count to calculate count threshold. Default is 5.}
 
 \item{design}{Generate using \code{model.matrix}, if this is specify, \code{edgeR::filterByExpr} will be used to filter genes.}
 }

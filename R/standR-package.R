@@ -8,10 +8,10 @@
 NULL
 
 
-#' Tools for nalysing Nanostring's GeoMX spatial transcriptomics data
+#' Tools for analyzing NanoString's GeoMX spatial transcriptomics data
 #'
 #' `standR` implements a series of functions to facilitate inspection,
-#' analysis and visualization of the Nanostring's GeoMX DSP datasets. `standR`
+#' analysis and visualization of the NanoString's GeoMX DSP datasets. `standR`
 #' takes the either the csv files from the Nanostring or DGEList object as
 #' input, allowing for multiple methods to be analyzed together.
 #'
@@ -19,9 +19,9 @@ NULL
 #' easily be integrated with a wide variety of Bioconductor packages.`standR`
 #' generates various plots, such as QC distribution plots, dimension reduction
 #' plots and RLE plots, for quality control of genes and region of interest
-#' (ROI) samples. Multiple normalisation and batch correction methods are also
+#' (ROI) samples. Multiple normalization and batch correction methods are also
 #' provided in the package as well, with the ability to compute statistics for
-#' assessing the normalisation/batch correction results.
+#' assessing the normalization/batch correction results.
 #'
 #'
 #' @author Ning Liu \email{liu.n@@wehi.edu.au}

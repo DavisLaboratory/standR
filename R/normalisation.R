@@ -1,4 +1,4 @@
-# DEseq2 normalisation
+# DEseq2 normalization
 calNormCount <- function(spe_object, log = TRUE) {
   # get raw count
   count_df <- SummarizedExperiment::assay(spe_object, 1)
@@ -35,13 +35,13 @@ rpkm2tpm <- function(x) {
 }
 
 
-#' Perform normalisation to GeoMX data
+#' Perform normalization to GeoMX data
 #'
 #' @param spe_object A spatial experiment object.
-#' @param method Normalisation method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
+#' @param method Normalization method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
 #' @param log Log-transformed or not.
 #'
-#' @return A spatial experiment object, with the second assay being the normalised count matrix.
+#' @return A spatial experiment object, with the second assay being the normalized count matrix.
 #' @export
 #'
 #' @references Robinson, M. D., McCarthy, D. J., & Smyth, G. K. (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26(1), 139-140.
