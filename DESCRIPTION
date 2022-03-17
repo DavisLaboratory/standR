@@ -48,6 +48,7 @@ Suggests:
     knitr,
     rmarkdown,
     scater,
+    uwot,
     ggalluvial,
     ggpubr,
     ggrepel,
