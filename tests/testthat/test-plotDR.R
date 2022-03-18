@@ -52,23 +52,23 @@ test_that("plotMDS works", {
   data("dkd_spe_subset")
 
   # Default param
-  p <- plotMDS(dkd_spe_subset)
+  p <- standR::plotMDS(dkd_spe_subset)
   expect_silent(print(p))
 
   # color with column
-  p <- plotMDS(dkd_spe_subset, color = region)
+  p <- standR::plotMDS(dkd_spe_subset, color = region)
   expect_silent(print(p))
 
   # color with expression
-  p <- plotMDS(dkd_spe_subset, color = SequencingSaturation > 90)
+  p <- standR::plotMDS(dkd_spe_subset, color = SequencingSaturation > 90)
   expect_silent(print(p))
 
   # multiple aesthetics
-  p <- plotMDS(dkd_spe_subset, color = SequencingSaturation > 90, shape = region)
+  p <- standR::plotMDS(dkd_spe_subset, color = SequencingSaturation > 90, shape = region)
   expect_error(print(p), NA)
 
   # error when the column is not in the data
-  p <- plotMDS(dkd_spe_subset, color = xyz)
+  p <- standR::plotMDS(dkd_spe_subset, color = xyz)
   expect_error(
     # We need to force eval here to throw the error
     print(p),
@@ -77,14 +77,14 @@ test_that("plotMDS works", {
 
   # will not error if the variable is present in the parent env
   region2 <- dkd_spe_subset$region
-  p <- plotMDS(dkd_spe_subset, color = region2)
+  p <- standR::plotMDS(dkd_spe_subset, color = region2)
   expect_error(print(p), NA)
 
   # test dgelist
 
   dge <- edgeR::SE2DGEList(dkd_spe_subset)
 
-  p <- plotMDS(dge)
+  p <- standR::plotMDS(dge)
   expect_silent(print(p))
 })
 

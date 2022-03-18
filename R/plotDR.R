@@ -193,7 +193,7 @@ setMethod(
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' plotMDS(dkd_spe_subset)
+#' standR::plotMDS(dkd_spe_subset)
 #'
 setGeneric(
   "plotMDS",
