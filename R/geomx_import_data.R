@@ -12,9 +12,9 @@
 #' @export
 #'
 #' @examples
-#' dirPath <- system.file("extdata", package = "standR")
-#' countFile <- file.path(dirPath, "dkd_subset_TargetCountMatrix.txt")
-#' sampleAnnoFile <- file.path(dirPath, "dkd_subset_Sample_Annotations.txt")
+#' url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
+#' countFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
+#' sampleAnnoFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
 #'
 #' spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'

@@ -29,6 +29,23 @@ test_that("plotPCA works", {
   region2 <- dkd_spe_subset$region
   p <- plotPCA(dkd_spe_subset, color = region2)
   expect_error(print(p), NA)
+
+  # test precompute
+  library(scater)
+  spe <- scater::runPCA(dkd_spe_subset)
+  pdata <- reducedDim(spe, "PCA")
+
+  p <- plotPCA(dkd_spe_subset, precomputed = pdata)
+  expect_silent(print(p))
+
+  expect_error(plotPCA(dkd_spe_subset, precomputed = "pdata"))
+
+  # test dgelist
+
+  dge <- edgeR::SE2DGEList(spe)
+
+  p <- plotPCA(dge)
+  expect_silent(print(p))
 })
 
 test_that("plotMDS works", {
@@ -62,6 +79,13 @@ test_that("plotMDS works", {
   region2 <- dkd_spe_subset$region
   p <- plotMDS(dkd_spe_subset, color = region2)
   expect_error(print(p), NA)
+
+  # test dgelist
+
+  dge <- edgeR::SE2DGEList(dkd_spe_subset)
+
+  p <- plotMDS(dge)
+  expect_silent(print(p))
 })
 
 

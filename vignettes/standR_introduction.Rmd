@@ -127,19 +127,14 @@ The quality control (QC) procedures are consisting of three major steps:
 
 To visualise sample metadata, we can use the `plotMetadata` function. In this dataset, slides, diseases status, tissue regions, and different subtypes of the tissues are the important features that we could input into the function.
 
-We can see that all glomerulus are classified as abnormal and healthy, and tubule are classified as neg and PanCK. 
-
-```{r}
-library(ggalluvial)
-
-plotMetadata(spe, column2plot = c("SlideName","disease_status","region","pathology",
-                                  "SegmentLabel"))
-```
+Based on the description of the data, we know that all glomerulus are classified as abnormal and healthy, and tubule are classified as neg and PanCK. 
 
 We therefore merge the region-related annotations to avoid collinearity, which can affect the process of batch correction.
 
 
 ```{r}
+library(ggalluvial)
+
 colData(spe)$regions <- paste0(colData(spe)$region,"_",colData(spe)$SegmentLabel) %>%
   gsub("_Geometric Segment","",.) %>%
   paste0(.,"_",colData(spe)$pathology) %>%

@@ -45,4 +45,11 @@ test_that("plotRLE works with Eset", {
   expect_silent(print(plotRLE(sce[, 1:10])))
   expect_silent(print(plotRLE(sce[, 1:100])))
   expect_silent(print(plotRLE(sce)))
+
+
+  # test dgelist
+
+  dge <- edgeR::SE2DGEList(dkd_spe_subset)
+  p <- plotRLE(dkd_spe_subset)
+  expect_silent(print(p))
 })

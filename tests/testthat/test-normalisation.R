@@ -13,6 +13,17 @@ test_that("Testing normalisation function", {
   expect_equal(dim(SummarizedExperiment::assay(spe_deseqnorm, 2)), dim(dkd_spe_subset))
   expect_equal(typeof(SummarizedExperiment::assay(spe_deseqnorm, 2)), "double")
 
+  # check output dimensions with no log
+  spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM", log = FALSE)
+  expect_equal(dim(SummarizedExperiment::assay(spe_tmm, 2)), dim(dkd_spe_subset))
+  expect_equal(typeof(SummarizedExperiment::assay(spe_tmm, 2)), "double")
+  spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile", log = FALSE)
+  expect_equal(dim(SummarizedExperiment::assay(spe_upq, 2)), dim(dkd_spe_subset))
+  expect_equal(typeof(SummarizedExperiment::assay(spe_upq, 2)), "double")
+  spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor", log = FALSE)
+  expect_equal(dim(SummarizedExperiment::assay(spe_deseqnorm, 2)), dim(dkd_spe_subset))
+  expect_equal(typeof(SummarizedExperiment::assay(spe_deseqnorm, 2)), "double")
+
   # check output dimensions of tpm and rpkm
   spe <- dkd_spe_subset
   rowData(spe)$GeneLength <- sample(100:10000, nrow(spe))
@@ -20,6 +31,12 @@ test_that("Testing normalisation function", {
   expect_equal(dim(SummarizedExperiment::assay(spe_rpkm, 2)), dim(spe))
   expect_equal(typeof(SummarizedExperiment::assay(spe_rpkm, 2)), "double")
   spe_tpm <- geomxNorm(spe, method = "TPM")
+  expect_equal(dim(SummarizedExperiment::assay(spe_tpm, 2)), dim(spe))
+  expect_equal(typeof(SummarizedExperiment::assay(spe_tpm, 2)), "double")
+  spe_rpkm <- geomxNorm(spe, method = "RPKM", log = FALSE)
+  expect_equal(dim(SummarizedExperiment::assay(spe_rpkm, 2)), dim(spe))
+  expect_equal(typeof(SummarizedExperiment::assay(spe_rpkm, 2)), "double")
+  spe_tpm <- geomxNorm(spe, method = "TPM", log = FALSE)
   expect_equal(dim(SummarizedExperiment::assay(spe_tpm, 2)), dim(spe))
   expect_equal(typeof(SummarizedExperiment::assay(spe_tpm, 2)), "double")
 
