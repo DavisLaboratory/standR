@@ -65,17 +65,6 @@ Data we are using here is a published whole transcriptome atlas (WTA) dataset of
 The data is available [here](http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/).
 
 
-```{r message = FALSE, warning = FALSE}
-dirPath <- tempdir()
-
-url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
-
-download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = file.path(dirPath,"Kidney_Raw_TargetCountMatrix.txt"))
-download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Sample_Annotations.txt"))
-download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Feature_Annotations.txt"))
-```
-
-
 This is the background for the data:
 
 NanoString GeoMx DSP dataset of diabetic kidney disease (DKD) vs healthy kidney tissue.  **Seven slides** were analyzed, **4 DKD and 3 healthy**. Regions of Interest (ROI) were focused two different parts of a kidney’s structure: **tubules or glomeruli**. Individual glomeruli were identified by a pathologist as either **relatively healthy or diseased** regardless if the tissue was DKD or healthy. Tubule ROIs were segmented into **distal (PanCK) and proximal (neg) tubules**. While both distal and proximal tubules are called tubules, they perform very different functions in the kidney.
@@ -84,13 +73,16 @@ In order to import the data into a spatial experiment object. We use the `readGe
 
 
 ```{r message = FALSE, warning = FALSE}
-countFile <- "Kidney_Raw_TargetCountMatrix.txt"
-sampleAnnoFile <- "Kidney_Sample_Annotations.txt"
-featureAnnoFile <- "Kidney_Feature_Annotations.txt"
+url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
 
-spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
+countFile <- paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt")
+sampleAnnoFile <- paste0(url_base,"Kidney_Sample_Annotations.txt")
+featureAnnoFile <- paste0(url_base,"Kidney_Feature_Annotations.txt")
+
+spe <- readGeoMx(countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
 
 ```
+
 
 Next, we inspect the SpatialExperiment object. For more details, see [SpatialExperiment](http://www.bioconductor.org/packages/release/bioc/html/SpatialExperiment.html).
 
