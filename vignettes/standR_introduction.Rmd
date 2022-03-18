@@ -66,13 +66,13 @@ The data is available [here](http://nanostring-public-share.s3-website-us-west-2
 
 
 ```{r message = FALSE, warning = FALSE}
-dirPath <- tempdir()
+# dirPath <- tempdir()
 
-url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
+# url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
 
-download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = file.path(dirPath,"Kidney_Raw_TargetCountMatrix.txt"))
-download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Sample_Annotations.txt"))
-download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Feature_Annotations.txt"))
+# download.file(paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt"), destfile = file.path(dirPath,"Kidney_Raw_TargetCountMatrix.txt"))
+# download.file(paste0(url_base,"Kidney_Sample_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Sample_Annotations.txt"))
+# download.file(paste0(url_base,"Kidney_Feature_Annotations.txt"), destfile = file.path(dirPath,"Kidney_Feature_Annotations.txt"))
 ```
 
 
@@ -88,7 +88,7 @@ countFile <- "Kidney_Raw_TargetCountMatrix.txt"
 sampleAnnoFile <- "Kidney_Sample_Annotations.txt"
 featureAnnoFile <- "Kidney_Feature_Annotations.txt"
 
-spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
+spe <- readGeoMx(".", countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
 
 ```
 
