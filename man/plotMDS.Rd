@@ -6,11 +6,11 @@
 \alias{plotMDS,ExpressionSet-method}
 \title{Compute and plot the results of a MDS analysis on gene expression data}
 \usage{
-plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
 
-\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
 
-\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...)
+\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -24,10 +24,10 @@ containing gene expression data.}
 \item{rl}{a numeric, specifying the relative scale factor to apply to text on
 the plot.}
 
-\item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
-
 \item{assay}{a numeric or character, specifying the assay to use (for
 \code{SummarizedExperiment} and its derivative classes).}
+
+\item{...}{aesthetic mappings to pass to \code{ggplot2::aes_string()}.}
 }
 \value{
 a ggplot2 object
