@@ -5,6 +5,8 @@
 
 The standR package provides a series of functions to assist different stages of the analysis of spatial transcriptomics data generated from the Nanostring's GeoMX DSP platforms. Most functions in the package is based on the infrastructure `SpatialExperiment`, see detials [here](https://www.biorxiv.org/content/10.1101/2021.01.27.428431v3).
 
+## See full guide at [HERE](https://davislaboratory.github.io/standR/)
+
 ## Overall workflow
 
 <img src="man/figures/workflow.jpg" width="1200">
