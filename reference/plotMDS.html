@@ -54,16 +54,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for DGEList</span>
-<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for ExpressionSet</span>
-<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for SummarizedExperiment</span>
-<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, <span class="va">dims</span>, <span class="va">precomputed</span>, <span class="va">rl</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,11 +76,11 @@ containing gene expression data.</p></dd>
 <dt>rl</dt>
 <dd><p>a numeric, specifying the relative scale factor to apply to text on
 the plot.</p></dd>
-<dt>...</dt>
-<dd><p>aesthetic mappings to pass to <code><a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">ggplot2::aes_string()</a></code>.</p></dd>
 <dt>assay</dt>
 <dd><p>a numeric or character, specifying the assay to use (for
 <code>SummarizedExperiment</code> and its derivative classes).</p></dd>
+<dt>...</dt>
+<dd><p>aesthetic mappings to pass to <code><a href="https://ggplot2.tidyverse.org/reference/aes_.html" class="external-link">ggplot2::aes_string()</a></code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
