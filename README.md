@@ -1,4 +1,4 @@
-# standR: spatial transcriptomics analyses and decoding in R
+# standR: spatial transcriptomics analyses and decoding in R <img src="man/figures/standR_sticker.png" align="right" alt="" width="120" />
 
 [![R-CMD-check](https://github.com/DavisLaboratory/standR/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/DavisLaboratory/standR/actions)
 [![Coverage status](https://codecov.io/gh/DavisLaboratory/standR/branch/master/graph/badge.svg)](https://codecov.io/github/DavisLaboratory/standR?branch=master)
