@@ -1,6 +1,5 @@
 #' Import GeoMX DSP data into a saptial experiment object from file paths
 #'
-#' @param dirPath The folder path to all necessary tsv files.
 #' @param countFile tsv file. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.
 #' @param sampleAnnoFile tsv file. Sample annotations.
 #' @param featureAnnoFile tsv file. Feature/Gene annotations.
@@ -14,25 +13,25 @@
 #'
 #' @examples
 #' dirPath <- system.file("extdata", package = "standR")
-#' countFile <- "dkd_subset_TargetCountMatrix.txt"
-#' sampleAnnoFile <- "dkd_subset_Sample_Annotations.txt"
+#' countFile <- file.path(dirPath, "dkd_subset_TargetCountMatrix.txt")
+#' sampleAnnoFile <- file.path(dirPath, "dkd_subset_Sample_Annotations.txt")
 #'
-#' spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
+#' spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'
-readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
+readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
                       hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
                       colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
                       coord.colnames = c("ROICoordinateX", "ROICoordinateY")) {
-  stopifnot(file.exists(file.path(dirPath, countFile)))
-  stopifnot(file.exists(file.path(dirPath, sampleAnnoFile)))
+  # stopifnot(file.exists(file.path(dirPath, countFile)))
+  # stopifnot(file.exists(file.path(dirPath, sampleAnnoFile)))
   if (!is.na(featureAnnoFile)) {
-    stopifnot(file.exists(file.path(dirPath, featureAnnoFile)))
+    # stopifnot(file.exists(file.path(dirPath, featureAnnoFile)))
   }
   stopifnot(is.character(NegProbeName))
   stopifnot(length(colnames.as.rownames) == 3)
   stopifnot(length(coord.colnames) == 2)
   spe <- geomx_import_fun(
-    dirPath, countFile, sampleAnnoFile, featureAnnoFile,
+    countFile, sampleAnnoFile, featureAnnoFile,
     hasNegProbe, NegProbeName, colnames.as.rownames, coord.colnames
   )
   return(spe)
@@ -40,14 +39,14 @@ readGeoMx <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile = NA,
 
 
 # the importing function itself
-geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile,
+geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
                              hasNegProbe, NegProbeName,
                              colnames.as.rownames,
                              coord.colnames) {
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
   if (hasNegProbe == TRUE) {
-    countdata <- as.data.frame(readr::read_tsv(file.path(dirPath, countFile)), optional = TRUE)
+    countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
 
     # raw count without negprobes
     # make sure count data have the gene column name as pre-defined, such as TargetName.
@@ -68,7 +67,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
 
     # gene meta without negprobes
     if (!is.na(featureAnnoFile)) {
-      genemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, featureAnnoFile)), optional = TRUE)
+      genemeta <- as.data.frame(readr::read_tsv(featureAnnoFile), optional = TRUE)
 
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
 
@@ -83,7 +82,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
     }
 
     # sample meta
-    samplemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, sampleAnnoFile)), optional = TRUE)
+    samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile), optional = TRUE)
 
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta)) # make sure column name is there.
 
@@ -119,14 +118,14 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
     # raw count
-    countdata <- as.data.frame(readr::read_tsv(file.path(dirPath, countFile)), optional = TRUE)
+    countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
 
     stopifnot(colnames.as.rownames[1] %in% colnames(countdata))
 
     countdata <- tibble::column_to_rownames(countdata, colnames.as.rownames[1])
     # gene meta check
     if (!is.na(featureAnnoFile)) {
-      gene_meta <- as.data.frame(readr::read_tsv(file.path(dirPath, featureAnnoFile)),
+      gene_meta <- as.data.frame(readr::read_tsv(featureAnnoFile),
                                  optional = TRUE)
       gene_meta <- tibble::column_to_rownames(gene_meta, colnames.as.rownames[3])
       gene_meta <- gene_meta[rownames(countdata), ]
@@ -135,8 +134,7 @@ geomx_import_fun <- function(dirPath, countFile, sampleAnnoFile, featureAnnoFile
     }
 
     # sample meta
-    samplemeta <- as.data.frame(readr::read_tsv(file.path(dirPath, sampleAnnoFile)),
-                                optional = TRUE)
+    samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile), optional = TRUE)
 
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
 

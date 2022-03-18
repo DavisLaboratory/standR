@@ -84,11 +84,12 @@ In order to import the data into a spatial experiment object. We use the `readGe
 
 
 ```{r message = FALSE, warning = FALSE}
-countFile <- "Kidney_Raw_TargetCountMatrix.txt"
-sampleAnnoFile <- "Kidney_Sample_Annotations.txt"
-featureAnnoFile <- "Kidney_Feature_Annotations.txt"
+url_base <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/"
+countFile <- paste0(url_base,"Kidney_Raw_TargetCountMatrix.txt")
+sampleAnnoFile <- paste0(url_base,"Kidney_Sample_Annotations.txt")
+featureAnnoFile <- paste0(url_base,"Kidney_Feature_Annotations.txt")
 
-spe <- readGeoMx(".", countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
+spe <- readGeoMx(countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
 
 ```
 

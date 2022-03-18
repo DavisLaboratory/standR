@@ -5,7 +5,6 @@
 \title{Import GeoMX DSP data into a saptial experiment object from file paths}
 \usage{
 readGeoMx(
-  dirPath,
   countFile,
   sampleAnnoFile,
   featureAnnoFile = NA,
@@ -16,8 +15,6 @@ readGeoMx(
 )
 }
 \arguments{
-\item{dirPath}{The folder path to all necessary tsv files.}
-
 \item{countFile}{tsv file. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.}
 
 \item{sampleAnnoFile}{tsv file. Sample annotations.}
@@ -40,9 +37,9 @@ Import GeoMX DSP data into a saptial experiment object from file paths
 }
 \examples{
 dirPath <- system.file("extdata", package = "standR")
-countFile <- "dkd_subset_TargetCountMatrix.txt"
-sampleAnnoFile <- "dkd_subset_Sample_Annotations.txt"
+countFile <- file.path(dirPath, "dkd_subset_TargetCountMatrix.txt")
+sampleAnnoFile <- file.path(dirPath, "dkd_subset_Sample_Annotations.txt")
 
-spe <- readGeoMx(dirPath, countFile, sampleAnnoFile, hasNegProbe = FALSE)
+spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 
 }
