@@ -200,7 +200,7 @@ setGeneric(
   function(object,
            dims = c(1, 2),
            precomputed = NULL,
-           rl = 1, assay,
+           rl = 1, assay = 1,
            ...) {
     standardGeneric("plotMDS")
   }

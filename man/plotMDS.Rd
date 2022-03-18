@@ -6,11 +6,11 @@
 \alias{plotMDS,ExpressionSet-method}
 \title{Compute and plot the results of a MDS analysis on gene expression data}
 \usage{
-plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
+plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
 
-\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
+\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
 
-\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay, ...)
+\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
