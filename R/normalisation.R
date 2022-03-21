@@ -25,7 +25,8 @@ calNormCount <- function(spe_object, log = TRUE) {
 rpkm2tpm <- function(x) {
   colSumMat <- edgeR::expandAsMatrix(colSums(x, na.rm = TRUE),
     byrow = TRUE,
-    dim = dim(x))
+    dim = dim(x)
+  )
   tpm <- x / colSumMat * 1e6
   return(tpm)
 }
