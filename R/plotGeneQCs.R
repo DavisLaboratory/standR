@@ -85,7 +85,6 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     xlab(paste0("Samples (n=", ncol(spe), ")")) +
     ylab("Expression (logCPM)") +
     ggtitle(paste0("Removed genes (top", as.integer(top_n), ")"))
-
 }
 
 
@@ -103,7 +102,6 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
     ylab("Frequency") +
     theme(text = element_text(size = text_size)) +
     ggtitle("Distribution")
-
 }
 
 utils::globalVariables(c(".", "sample", "lcpm", "rowname", "m", "percent"))

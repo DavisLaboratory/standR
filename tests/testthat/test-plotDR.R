@@ -124,4 +124,3 @@ test_that("plotDR works", {
   p <- plotDR(dkd_spe_subset, color = region2, dimred = "PCA")
   expect_error(print(p), NA)
 })
-

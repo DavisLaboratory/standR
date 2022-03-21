@@ -251,17 +251,17 @@ setMethod(
 )
 
 
-.plotMDS_se <- function(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1,...) {
-    # compute PCA
+.plotMDS_se <- function(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...) {
+  # compute PCA
   if (is.null(precomputed)) {
     mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
   } else {
     mdsdata <- checkPrecomputedMDS(object, precomputed)
   }
 
-    # extract sample data
+  # extract sample data
   sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-    # create data structure
+  # create data structure
   drdf <- pdataMDS_intl(mdsdata, dims)
   p1 <- plotDR_intl(drdf, sdata, rl, ...)
 

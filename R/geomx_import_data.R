@@ -13,8 +13,8 @@
 #'
 #' @examples
 #' url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
-#' countFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
-#' sampleAnnoFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
+#' countFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
+#' sampleAnnoFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
 #'
 #' spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'
@@ -22,8 +22,6 @@ readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
                       hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
                       colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
                       coord.colnames = c("ROICoordinateX", "ROICoordinateY")) {
-
-
   stopifnot(is.character(NegProbeName))
   stopifnot(length(colnames.as.rownames) == 3)
   stopifnot(length(coord.colnames) == 2)
@@ -47,19 +45,19 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
     # raw count without negprobes
     # make sure count data have the gene column name as pre-defined, such as TargetName.
-    if(!colnames.as.rownames[1] %in% colnames(countdata)){
+    if (!colnames.as.rownames[1] %in% colnames(countdata)) {
       stop("colnames.as.rownames[1] is not in the column names of your count file.")
     }
     # make sure the name of negprobe is in the gene column of count data.
-    if(!NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])){
+    if (!NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])) {
       stop("NegProbeName is not found in your count file.")
     }
 
     # filter the count data, remove the negprobe.
-    countdata_filtered0 <- countdata[countdata[,colnames.as.rownames[1]] != NegProbeName,]
-    countdata_filtered <- countdata_filtered0[,!colnames(countdata_filtered0) %in%
-                                                colnames.as.rownames[1]]
-    rownames(countdata_filtered) <- countdata_filtered0[,colnames.as.rownames[1]]
+    countdata_filtered0 <- countdata[countdata[, colnames.as.rownames[1]] != NegProbeName, ]
+    countdata_filtered <- countdata_filtered0[, !colnames(countdata_filtered0) %in%
+      colnames.as.rownames[1]]
+    rownames(countdata_filtered) <- countdata_filtered0[, colnames.as.rownames[1]]
 
 
     # gene meta without negprobes
@@ -68,10 +66,10 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
 
-      genemeta_filtered0 <- genemeta[genemeta[,colnames.as.rownames[3]] != NegProbeName,]
-      genemeta_filtered <- genemeta_filtered0[,!colnames(genemeta_filtered0) %in%
-                                                colnames.as.rownames[3]]
-      rownames(genemeta_filtered) <- genemeta_filtered0[,colnames.as.rownames[3]]
+      genemeta_filtered0 <- genemeta[genemeta[, colnames.as.rownames[3]] != NegProbeName, ]
+      genemeta_filtered <- genemeta_filtered0[, !colnames(genemeta_filtered0) %in%
+        colnames.as.rownames[3]]
+      rownames(genemeta_filtered) <- genemeta_filtered0[, colnames.as.rownames[3]]
       genemeta_filtered <- genemeta_filtered[rownames(countdata_filtered), ]
       # arrange the gene meta, as the same order as count table.
     } else {
@@ -84,16 +82,16 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta)) # make sure column name is there.
 
 
-    samplemeta_filtered <- samplemeta[,!colnames(samplemeta) %in%
-                                              colnames.as.rownames[2]]
-    rownames(samplemeta_filtered) <- samplemeta[,colnames.as.rownames[2]]
+    samplemeta_filtered <- samplemeta[, !colnames(samplemeta) %in%
+      colnames.as.rownames[2]]
+    rownames(samplemeta_filtered) <- samplemeta[, colnames.as.rownames[2]]
     samplemeta_filtered <- samplemeta_filtered[colnames(countdata_filtered), ]
     # arrange according to count table.
 
     # negprobe raw count
-    negprobecount <- countdata[countdata[,colnames.as.rownames[1]] == NegProbeName,]
-    negprobecount <- negprobecount[,!colnames(negprobecount) %in%
-                                  colnames.as.rownames[1]]
+    negprobecount <- countdata[countdata[, colnames.as.rownames[1]] == NegProbeName, ]
+    negprobecount <- negprobecount[, !colnames(negprobecount) %in%
+      colnames.as.rownames[1]]
     rownames(negprobecount) <- NegProbeName
 
 
@@ -110,7 +108,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
       colData = samplemeta_filtered,
       rowData = genemeta_filtered,
       metadata = list(NegProbes = negprobecount),
-      spatialCoords = as.matrix(samplemeta_filtered[,coord.colnames])
+      spatialCoords = as.matrix(samplemeta_filtered[, coord.colnames])
     )
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
@@ -123,7 +121,8 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     # gene meta check
     if (!is.na(featureAnnoFile)) {
       gene_meta <- as.data.frame(readr::read_tsv(featureAnnoFile),
-                                 optional = TRUE)
+        optional = TRUE
+      )
       gene_meta <- tibble::column_to_rownames(gene_meta, colnames.as.rownames[3])
       gene_meta <- gene_meta[rownames(countdata), ]
     } else {
@@ -132,7 +131,8 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
     # sample meta
     samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile),
-                                optional = TRUE)
+      optional = TRUE
+    )
 
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
 
@@ -149,7 +149,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
       ),
       colData = samplemeta,
       rowData = gene_meta,
-      spatialCoords = as.matrix(samplemeta[,coord.colnames])
+      spatialCoords = as.matrix(samplemeta[, coord.colnames])
     )
   }
   return(spe)

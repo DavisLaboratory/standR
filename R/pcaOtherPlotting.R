@@ -32,7 +32,6 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
                         assay = 2, title = NA, title.size = 14, ...) {
-
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
@@ -74,12 +73,14 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
         plotting_list[[j]] <- realplots[[k]]
       } else {
         plotting_list[[j]] <- realplots[[k]] +
-          theme(axis.title.x=element_blank(),
-                axis.text.x=element_blank(),
-                axis.ticks.x=element_blank(),
-                axis.title.y=element_blank(),
-                axis.text.y=element_blank(),
-                axis.ticks.y=element_blank())
+          theme(
+            axis.title.x = element_blank(),
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank()
+          )
       }
       k <- k + 1
     } else if (j %in% index_emptyPlots) {
@@ -165,7 +166,6 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
     ylab("Explained variance(%)") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ylim(0, 100)
-
 }
 
 
@@ -200,7 +200,6 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
                           dims = c(1, 2), precomputed = NULL, assay = 1,
                           arrow_x = 0, arrow_y = 0,
                           ...) {
-
   checkPackages("ggrepel")
   # compute PCA
   if (is.null(precomputed)) {

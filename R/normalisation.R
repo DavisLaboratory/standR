@@ -2,10 +2,8 @@
 calNormCount <- function(spe_object, log = TRUE) {
   # get raw count
   count_df <- SummarizedExperiment::assay(spe_object, 1)
-
   # compute geometric mean
   loggeomeans <- rowMeans(log(count_df))
-
   # compute size factor
   sf <- apply(count_df, 2, function(x) {
     exp(stats::median((log(x) - loggeomeans)[is.finite(loggeomeans) & x > 0]))
@@ -19,7 +17,6 @@ calNormCount <- function(spe_object, log = TRUE) {
   } else {
     lognorm_count <- norm_count
   }
-
   return(list(lognorm_count, sf))
 }
 
@@ -28,8 +25,7 @@ calNormCount <- function(spe_object, log = TRUE) {
 rpkm2tpm <- function(x) {
   colSumMat <- edgeR::expandAsMatrix(colSums(x, na.rm = TRUE),
     byrow = TRUE,
-    dim = dim(x)
-  )
+    dim = dim(x))
   tpm <- x / colSumMat * 1e6
   return(tpm)
 }
@@ -57,11 +53,12 @@ rpkm2tpm <- function(x) {
 #' spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
 #' head(SummarizedExperiment::assay(spe_deseqnorm, 2))
 #'
-geomxNorm <- function(spe_object, method = c("TMM","RPKM","TPM","CPM",
-                                             "upperquartile","sizefactor"),
+geomxNorm <- function(spe_object, method = c(
+                        "TMM", "RPKM", "TPM", "CPM",
+                        "upperquartile", "sizefactor"
+                      ),
                       log = TRUE) {
-
-  method = match.arg(method)
+  method <- match.arg(method)
 
   if (!(method %in% c("TMM", "RPKM", "TPM", "CPM", "upperquartile", "sizefactor"))) {
     stop("Please make sure method mathced one of the following strings: TMM,RPKM,TPM,CPM,upperquartile,sizefactor")
