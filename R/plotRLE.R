@@ -63,11 +63,7 @@ setMethod(
     isSCE <- is(object, "SingleCellExperiment")
 
     # extract sample data
-    if (is(object, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-    } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-    }
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
 
     # extract expression data (and transform)
     object <- SummarizedExperiment::assay(object, i = assay)

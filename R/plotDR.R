@@ -90,11 +90,8 @@ setMethod(
   }
 
   # extract sample data
-  if (is(object, "ExperimentList")) {
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-  } else {
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-  }
+  sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+
 
   # create data structure
   drdf <- pdataPC_intl(pcdata, dims)
@@ -144,11 +141,7 @@ setMethod(
     pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    if (is(object, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-    } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-    }
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
 
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
@@ -167,11 +160,7 @@ setMethod(
     pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    if (is(object, "ExperimentList")) {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object, experimentData = TRUE), optional = TRUE)
-    } else {
-      sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
-    }
+    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
 
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
