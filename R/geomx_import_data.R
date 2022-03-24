@@ -1,8 +1,8 @@
 #' Import GeoMX DSP data into a saptial experiment object from file paths
 #'
-#' @param countFile tsv file. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.
-#' @param sampleAnnoFile tsv file. Sample annotations.
-#' @param featureAnnoFile tsv file. Feature/Gene annotations.
+#' @param countFile tsv file or a dataframe object. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.
+#' @param sampleAnnoFile tsv file or a dataframe object. Sample annotations.
+#' @param featureAnnoFile tsv file or a dataframe object. Feature/Gene annotations.
 #' @param hasNegProbe Logical. Default is TRUE, indicating there are negative probe genes in the data.
 #' @param NegProbeName Character. Name of negative probe genes, default is NegProbe-WTX.
 #' @param colnames.as.rownames Vector of characters, length of 3. Column names used to capture gene names, sample names and gene names in countFile, sampleAnnoFile and featureAnnoFile, respectively.
@@ -41,7 +41,11 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
   if (hasNegProbe == TRUE) {
-    countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
+    if(is(countFile,"data.frame")){
+      countdata <- countFile
+    } else {
+      countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
+    }
 
     # raw count without negprobes
     # make sure count data have the gene column name as pre-defined, such as TargetName.
@@ -62,7 +66,11 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
     # gene meta without negprobes
     if (!is.na(featureAnnoFile)) {
-      genemeta <- as.data.frame(readr::read_tsv(featureAnnoFile), optional = TRUE)
+      if(is(featureAnnoFile,"data.frame")){
+        genemeta <- featureAnnoFile
+      } else {
+        genemeta <- as.data.frame(readr::read_tsv(featureAnnoFile), optional = TRUE)
+      }
 
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
 
@@ -77,7 +85,11 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     }
 
     # sample meta
-    samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile), optional = TRUE)
+    if(is(sampleAnnoFile,"data.frame")){
+      samplemeta <- sampleAnnoFile
+    } else {
+      samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile), optional = TRUE)
+    }
 
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta)) # make sure column name is there.
 

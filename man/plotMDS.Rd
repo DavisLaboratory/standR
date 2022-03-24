@@ -37,6 +37,6 @@ Compute and plot the results of a MDS analysis on gene expression data
 }
 \examples{
 data("dkd_spe_subset")
-plotMDS(dkd_spe_subset)
+standR::plotMDS(dkd_spe_subset)
 
 }

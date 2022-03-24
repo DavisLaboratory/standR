@@ -15,11 +15,11 @@ readGeoMx(
 )
 }
 \arguments{
-\item{countFile}{tsv file. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.}
+\item{countFile}{tsv file or a dataframe object. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.}
 
-\item{sampleAnnoFile}{tsv file. Sample annotations.}
+\item{sampleAnnoFile}{tsv file or a dataframe object. Sample annotations.}
 
-\item{featureAnnoFile}{tsv file. Feature/Gene annotations.}
+\item{featureAnnoFile}{tsv file or a dataframe object. Feature/Gene annotations.}
 
 \item{hasNegProbe}{Logical. Default is TRUE, indicating there are negative probe genes in the data.}
 
@@ -37,8 +37,8 @@ Import GeoMX DSP data into a saptial experiment object from file paths
 }
 \examples{
 url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
-countFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
-sampleAnnoFile <- paste0(url,"GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
+countFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
+sampleAnnoFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
 
 spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 
