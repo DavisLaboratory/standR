@@ -21,7 +21,7 @@ Description: standR is an user-friendly R package providing functions to assist 
     built based on the SpatialExperiment object, allowing integration into various spatial
     transcriptomics-related packages from Bioconductor. standR allows data inspection, quality
     control, normalization, batch correction and evaluation with informative visualizations.
-biocViews: Spatial, Transcriptomics, GeneExpression, DifferentialExpression, QualityControl, Normalization
+biocViews: Spatial, Transcriptomics, GeneExpression, DifferentialExpression, QualityControl, Normalization, ExperimentDataSoftware
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
@@ -50,6 +50,7 @@ Imports:
     methods
 Suggests:
     knitr,
+    ExperimentHub,
     rmarkdown,
     scater,
     uwot,
