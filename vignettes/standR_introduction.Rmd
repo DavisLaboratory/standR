@@ -60,7 +60,7 @@ In this vignette, we will use a publicly available WTA dataset of diabetic kidne
 
 ## Import from paths
 
-Data we are using here is a published whole transcriptome atlas (WTA) dataset of diabetic kidney disease (DKD). 
+Data we are using here is a publicly available whole transcriptome atlas (WTA) dataset of diabetic kidney disease (DKD) shared by Nanostring. 
 
 The data is available [here](http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/).
 
