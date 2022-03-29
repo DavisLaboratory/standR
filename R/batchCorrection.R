@@ -76,6 +76,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param NCGs Negative control genes. This is required for the RUV4 method.
 #' @param n_assay Integer to indicate the nth count table in the assay(spe) to be used.
 #' @param batch A vector indicating batches. This is required for the Limma method.
+#' @param batch2 A vector indicating the second series of batches. This is specific for the Limma method.
 #' @param covariates A matrix or vector of numeric covariates to be adjusted for.
 #' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
 #' @param method Can be either RUV4 or Limma, by default is RUV4.
@@ -97,7 +98,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' )
 #'
 geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
-                                 batch, covariates = NULL, design = matrix(1, ncol(spe), 1),
+                                 batch = NULL, batch2 = NULL, covariates = NULL, design = matrix(1, ncol(spe), 1),
                                  method = c("RUV4", "Limma")) {
   if (length(method) == 2) {
     method <- "RUV4"
@@ -150,7 +151,7 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
     SummarizedExperiment::assay(spe, 2) <- ruv_norm_count[rownames(spe), colnames(spe)]
   } else if (method == "Limma") {
     SummarizedExperiment::assay(spe, 2) <- limma::removeBatchEffect(SummarizedExperiment::assay(spe, n_assay),
-      batch = batch,
+      batch = batch, batch2 = batch2,
       covariates = covariates,
       design = design
     ) %>%

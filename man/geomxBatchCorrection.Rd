@@ -10,7 +10,8 @@ geomxBatchCorrection(
   factors,
   NCGs,
   n_assay = 2,
-  batch,
+  batch = NULL,
+  batch2 = NULL,
   covariates = NULL,
   design = matrix(1, ncol(spe), 1),
   method = c("RUV4", "Limma")
@@ -28,6 +29,8 @@ geomxBatchCorrection(
 \item{n_assay}{Integer to indicate the nth count table in the assay(spe) to be used.}
 
 \item{batch}{A vector indicating batches. This is required for the Limma method.}
+
+\item{batch2}{A vector indicating the second series of batches. This is specific for the Limma method.}
 
 \item{covariates}{A matrix or vector of numeric covariates to be adjusted for.}
 
