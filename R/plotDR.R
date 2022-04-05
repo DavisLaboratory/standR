@@ -371,6 +371,6 @@ plotDR_intl <- function(drdf, sdata, rl, ...) {
   # tidystyle recommends no explicit return statements at end of functions
   ggplot2::ggplot(plotdf, ggplot2::aes(!!x, !!y, !!!aesmap)) +
     ggplot2::geom_point() +
-    # ggplot2::update_geom_defaults('point', defaultmap) +
+    do.call(ggplot2::geom_point,defaultmap) +
     bhuvad_theme(rl)
 }

@@ -123,7 +123,7 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
       ggplot2::geom_point() +
       ggplot2::geom_hline(yintercept = 0, colour = 2, lty = 2) +
       ggplot2::labs(y = "Relative log expression (median)", x = "Relative log expression (IQR)") +
-      # ggplot2::update_geom_defaults('boxplot', defaultmap) +
+      do.call(ggplot2::geom_point, defaultmap) +
       bhuvad_theme(rl)
   } else {
     p1 <- ggplot2::ggplot(plotdf, aes(x = x, y = middle, group = x, !!!aesmap)) +
@@ -133,7 +133,7 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
       ) +
       ggplot2::geom_hline(yintercept = 0, colour = 2, lty = 2) +
       ggplot2::ylab("Relative log expression") +
-      # ggplot2::update_geom_defaults('boxplot', defaultmap) +
+      do.call(ggplot2::geom_boxplot, defaultmap) +
       bhuvad_theme(rl) +
       ggplot2::theme(axis.text.x = element_blank())
 
