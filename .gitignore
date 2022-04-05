@@ -41,3 +41,6 @@ vignettes/*.pdf
 .Renviron
 inst/doc
 doc
+
+# Rproj
+standR.Rproj
