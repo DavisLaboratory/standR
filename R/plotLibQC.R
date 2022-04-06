@@ -106,6 +106,7 @@ plotROIQC <- function(spe_object,
   p3 + p_blank + p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
                                                   widths = layout_width,
                                                   heights = leyout_height, guides = "collect")
+
 }
 
 

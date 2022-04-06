@@ -4,6 +4,6 @@ test_that("Testing plotlibraryQC function", {
   data("dkd_spe_subset")
   spe <- addPerROIQC(dkd_spe_subset)
 
-  expect_message(plotROIQC(spe))
-  expect_error(plotROIQC(spe, col = xyz))
+  expect_silent(plotROIQC(spe))
+  expect_error(plotROIQC(col = xyz))
 })
