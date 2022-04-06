@@ -1,6 +1,6 @@
 Package: standR
 Title: Spatial transcriptome analyses of Nanostring's DSP data in R
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: 
     c(person(given = "Ning",
              family = "Liu",
@@ -23,6 +23,8 @@ Description: standR is an user-friendly R package providing functions to assist 
     control, normalization, batch correction and evaluation with informative visualizations.
 biocViews: Spatial, Transcriptomics, GeneExpression, DifferentialExpression, QualityControl, Normalization, ExperimentHubSoftware
 License: MIT + file LICENSE
+URL: https://github.com/DavisLaboratory/standR
+BugReports: https://github.com/DavisLaboratory/standR/issues
 Encoding: UTF-8
 LazyData: false
 Roxygen: list(markdown = TRUE)
@@ -62,5 +64,5 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 4.1)
+    R (>= 4.2)
 VignetteBuilder: knitr

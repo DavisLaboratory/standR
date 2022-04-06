@@ -140,7 +140,6 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
 
     for (i in seq(ncol(ruv_w))) {
       n <- colnames(ruv_w)[i]
-      # print(n)
       SummarizedExperiment::colData(spe)[, n] <- ruv_w[, i]
     }
 

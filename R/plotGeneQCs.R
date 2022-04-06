@@ -31,9 +31,8 @@ plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
   p1 <- plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...)
   p2 <- plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size)
 
-  print(p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
-    heights = layout_height
-  ))
+  p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
+                                   heights = layout_height)
 }
 
 

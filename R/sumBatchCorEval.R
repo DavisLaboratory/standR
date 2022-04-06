@@ -132,7 +132,7 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     p_batch <- p_batch + scale_fill_manual(values = colors)
   }
 
-  print(p_bio + p_batch + patchwork::plot_layout(1, 2))
+  p_bio + p_batch + patchwork::plot_layout(1, 2)
 }
 
 

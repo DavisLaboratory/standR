@@ -103,10 +103,9 @@ plotROIQC <- function(spe_object,
     p2 <- p2 + geom_vline(xintercept = y_threshold, col = threshold_col, linetype = threshold_linetype)
   }
 
-  print(p3 + p_blank + p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
-    widths = layout_width,
-    heights = leyout_height, guides = "collect"
-  ))
+  p3 + p_blank + p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
+                                                  widths = layout_width,
+                                                  heights = leyout_height, guides = "collect")
 }
 
 
