@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">standR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
       </span>
     </div>
 
@@ -38,7 +38,13 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/DavisLaboratory/standR/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -48,7 +54,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate statistics for evaluating batch correction</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/DavisLaboratory/standR/blob/HEAD/R/sumBatchCorEval.R" class="external-link"><code>R/sumBatchCorEval.R</code></a></small>
     <div class="hidden name"><code>computeClusterEvalStats.Rd</code></div>
     </div>
 
@@ -102,12 +108,12 @@ we will compute for you.</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You're computing too large a percentage of total singular values, use a standard svd instead.</span>
 <span class="r-in"><span class="fu">computeClusterEvalStats</span><span class="op">(</span><span class="va">spe</span>, <span class="st">"SlideName"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         types              scores</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         Adjusted Rand Index   0.224549258439766</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     Chi-Squared Coefficient    94.0585291070585</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3               Jaccard Index    0.21319018404908</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Simple Matching Coefficient                1026</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5             Mirkin Distance   0.787577639751553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      Silhouette Coefficient -0.0699498050997439</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         Adjusted Rand Index   0.356334560567389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     Chi-Squared Coefficient    116.695124574046</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               Jaccard Index   0.296422487223169</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Simple Matching Coefficient                 826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5             Mirkin Distance   0.828985507246377</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      Silhouette Coefficient -0.0699498050759613</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
