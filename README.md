@@ -17,6 +17,15 @@ The published GeoMX WTA data of diabetic kidney disease that we used in the vign
 
 ## Installation
 
+Install the release version from Bioconductor
+
+```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("standR")
+```
+
 Install development version from GitHub
 
 ```
