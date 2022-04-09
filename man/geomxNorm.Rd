@@ -27,11 +27,8 @@ Perform normalization to GeoMX data
 data("dkd_spe_subset")
 
 spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
-head(SummarizedExperiment::assay(spe_tmm, "logcounts"))
 spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile")
-head(SummarizedExperiment::assay(spe_upq, "logcounts"))
 spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
-head(SummarizedExperiment::assay(spe_deseqnorm, "logcounts"))
 
 }
 \references{
