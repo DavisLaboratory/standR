@@ -116,7 +116,7 @@ Here we can see two types of count matrix, raw count in the `count` assay and
 logCPM count in the `logcount` assay.
 
 ```{r}
-assayNames(spe)
+SummarizedExperiment::assayNames(spe)
 ```
 
 
