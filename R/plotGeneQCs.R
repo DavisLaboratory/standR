@@ -48,7 +48,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
   # get removed genes and order by mean expression
   data <- S4Vectors::metadata(spe)$genes_rm_logCPM |>
     as.data.frame()
-  data$m = rowMeans(data)
+  data$m <- rowMeans(data)
   
   data <- data |>
     arrange(m) |>

@@ -5,9 +5,8 @@
 #' @importFrom tibble column_to_rownames
 #' @import patchwork
 #' @importFrom SingleCellExperiment reducedDim
-#' @importFrom SummarizedExperiment colData
-#' @importFrom SummarizedExperiment rowData
-#' @importFrom SummarizedExperiment assay
+#' @import SummarizedExperiment 
+
 NULL
 
 

@@ -5,7 +5,7 @@
 #' @param rm_genes Logical. Decide whether genes with low count in more than sample_fraction of the samples are removed from the dataset. Default is TRUE.
 #' @param min_count Integer. Minimum read count to calculate count threshold. Default is 5.
 #' @param design Generate using `model.matrix`, if this is specify, `edgeR::filterByExpr` will be used to filter genes.
-#'
+#' 
 #' @return A SpatialExperiment object
 #' @export
 #'
