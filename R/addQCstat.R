@@ -19,7 +19,7 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
 
   stopifnot(nrow(spe) > 0)
   stopifnot(ncol(spe) > 0)
-  stopifnot(length(assayNames(spe)) > 1)
+  stopifnot(length(SummarizedExperiment::assayNames(spe)) > 1)
   stopifnot(sample_fraction <= 1 & sample_fraction >= 0)
   stopifnot(min_count >= 0)
 

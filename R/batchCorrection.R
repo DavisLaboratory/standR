@@ -16,7 +16,7 @@
 #'
 findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   stopifnot(is.numeric(n_assay))
-  stopifnot(n_assay <= length(assayNames(spe)))
+  stopifnot(n_assay <= length(SummarizedExperiment::assayNames(spe)))
   stopifnot(batch_name %in% colnames(colData(spe)))
   stopifnot(top_n <= nrow(spe))
 
