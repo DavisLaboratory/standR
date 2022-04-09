@@ -5,6 +5,7 @@
 #' @importFrom tibble column_to_rownames
 #' @import patchwork
 #' @importFrom SingleCellExperiment reducedDim
+#' @import SummarizedExperiment
 NULL
 
 
@@ -42,7 +43,7 @@ NULL
 #' @name dkd_spe_subset
 #' @usage data("dkd_spe_subset")
 #' @keywords internal
-#' @format A spatial experiment object with 3000 rows and 70 samples:
+#' @format A SpatialExperiment object with 3000 rows and 70 samples:
 #' @source \url{http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/}
 #' @examples
 #' data(dkd_spe_subset)

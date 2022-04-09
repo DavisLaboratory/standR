@@ -4,13 +4,64 @@
 \alias{plotMDS}
 \alias{plotMDS,DGEList-method}
 \alias{plotMDS,ExpressionSet-method}
+\alias{plotMDS,SummarizedExperiment-method}
+\alias{plotMDS,SingleCellExperiment-method}
+\alias{plotMDS,SpatialExperiment-method}
 \title{Compute and plot the results of a MDS analysis on gene expression data}
 \usage{
-plotMDS(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
+plotMDS(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
 
-\S4method{plotMDS}{DGEList}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
+\S4method{plotMDS}{DGEList}(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
 
-\S4method{plotMDS}{ExpressionSet}(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...)
+\S4method{plotMDS}{ExpressionSet}(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
+
+\S4method{plotMDS}{SummarizedExperiment}(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
+
+\S4method{plotMDS}{SingleCellExperiment}(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
+
+\S4method{plotMDS}{SpatialExperiment}(
+  object,
+  dims = c(1, 2),
+  precomputed = NULL,
+  textScale = 1,
+  assay = 1,
+  ...
+)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -21,7 +72,7 @@ containing gene expression data.}
 \item{precomputed}{a dimensional reduction results from either
 \code{limma::plotMDS}.}
 
-\item{rl}{a numeric, specifying the relative scale factor to apply to text on
+\item{textScale}{a numeric, specifying the relative scale factor to apply to text on
 the plot.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for

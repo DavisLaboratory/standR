@@ -11,14 +11,14 @@ geomxNorm(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object.}
+\item{spe_object}{A SpatialExperiment object.}
 
 \item{method}{Normalization method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.}
 
 \item{log}{Log-transformed or not.}
 }
 \value{
-A spatial experiment object, with the second assay being the normalized count matrix.
+A SpatialExperiment object, with the second assay being the normalized count matrix.
 }
 \description{
 Perform normalization to GeoMX data
@@ -27,11 +27,11 @@ Perform normalization to GeoMX data
 data("dkd_spe_subset")
 
 spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
-head(SummarizedExperiment::assay(spe_tmm, 2))
+head(assay(spe_tmm, "logcounts"))
 spe_upq <- geomxNorm(dkd_spe_subset, method = "upperquartile")
-head(SummarizedExperiment::assay(spe_upq, 2))
+head(assay(spe_upq, "logcounts"))
 spe_deseqnorm <- geomxNorm(dkd_spe_subset, method = "sizefactor")
-head(SummarizedExperiment::assay(spe_deseqnorm, 2))
+head(assay(spe_deseqnorm, "logcounts"))
 
 }
 \references{

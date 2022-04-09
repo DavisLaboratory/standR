@@ -18,7 +18,7 @@ plotScreePCA(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object.}
+\item{spe_object}{A SpatialExperiment object.}
 
 \item{dims}{The top n dimensions to be plotted}
 

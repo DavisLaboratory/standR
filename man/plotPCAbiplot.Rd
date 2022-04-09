@@ -16,7 +16,7 @@ plotPCAbiplot(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object.}
+\item{spe_object}{A SpatialExperiment object.}
 
 \item{n_loadings}{Plot the top n gene loadings}
 

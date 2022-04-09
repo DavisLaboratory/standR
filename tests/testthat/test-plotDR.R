@@ -1,24 +1,24 @@
-test_that("plotPCA works", {
+test_that("drawPCA works", {
   data("dkd_spe_subset")
 
   # Default param
-  p <- plotPCA(dkd_spe_subset)
+  p <- drawPCA(dkd_spe_subset)
   expect_silent(print(p))
 
   # color with column
-  p <- plotPCA(dkd_spe_subset, color = region)
+  p <- drawPCA(dkd_spe_subset, color = region)
   expect_silent(print(p))
 
   # color with expression
-  p <- plotPCA(dkd_spe_subset, color = SequencingSaturation > 90)
+  p <- drawPCA(dkd_spe_subset, color = SequencingSaturation > 90)
   expect_silent(print(p))
 
   # multiple aesthetics
-  p <- plotPCA(dkd_spe_subset, color = SequencingSaturation > 90, shape = region)
+  p <- drawPCA(dkd_spe_subset, color = SequencingSaturation > 90, shape = region)
   expect_error(print(p), NA)
 
   # error when the column is not in the data
-  p <- plotPCA(dkd_spe_subset, color = xyz)
+  p <- drawPCA(dkd_spe_subset, color = xyz)
   expect_error(
     # We need to force eval here to throw the error
     print(p),
@@ -27,7 +27,7 @@ test_that("plotPCA works", {
 
   # will not error if the variable is present in the parent env
   region2 <- dkd_spe_subset$region
-  p <- plotPCA(dkd_spe_subset, color = region2)
+  p <- drawPCA(dkd_spe_subset, color = region2)
   expect_error(print(p), NA)
 
   # test precompute
@@ -35,16 +35,16 @@ test_that("plotPCA works", {
   spe <- scater::runPCA(dkd_spe_subset)
   pdata <- reducedDim(spe, "PCA")
 
-  p <- plotPCA(dkd_spe_subset, precomputed = pdata)
+  p <- drawPCA(dkd_spe_subset, precomputed = pdata)
   expect_silent(print(p))
 
-  expect_error(plotPCA(dkd_spe_subset, precomputed = "pdata"))
+  expect_error(drawPCA(dkd_spe_subset, precomputed = "pdata"))
 
   # test dgelist
 
   dge <- edgeR::SE2DGEList(spe)
 
-  p <- plotPCA(dge)
+  p <- drawPCA(dge)
   expect_silent(print(p))
 })
 

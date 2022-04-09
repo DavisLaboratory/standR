@@ -12,9 +12,12 @@
 #' @export
 #'
 #' @examples
-#' url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
-#' countFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
-#' sampleAnnoFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
+#' library(ExperimentHub)
+#' 
+#' eh <- ExperimentHub()
+#' query(eh, "standR")
+#' countFile <- eh[["EH7364"]]
+#' sampleAnnoFile <- eh[["EH7365"]]
 #'
 #' spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 #'
@@ -40,8 +43,8 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
                              coord.colnames) {
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
-  if (hasNegProbe == TRUE) {
-    if(is(countFile,"data.frame")){
+  if (hasNegProbe) {
+    if(is.data.frame(countFile)){
       countdata <- countFile
     } else {
       countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
@@ -66,7 +69,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
     # gene meta without negprobes
     if (!is.na(featureAnnoFile)) {
-      if(is(featureAnnoFile,"data.frame")){
+      if(is.data.frame(featureAnnoFile)){
         genemeta <- featureAnnoFile
       } else {
         genemeta <- as.data.frame(readr::read_tsv(featureAnnoFile), optional = TRUE)
@@ -85,7 +88,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     }
 
     # sample meta
-    if(is(sampleAnnoFile,"data.frame")){
+    if(is.data.frame(sampleAnnoFile)){
       samplemeta <- sampleAnnoFile
     } else {
       samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile), optional = TRUE)

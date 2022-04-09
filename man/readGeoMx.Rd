@@ -36,9 +36,12 @@ A SpatialExperiment object.
 Import GeoMX DSP data into a saptial experiment object from file paths
 }
 \examples{
-url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
-countFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
-sampleAnnoFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
+library(ExperimentHub)
+
+eh <- ExperimentHub()
+query(eh, "standR")
+countFile <- eh[["EH7364"]]
+sampleAnnoFile <- eh[["EH7365"]]
 
 spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
 

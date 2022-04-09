@@ -5,7 +5,7 @@
 \alias{dkd_spe_subset}
 \title{Description of the standR example datasets}
 \format{
-A spatial experiment object with 3000 rows and 70 samples:
+A SpatialExperiment object with 3000 rows and 70 samples:
 }
 \source{
 \url{http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/GeoScriptHub/KidneyDataset/}

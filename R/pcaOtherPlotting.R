@@ -12,7 +12,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 
 #' Plot pair-wise PCA plots for multiple dimensions
 #'
-#' @param spe_object A spatial experiment object.
+#' @param spe_object A SpatialExperiment object.
 #' @param n_dimension The top n dimensions to be plotted
 #' @param precomputed a dimensional reduction results from `stats::prcomp`.
 #'   result in `reducedDims(object)` to plot. Default is NULL,
@@ -36,7 +36,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
   # compute PCA
   if (is.null(precomputed)) {
-    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
+    pca_object <- calcPCA(assay(spe_object, assay), n_dimension)
   } else {
     pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
@@ -49,16 +49,16 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
   d <- diag(m)
 
-  index_realPlots <- m[upper.tri(m, diag = TRUE)] %>% sort() # these are the positions of real plots
+  index_realPlots <- m[upper.tri(m, diag = TRUE)] |> sort() # these are the positions of real plots
 
-  index_emptyPlots <- seq((n - 1)^2) %>% setdiff(index_realPlots) # these are blank spaces
+  index_emptyPlots <- seq((n - 1)^2) |> setdiff(index_realPlots) # these are blank spaces
 
   plot_blank <- ggplot() +
     theme_void()
 
   realplots <- list()
   for (i in seq(nrow(PCsToPlot))) {
-    realplots[[i]] <- plotPCA(spe_object,
+    realplots[[i]] <- drawPCA(spe_object,
       dims = PCsToPlot[i, ],
       precomputed = precomputed,
       assay = assay, ...
@@ -115,7 +115,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
 
 #' Plot the PCA scree plot.
 #'
-#' @param spe_object A spatial experiment object.
+#' @param spe_object A SpatialExperiment object.
 #' @param dims The top n dimensions to be plotted
 #' @param precomputed a dimensional reduction results from `stats::prcomp`.
 #'   result in `reducedDims(object)` to plot. Default is NULL,
@@ -142,21 +142,21 @@ plotScreePCA <- function(spe_object, dims = ncol(spe_object), precomputed = NULL
 
   # compute PCA
   if (is.null(precomputed)) {
-    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
+    pca_object <- calcPCA(assay(spe_object, assay), dims)
   } else {
     pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
 
-  var_exp <- attr(pca_object, "percentVar") %>%
-    round(., 2)
+  var_exp <- attr(pca_object, "percentVar") |>
+    round(2)
   names(var_exp) <- colnames(pca_object)
 
-  var_exp %>%
-    as.data.frame() %>%
-    magrittr::set_colnames(c("ev")) %>%
-    rownames_to_column() %>%
-    mutate(rowname = factor(rowname, levels = pull(., "rowname"))) %>%
-    mutate(csum = cumsum(ev)) %>%
+  var_exp <- as.data.frame(var_exp)
+  colnames(var_exp) <- c("ev")
+  var_exp <- rownames_to_column(var_exp)
+  var_exp$rowname <- factor(var_exp$rowname, levels = var_exp$rowname)
+  var_exp$csum <- cumsum(var_exp$ev)
+  var_exp |>
     ggplot(aes(rowname, ev)) +
     geom_bar(stat = "identity", col = bar_color, fill = bar_fill, width = bar_width) +
     geom_point(aes(x = rowname, y = csum), size = point_size, col = point_col) +
@@ -178,7 +178,7 @@ caculate_coor_end <- function(x, r, f = 1.5) {
 
 #' Plot PCA bi plot
 #'
-#' @param spe_object A spatial experiment object.
+#' @param spe_object A SpatialExperiment object.
 #' @param n_loadings Plot the top n gene loadings
 #' @param dims The top n dimensions to be plotted
 #' @param precomputed a dimensional reduction results from `stats::prcomp`.
@@ -203,27 +203,27 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
   checkPackages("ggrepel")
   # compute PCA
   if (is.null(precomputed)) {
-    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), dims)
+    pca_object <- calcPCA(assay(spe_object, assay), dims)
   } else {
     pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
 
   loadings <- attr(pca_object, "rotation")
 
-  if (is(n_loadings, "numeric")) {
-    pc1_genes <- loadings %>%
-      as.data.frame() %>%
-      arrange(-abs(!!sym(paste0("PC", dims[1])))) %>%
-      .[seq(n_loadings), ] %>%
+  if (is.numeric(n_loadings)) {
+    pc1_genes <- loadings |>
+      as.data.frame() |>
+      arrange(-abs(!!sym(paste0("PC", dims[1])))) |>
+      (\(.) .[seq(n_loadings), ])() |>
       rownames()
-    pc2_genes <- loadings %>%
-      as.data.frame() %>%
-      arrange(-abs(!!sym(paste0("PC", dims[2])))) %>%
-      .[seq(n_loadings), ] %>%
+    pc2_genes <- loadings |>
+      as.data.frame() |>
+      arrange(-abs(!!sym(paste0("PC", dims[2])))) |>
+      (\(.) .[seq(n_loadings), ])() |>
       rownames()
-  } else if (is(n_loadings, "character")) {
+  } else if (is.character(n_loadings)) {
     stopifnot(n_loadings %in% rownames(loadings))
-    pc1_genes <- loadings[n_loadings, ] %>%
+    pc1_genes <- loadings[n_loadings, ] |>
       rownames()
     pc2_genes <- pc1_genes
   }
@@ -237,18 +237,18 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
       (max(loadings[, dims[2]]) - min(loadings[, dims[2]])))
   )
 
-  loadings2plot <- loadings %>%
-    as.data.frame() %>%
-    rownames_to_column() %>%
-    dplyr::select(c(rowname, paste0("PC", dims[1]), paste0("PC", dims[2]))) %>%
-    filter(rowname %in% genes2plot) %>%
+  loadings2plot <- loadings |>
+    as.data.frame() |>
+    rownames_to_column() |>
+    dplyr::select(c(rowname, paste0("PC", dims[1]), paste0("PC", dims[2]))) |>
+    filter(rowname %in% genes2plot) |>
     mutate(
       x_end = caculate_coor_end((!!sym(paste0("PC", dims[1]))), r),
       y_end = caculate_coor_end((!!sym(paste0("PC", dims[2]))), r)
     )
 
 
-  plotPCA(spe_object,
+  drawPCA(spe_object,
     dims = dims,
     precomputed = precomputed, assay = assay, ...
   ) +

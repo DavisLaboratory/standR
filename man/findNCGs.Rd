@@ -25,6 +25,6 @@ Get negative control genes from each batch of the data
 data("dkd_spe_subset")
 
 spe <- findNCGs(dkd_spe_subset, top_n = 100)
-S4Vectors::metadata(spe)$negGenes
+S4Vectors::metadata(spe)$NCGs
 
 }

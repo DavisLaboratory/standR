@@ -1,7 +1,7 @@
 
 #' Plot the user-defined meta data using alluvium plot
 #'
-#' @param spe_object A spatial experiment object.
+#' @param spe_object A SpatialExperiment object.
 #' @param column2plot Which columns to plot.
 #' @param textsize text size.
 #'
@@ -12,18 +12,18 @@
 #' @examples
 #' library(ggalluvial)
 #' data("dkd_spe_subset")
-#' plotMetadata(dkd_spe_subset, column2plot = c("SlideName", "disease_status", "region"))
+#' plotSampleInfo(dkd_spe_subset, column2plot = c("SlideName", "disease_status", "region"))
 #'
-plotMetadata <- function(spe_object, column2plot, textsize = 3) {
+plotSampleInfo <- function(spe_object, column2plot, textsize = 3) {
   checkPackages("ggalluvial")
 
-  stopifnot(all(column2plot %in% colnames(SummarizedExperiment::colData(spe_object))))
+  stopifnot(all(column2plot %in% colnames(colData(spe_object))))
 
   # using alluvium plot to visualise user-defined metadata in the data.
-  SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
-    dplyr::select(column2plot) %>%
-    ggalluvial::to_lodes_form() %>%
+  colData(spe_object) |>
+    as.data.frame(optional = TRUE) |>
+    dplyr::select(column2plot) |>
+    ggalluvial::to_lodes_form() |>
     ggplot(aes(
       x = x, stratum = stratum,
       alluvium = alluvium, fill = stratum, label = stratum

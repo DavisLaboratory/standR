@@ -35,7 +35,6 @@ Calculate statistics for evaluating batch correction
 \examples{
 library(scater)
 data("dkd_spe_subset")
-spe <- scater::runPCA(dkd_spe_subset)
-computeClusterEvalStats(spe, "SlideName")
+computeClusterEvalStats(dkd_spe_subset, "SlideName")
 
 }

@@ -26,7 +26,7 @@ plotROIQC(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object.}
+\item{spe_object}{A SpatialExperiment object.}
 
 \item{x_axis}{Numeric feature to plot as x axis.}
 

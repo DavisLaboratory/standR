@@ -21,19 +21,19 @@ int_breaks <- function(x, n = 5) {
 `%ni` <- Negate(`%in%`)
 
 # Dharmesh's favorite theme
-bhuvad_theme <- function(rl = 1.1) {
-  stopifnot(rl > 0)
+bhuvad_theme <- function(textScale = 1.1) {
+  stopifnot(textScale > 0)
   ggplot2::theme_minimal() +
     ggplot2::theme(
       panel.border = element_rect(colour = "black", fill = NA),
       panel.grid = element_blank(),
-      axis.title = element_text(size = rel(rl) * 1.1),
-      axis.text = element_text(size = rel(rl)),
-      plot.title = element_text(size = rel(rl) * 1.2),
+      axis.title = element_text(size = rel(textScale) * 1.1),
+      axis.text = element_text(size = rel(textScale)),
+      plot.title = element_text(size = rel(textScale) * 1.2),
       strip.background = element_rect(fill = NA, colour = "black"),
-      strip.text = element_text(size = rel(rl)),
-      legend.text = element_text(size = rel(rl)),
-      legend.title = element_text(size = rel(rl), face = "italic")
+      strip.text = element_text(size = rel(textScale)),
+      legend.text = element_text(size = rel(textScale)),
+      legend.title = element_text(size = rel(textScale), face = "italic")
     )
 }
 
@@ -42,8 +42,8 @@ orderSamples <- function(sdata, ordannots) {
   sdata$SampleOrderID <- seq(nrow(sdata))
 
   # order samples based on provided annotations
-  sdata <- sdata %>%
-    dplyr::group_by(dplyr::across(!!ordannots)) %>%
+  sdata <- sdata |>
+    dplyr::group_by(dplyr::across(!!ordannots)) |>
     dplyr::arrange(.by_group = TRUE)
 
   return(sdata$SampleOrderID)

@@ -1,6 +1,6 @@
 #' Plot Sample-wise QC plot
 #'
-#' @param spe_object A spatial experiment object.
+#' @param spe_object A SpatialExperiment object.
 #' @param x_axis Numeric feature to plot as x axis.
 #' @param y_axis Numeric feature to plot as y axis.
 #' @param x_lab Label name for x axis.
@@ -43,16 +43,16 @@ plotROIQC <- function(spe_object,
                       layout_ncol = 2, layout_nrow = 2,
                       leyout_height = c(0.8, 2.5), layout_width = c(2.5, 0.8),
                       ...) {
-  stopifnot(x_axis %in% colnames(SummarizedExperiment::colData(spe_object)))
-  stopifnot(y_axis %in% colnames(SummarizedExperiment::colData(spe_object)))
+  stopifnot(x_axis %in% colnames(colData(spe_object)))
+  stopifnot(y_axis %in% colnames(colData(spe_object)))
 
   aesmap <- rlang::enquos(...)
   x_axis <- rlang::sym(x_axis)
   y_axis <- rlang::sym(y_axis)
 
   # plot dot plot
-  p1 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
+  p1 <- colData(spe_object) |>
+    as.data.frame(optional = TRUE) |>
     ggplot(aes(!!x_axis, !!y_axis, !!!aesmap)) +
     geom_point(alpha = .6) +
     geom_smooth(method = "loess", se = FALSE, col = regression_col) +
@@ -61,8 +61,8 @@ plotROIQC <- function(spe_object,
     ylab(y_lab)
 
   # plot distribution of y axis
-  p2 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
+  p2 <- colData(spe_object) |>
+    as.data.frame(optional = TRUE) |>
     ggplot(aes(!!y_axis)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +
@@ -78,8 +78,8 @@ plotROIQC <- function(spe_object,
     theme_void()
 
   # plot distribution of x axis
-  p3 <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
+  p3 <- colData(spe_object) |>
+    as.data.frame(optional = TRUE) |>
     ggplot(aes(!!x_axis)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +

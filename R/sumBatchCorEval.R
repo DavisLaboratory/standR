@@ -15,18 +15,17 @@
 #' @examples
 #' library(scater)
 #' data("dkd_spe_subset")
-#' spe <- scater::runPCA(dkd_spe_subset)
-#' computeClusterEvalStats(spe, "SlideName")
+#' computeClusterEvalStats(dkd_spe_subset, "SlideName")
 #'
 computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
                                     n_dimension = c(1, 2), assay = 2) {
-  stopifnot(foiColumn %in% colnames(SummarizedExperiment::colData(spe_object)))
+  stopifnot(foiColumn %in% colnames(colData(spe_object)))
 
   # get PCA results
 
   # compute PCA
   if (is.null(precomputed)) {
-    pca_object <- calcPCA(SummarizedExperiment::assay(spe_object, assay), n_dimension)
+    pca_object <- calcPCA(assay(spe_object, assay), n_dimension)
   } else {
     pca_object <- checkPrecomputedPCA(spe_object, precomputed)
   }
@@ -34,11 +33,11 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
   ss <- getSilhouette(pca_object, spe_object, foiColumn)[[1]]
 
   # prepare for other stats to be computed
-  k <- SummarizedExperiment::colData(spe_object) %>%
-    as.data.frame(optional = TRUE) %>%
+  k <- colData(spe_object) |>
+    as.data.frame(optional = TRUE) |>
     dplyr::select(all_of(foiColumn))
-  k <- k[, 1] %>%
-    unique() %>%
+  k <- k[, 1] |>
+    unique() |>
     length()
 
   # clustering
@@ -50,8 +49,8 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
   types <- NULL
 
   # compute adjrand and jaccard
-  df_out <- mclustcomp::mclustcomp(km_clusters, getSilhouette(pca_object, spe_object, foiColumn)[[2]]) %>%
-    filter(types %in% c("adjrand", "chisq", "jaccard", "smc", "mirkin")) %>%
+  df_out <- mclustcomp::mclustcomp(km_clusters, getSilhouette(pca_object, spe_object, foiColumn)[[2]]) |>
+    filter(types %in% c("adjrand", "chisq", "jaccard", "smc", "mirkin")) |>
     mutate(types = c(
       "Adjusted Rand Index", "Chi-Squared Coefficient", "Jaccard Index",
       "Simple Matching Coefficient", "Mirkin Distance"
@@ -77,7 +76,7 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 #' @examples
 #' library(scater)
 #' data("dkd_spe_subset")
-#' spe <- scater::runPCA(dkd_spe_subset)
+#' spe <- dkd_spe_subset
 #' spe2 <- spe
 #' spe3 <- spe
 #' plotClusterEvalStats(list(spe, spe2, spe3),
@@ -92,20 +91,20 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
   # get stat for bio factor
   stat_bio <- lapply(spe_list, function(x) {
     computeClusterEvalStats(x, bio_feature_name)
-  }) %>%
-    bind_rows() %>%
+  }) |>
+    bind_rows() |>
     mutate(from = rep(data_names, each = 6))
 
   # get stat for batch factor
   stat_batch <- lapply(spe_list, function(x) {
     computeClusterEvalStats(x, batch_feature_name)
-  }) %>%
-    bind_rows() %>%
+  }) |>
+    bind_rows() |>
     mutate(from = rep(data_names, each = 6))
 
-  p_bio <- stat_bio %>%
-    mutate(from = factor(from, levels = data_names)) %>%
-    mutate(scores = as.numeric(scores)) %>%
+  p_bio <- stat_bio |>
+    mutate(from = factor(from, levels = data_names)) |>
+    mutate(scores = as.numeric(scores)) |>
     ggplot(aes(from, scores, fill = types)) +
     geom_bar(stat = "identity", col = "black", width = .4) +
     facet_wrap(~types, scales = "free_y", ncol = 3) +
@@ -115,9 +114,9 @@ plotClusterEvalStats <- function(spe_list, bio_feature_name, batch_feature_name,
     ylab("Scores") +
     ggtitle("Biology")
 
-  p_batch <- stat_batch %>%
-    mutate(from = factor(from, levels = data_names)) %>%
-    mutate(scores = as.numeric(scores)) %>%
+  p_batch <- stat_batch |>
+    mutate(from = factor(from, levels = data_names)) |>
+    mutate(scores = as.numeric(scores)) |>
     ggplot(aes(from, scores, fill = types)) +
     geom_bar(stat = "identity", col = "black", width = .4) +
     facet_wrap(~types, scales = "free_y", ncol = 3) +

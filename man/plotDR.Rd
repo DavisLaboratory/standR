@@ -8,9 +8,9 @@
 \usage{
 plotDR(object, dims = c(1, 2), ...)
 
-\S4method{plotDR}{SingleCellExperiment}(object, dims, dimred = "PCA", rl = 1, ...)
+\S4method{plotDR}{SingleCellExperiment}(object, dims, dimred = "PCA", textScale = 1, ...)
 
-\S4method{plotDR}{SpatialExperiment}(object, dims, dimred = "PCA", rl = 1, ...)
+\S4method{plotDR}{SpatialExperiment}(object, dims, dimred = "PCA", textScale = 1, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -23,7 +23,7 @@ containing gene expression data.}
 \item{dimred}{a string or integer scalar indicating the reduced dimension
 result in \code{reducedDims(object)} to plot.}
 
-\item{rl}{a numeric, specifying the relative scale factor to apply to text on
+\item{textScale}{a numeric, specifying the relative scale factor to apply to text on
 the plot.}
 }
 \value{

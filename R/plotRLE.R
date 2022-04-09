@@ -2,26 +2,26 @@
 #'
 #' @param ordannots variables or computations to sort samples by (tidy style).
 #'
-#' @inheritParams plotPCA
+#' @inheritParams drawPCA
 #' @return a ggplot2 object, containing the RLE plot.
 #' @export
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' plotRLE(dkd_spe_subset)
+#' plotRLExpr(dkd_spe_subset)
 #'
 setGeneric(
-  "plotRLE",
+  "plotRLExpr",
   function(object,
            ordannots = c(),
            ...) {
-    standardGeneric("plotRLE")
+    standardGeneric("plotRLExpr")
   }
 )
 
-#' @rdname plotRLE
+#' @rdname plotRLExpr
 setMethod(
-  "plotRLE",
+  "plotRLExpr",
   signature("DGEList", "ANY"),
   function(object, ordannots, ...) {
     # extract sample data
@@ -31,15 +31,15 @@ setMethod(
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
     rledf <- pdataRLE_intl(object, samporder)
-    p1 <- plotRLE_intl(rledf, sdata, isSCE = FALSE, ...)
+    p1 <- plotRLExpr_intl(rledf, sdata, isSCE = FALSE, ...)
 
     return(p1)
   }
 )
 
-#' @rdname plotRLE
+#' @rdname plotRLExpr
 setMethod(
-  "plotRLE",
+  "plotRLExpr",
   signature("ExpressionSet", "ANY"),
   function(object, ordannots, ...) {
     # extract sample data
@@ -49,28 +49,28 @@ setMethod(
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
     rledf <- pdataRLE_intl(object, samporder)
-    p1 <- plotRLE_intl(rledf, sdata, isSCE = FALSE, ...)
+    p1 <- plotRLExpr_intl(rledf, sdata, isSCE = FALSE, ...)
 
     return(p1)
   }
 )
 
-#' @rdname plotRLE
+#' @rdname plotRLExpr
 setMethod(
-  "plotRLE",
+  "plotRLExpr",
   signature("SummarizedExperiment", "ANY"),
   function(object, ordannots, assay = 1, ...) {
     isSCE <- is(object, "SingleCellExperiment")
 
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+    sdata <- BiocGenerics::as.data.frame(colData(object), optional = TRUE)
 
     # extract expression data (and transform)
-    object <- SummarizedExperiment::assay(object, i = assay)
+    object <- assay(object, i = assay)
     # create data structure
     samporder <- orderSamples(sdata, rlang::enquo(ordannots))
     rledf <- pdataRLE_intl(object, samporder)
-    p1 <- plotRLE_intl(rledf, sdata, isSCE = isSCE, ...)
+    p1 <- plotRLExpr_intl(rledf, sdata, isSCE = isSCE, ...)
 
     return(p1)
   }
@@ -93,7 +93,7 @@ pdataRLE_intl <- function(emat, sampord) {
   return(rledf)
 }
 
-plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
+plotRLExpr_intl <- function(plotdf, sdata, isSCE = FALSE, textScale = 1, ...) {
 
   # constant - sample size at which standard plot becomes dense
   dense_thresh <- 50
@@ -124,7 +124,7 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
       ggplot2::geom_hline(yintercept = 0, colour = 2, lty = 2) +
       ggplot2::labs(y = "Relative log expression (median)", x = "Relative log expression (IQR)") +
       do.call(ggplot2::geom_point, defaultmap) +
-      bhuvad_theme(rl)
+      bhuvad_theme(textScale)
   } else {
     p1 <- ggplot2::ggplot(plotdf, aes(x = x, y = middle, group = x, !!!aesmap)) +
       ggplot2::geom_boxplot(
@@ -134,7 +134,7 @@ plotRLE_intl <- function(plotdf, sdata, isSCE = FALSE, rl = 1, ...) {
       ggplot2::geom_hline(yintercept = 0, colour = 2, lty = 2) +
       ggplot2::ylab("Relative log expression") +
       do.call(ggplot2::geom_boxplot, defaultmap) +
-      bhuvad_theme(rl) +
+      bhuvad_theme(textScale) +
       ggplot2::theme(axis.text.x = element_blank())
 
     # update plot if too many samples are plot

@@ -1,6 +1,6 @@
 Package: standR
 Title: Spatial transcriptome analyses of Nanostring's DSP data in R
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: 
     c(person(given = "Ning",
              family = "Liu",
@@ -31,7 +31,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports:
     dplyr,
-    magrittr,
     SpatialExperiment (>= 1.5.2),
     SummarizedExperiment,
     SingleCellExperiment,
@@ -49,7 +48,8 @@ Imports:
     BiocGenerics,
     grDevices,
     stats,
-    methods
+    methods,
+    mclustcomp
 Suggests:
     knitr,
     ExperimentHub,
@@ -60,7 +60,6 @@ Suggests:
     ggpubr,
     ggrepel,
     cluster,
-    mclustcomp,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

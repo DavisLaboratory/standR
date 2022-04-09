@@ -15,7 +15,7 @@ plotPairPCA(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object.}
+\item{spe_object}{A SpatialExperiment object.}
 
 \item{n_dimension}{The top n dimensions to be plotted}
 

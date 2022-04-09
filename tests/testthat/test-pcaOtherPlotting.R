@@ -31,6 +31,6 @@ test_that("Testing PCA scree plot function", {
 test_that("Testing PCA biplot function", {
   data("dkd_spe_subset")
 
-  p <- plotPCAbiplot(dkd_spe_subset)
+  p <- plotPCAbiplot(dkd_spe_subset, n_loadings = 1)
   expect_silent(print(p))
 })

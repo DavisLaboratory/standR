@@ -23,7 +23,7 @@ plotGeneQC(
 )
 }
 \arguments{
-\item{spe}{A spatial experiment object.}
+\item{spe}{A SpatialExperiment object.}
 
 \item{top_n}{Integer. Indicating the top n genes will be plotted. Default is 9.}
 

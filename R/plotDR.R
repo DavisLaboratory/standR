@@ -20,7 +20,7 @@ calcPCA <- function(object, dims) {
 #'   `SummarizedExperiment` and its derivative classes).
 #' @param precomputed a dimensional reduction results from `stats::prcomp`.
 #'   result in `reducedDims(object)` to plot.
-#' @param rl a numeric, specifying the relative scale factor to apply to text on
+#' @param textScale a numeric, specifying the relative scale factor to apply to text on
 #'   the plot.
 #' @param ... aesthetic mappings to pass to `ggplot2::aes_string()`.
 #'
@@ -28,20 +28,24 @@ calcPCA <- function(object, dims) {
 #' @export
 #'
 #' @docType methods
-#' @name plotPCA
-#' @rdname plotPCA
-#' @aliases plotPCA plotPCA,DGEList-method plotPCA,ExpressionSet-method
-#' @aliases plotPCA,SummarizedExperiment-method plotPCA,SingleCellExperiment-method plotPCA,SpatialExperiment-method
-#' @importFrom BiocGenerics plotPCA
+#' @name drawPCA
+#' @rdname drawPCA
+#' @aliases drawPCA drawPCA,DGEList-method drawPCA,ExpressionSet-method
+#' @aliases drawPCA,SummarizedExperiment-method drawPCA,SingleCellExperiment-method drawPCA,SpatialExperiment-method
 #'
 #' @examples
 #' data("dkd_spe_subset")
-#' plotPCA(dkd_spe_subset)
+#' drawPCA(dkd_spe_subset)
 #'
+setGeneric("drawPCA",
+           function(object,
+                    dims = c(1, 2),
+                    ...) standardGeneric("drawPCA"))
+
 setMethod(
-  "plotPCA",
+  "drawPCA",
   signature("DGEList"),
-  function(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...) {
+  function(object, dims = c(1, 2), precomputed = NULL, textScale = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(edgeR::cpm(object, log = TRUE), dims)
@@ -53,17 +57,17 @@ setMethod(
     sdata <- object$samples
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
 )
 
-#' @rdname plotPCA
+#' @rdname drawPCA
 setMethod(
-  "plotPCA",
+  "drawPCA",
   signature("ExpressionSet"),
-  function(object, dims = c(1, 2), precomputed = NULL, rl = 1, ...) {
+  function(object, dims = c(1, 2), precomputed = NULL, textScale = 1, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       pcdata <- calcPCA(Biobase::exprs(object), dims)
@@ -75,46 +79,46 @@ setMethod(
     sdata <- Biobase::pData(object)
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
 )
 
-.plotPCA_se <- function(object, dims = c(1, 2), assay = 1, precomputed = NULL, rl = 1, ...) {
+.drawPCA_se <- function(object, dims = c(1, 2), assay = 1, precomputed = NULL, textScale = 1, ...) {
   # compute PCA
   if (is.null(precomputed)) {
-    pcdata <- calcPCA(SummarizedExperiment::assay(object, assay), dims)
+    pcdata <- calcPCA(assay(object, assay), dims)
   } else {
     pcdata <- checkPrecomputedPCA(object, precomputed)
   }
 
   # extract sample data
-  sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+  sdata <- BiocGenerics::as.data.frame(colData(object), optional = TRUE)
 
 
   # create data structure
   drdf <- pdataPC_intl(pcdata, dims)
-  p1 <- plotDR_intl(drdf, sdata, rl, ...)
+  p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
   return(p1)
 }
 
-#' @rdname plotPCA
-setMethod("plotPCA", signature("SummarizedExperiment"), .plotPCA_se)
+#' @rdname drawPCA
+setMethod("drawPCA", signature("SummarizedExperiment"), .drawPCA_se)
 
-#' @rdname plotPCA
-setMethod("plotPCA", signature("SingleCellExperiment"), .plotPCA_se)
+#' @rdname drawPCA
+setMethod("drawPCA", signature("SingleCellExperiment"), .drawPCA_se)
 
-#' @rdname plotPCA
-setMethod("plotPCA", signature("SpatialExperiment"), .plotPCA_se)
+#' @rdname drawPCA
+setMethod("drawPCA", signature("SpatialExperiment"), .drawPCA_se)
 
 #' Compute and plot the results of any dimension reduction methods on gene expression data
 #'
 #' @param dimred a string or integer scalar indicating the reduced dimension
 #'   result in `reducedDims(object)` to plot.
 #'
-#' @inheritParams plotPCA
+#' @inheritParams drawPCA
 #' @return a ggplot2 object
 #' @export
 #'
@@ -136,16 +140,16 @@ setGeneric(
 setMethod(
   "plotDR",
   signature("SingleCellExperiment", "ANY"),
-  function(object, dims, dimred = "PCA", rl = 1, ...) {
+  function(object, dims, dimred = "PCA", textScale = 1, ...) {
     # compute PCA
     pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+    sdata <- BiocGenerics::as.data.frame(colData(object), optional = TRUE)
 
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
@@ -155,16 +159,16 @@ setMethod(
 setMethod(
   "plotDR",
   signature("SpatialExperiment", "ANY"),
-  function(object, dims, dimred = "PCA", rl = 1, ...) {
+  function(object, dims, dimred = "PCA", textScale = 1, ...) {
     # compute PCA
     pcdata <- SingleCellExperiment::reducedDim(object, type = dimred)
 
     # extract sample data
-    sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+    sdata <- BiocGenerics::as.data.frame(colData(object), optional = TRUE)
 
     # create data structure
     drdf <- pdataPC_intl(pcdata, dims, relabel = FALSE)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
@@ -176,7 +180,7 @@ setMethod(
 #'   `limma::plotMDS`.
 #' @param assay a numeric or character, specifying the assay to use (for
 #'   `SummarizedExperiment` and its derivative classes).
-#' @inheritParams plotPCA
+#' @inheritParams drawPCA
 #' @return a ggplot2 object
 #' @export
 #'
@@ -189,7 +193,7 @@ setGeneric(
   function(object,
            dims = c(1, 2),
            precomputed = NULL,
-           rl = 1, assay = 1,
+           textScale = 1, assay = 1,
            ...) {
     standardGeneric("plotMDS")
   }
@@ -199,7 +203,7 @@ setGeneric(
 setMethod(
   "plotMDS",
   signature("DGEList", "ANY", "ANY", "ANY"),
-  function(object, dims, precomputed, rl, ...) {
+  function(object, dims, precomputed, textScale, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       mdsdata <- limma::plotMDS(object, plot = FALSE)
@@ -211,7 +215,7 @@ setMethod(
     sdata <- object$samples
     # create data structure
     drdf <- pdataMDS_intl(mdsdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
@@ -221,7 +225,7 @@ setMethod(
 setMethod(
   "plotMDS",
   signature("ExpressionSet", "ANY", "ANY", "ANY"),
-  function(object, dims, precomputed, rl, ...) {
+  function(object, dims, precomputed, textScale, ...) {
     # compute PCA
     if (is.null(precomputed)) {
       mdsdata <- limma::plotMDS(object, plot = FALSE)
@@ -233,37 +237,37 @@ setMethod(
     sdata <- Biobase::pData(object)
     # create data structure
     drdf <- pdataMDS_intl(mdsdata, dims)
-    p1 <- plotDR_intl(drdf, sdata, rl, ...)
+    p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
     return(p1)
   }
 )
 
 
-.plotMDS_se <- function(object, dims = c(1, 2), precomputed = NULL, rl = 1, assay = 1, ...) {
+.plotMDS_se <- function(object, dims = c(1, 2), precomputed = NULL, textScale = 1, assay = 1, ...) {
   # compute PCA
   if (is.null(precomputed)) {
-    mdsdata <- limma::plotMDS(SummarizedExperiment::assay(object, assay), plot = FALSE)
+    mdsdata <- limma::plotMDS(assay(object, assay), plot = FALSE)
   } else {
     mdsdata <- checkPrecomputedMDS(object, precomputed)
   }
 
   # extract sample data
-  sdata <- BiocGenerics::as.data.frame(SummarizedExperiment::colData(object), optional = TRUE)
+  sdata <- BiocGenerics::as.data.frame(colData(object), optional = TRUE)
   # create data structure
   drdf <- pdataMDS_intl(mdsdata, dims)
-  p1 <- plotDR_intl(drdf, sdata, rl, ...)
+  p1 <- plotDR_intl(drdf, sdata, textScale, ...)
 
   return(p1)
 }
 
-#' @rdname plotPCA
+#' @rdname plotMDS
 setMethod("plotMDS", signature("SummarizedExperiment"), .plotMDS_se)
 
-#' @rdname plotPCA
+#' @rdname plotMDS
 setMethod("plotMDS", signature("SingleCellExperiment"), .plotMDS_se)
 
-#' @rdname plotPCA
+#' @rdname plotMDS
 setMethod("plotMDS", signature("SpatialExperiment"), .plotMDS_se)
 
 checkPrecomputedPCA <- function(object, pcdata) {
@@ -276,7 +280,7 @@ checkPrecomputedPCA <- function(object, pcdata) {
     pcdata <- pcdata$x
     attr(pcdata, "percentVar") <- pvar
     attr(pcdata, "rotation") <- rot
-  } else if (is(pcdata, "matrix")) {
+  } else if (is.matrix(pcdata)) {
     stopifnot(all(rownames(pcdata) == colnames(object)))
     stopifnot(c("dim", "dimnames", "varExplained", "percentVar", "rotation") %in% names(attributes(pcdata)))
   } else {
@@ -341,7 +345,7 @@ addSampleAnnot <- function(plotdf, sdata) {
   return(plotdf)
 }
 
-plotDR_intl <- function(drdf, sdata, rl, ...) {
+plotDR_intl <- function(drdf, sdata, textScale, ...) {
   # annotate samples
   plotdf <- addSampleAnnot(drdf, sdata)
 
@@ -372,5 +376,5 @@ plotDR_intl <- function(drdf, sdata, rl, ...) {
   ggplot2::ggplot(plotdf, ggplot2::aes(!!x, !!y, !!!aesmap)) +
     ggplot2::geom_point() +
     do.call(ggplot2::geom_point,defaultmap) +
-    bhuvad_theme(rl)
+    bhuvad_theme(textScale)
 }

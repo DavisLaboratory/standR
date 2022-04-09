@@ -32,7 +32,7 @@ Compare and evaluate different batch corrected data with plotting.
 \examples{
 library(scater)
 data("dkd_spe_subset")
-spe <- scater::runPCA(dkd_spe_subset)
+spe <- dkd_spe_subset
 spe2 <- spe
 spe3 <- spe
 plotClusterEvalStats(list(spe, spe2, spe3),

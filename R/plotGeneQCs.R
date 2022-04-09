@@ -1,6 +1,6 @@
 #' Plot gene-wise QC plot
 #'
-#' @param spe A spatial experiment object.
+#' @param spe A SpatialExperiment object.
 #' @param top_n Integer. Indicating the top n genes will be plotted. Default is 9.
 #' @param point_size Numeric. Point size.
 #' @param line_type Character. Line types for ggplot.
@@ -41,16 +41,18 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
                         line_col, line_cex, text_size, ...) {
   # get order
 
-  sampleorder <- SummarizedExperiment::colData(spe) %>%
-    as.data.frame(optional = TRUE) %>%
-    orderSamples(., ordannots)
+  sampleorder <- colData(spe) |>
+    as.data.frame(optional = TRUE) |>
+    orderSamples(ordannots)
 
   # get removed genes and order by mean expression
-  data <- S4Vectors::metadata(spe)$genes_rm_logCPM %>%
-    as.data.frame() %>%
-    mutate(m = rowMeans(.)) %>%
-    arrange(m) %>%
-    .[, sampleorder]
+  data <- S4Vectors::metadata(spe)$genes_rm_logCPM |>
+    as.data.frame()
+  data$m = rowMeans(data)
+  
+  data <- data |>
+    arrange(m) |>
+    (\(.) .[, sampleorder])()
 
   # top N genes to plot
   top_n <- min(nrow(data), top_n)
@@ -59,13 +61,13 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
 
   aesmap <- rlang::enquos(...)
 
-  data[seq(top_n), ] %>%
-    as.data.frame() %>%
-    rownames_to_column() %>%
-    tidyr::gather(sample, lcpm, -rowname) %>%
-    left_join(as.data.frame(SummarizedExperiment::colData(spe)) %>%
-      rownames_to_column(), by = c("sample" = "rowname")) %>%
-    mutate(sample = factor(sample, levels = colnames(data))) %>%
+  data[seq(top_n), ] |>
+    as.data.frame() |>
+    rownames_to_column() |>
+    tidyr::gather(sample, lcpm, -rowname) |>
+    left_join(as.data.frame(colData(spe)) |>
+      rownames_to_column(), by = c("sample" = "rowname")) |>
+    mutate(sample = factor(sample, levels = colnames(data))) |>
     ggplot(aes(sample, lcpm, !!!aesmap)) +
     geom_point(size = point_size, alpha = .5) +
     scale_colour_discrete(na.translate = FALSE) +
@@ -90,10 +92,12 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
 
 # plot non-expressed gene percentage histogram
 plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
-  SummarizedExperiment::colData(spe)$percentOfLowEprGene %>%
-    as.data.frame() %>%
-    rownames_to_column() %>%
-    magrittr::set_colnames(c("sample", "percent")) %>%
+  x <- colData(spe)$percentOfLowEprGene |>
+    as.data.frame() |>
+    rownames_to_column()
+  colnames(x) <- c("sample", "percent")
+  
+  x |>
     ggplot(aes(percent)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +

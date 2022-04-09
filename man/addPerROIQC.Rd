@@ -13,7 +13,7 @@ addPerROIQC(
 )
 }
 \arguments{
-\item{spe_object}{A spatial experiment object}
+\item{spe_object}{A SpatialExperiment object}
 
 \item{sample_fraction}{Double. Genes with low count in more than this threshold of the samples will be removed. Default is 0.9}
 
@@ -24,7 +24,7 @@ addPerROIQC(
 \item{design}{Generate using \code{model.matrix}, if this is specify, \code{edgeR::filterByExpr} will be used to filter genes.}
 }
 \value{
-A spatial experiment object
+A SpatialExperiment object
 }
 \description{
 Add QC statistics to the Spatial Experiment object
