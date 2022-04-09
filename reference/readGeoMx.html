@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">standR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -98,9 +98,39 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"</span></span>
-<span class="r-in"><span class="va">countFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url</span>, <span class="st">"GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sampleAnnoFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url</span>, <span class="st">"GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ExperimentHub</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: AnnotationHub</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocFileCache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: dbplyr</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘AnnotationHub’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:Biobase’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     cache</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">eh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ExperimentHub/man/ExperimentHub-class.html" class="external-link">ExperimentHub</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> snapshotDate(): 2022-04-06</span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">eh</span>, <span class="st">"standR"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ExperimentHub with 3 records</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # snapshotDate(): 2022-04-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # $dataprovider: Nanostring</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # $species: NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # $rdataclass: data.frame</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # additional mcols(): taxonomyid, genome, description,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   coordinate_1_based, maintainer, rdatadateadded, preparerclass, tags,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #   rdatapath, sourceurl, sourcetype </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # retrieve records with, e.g., 'object[["EH7364"]]' </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            title                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   EH7364 | GeomxDKDdata_count      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   EH7365 | GeomxDKDdata_sampleAnno </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   EH7366 | GeomxDKDdata_featureAnno</span>
+<span class="r-in"><span class="va">countFile</span> <span class="op">&lt;-</span> <span class="va">eh</span><span class="op">[[</span><span class="st">"EH7364"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?standR and browseVignettes('standR') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-in"><span class="va">sampleAnnoFile</span> <span class="op">&lt;-</span> <span class="va">eh</span><span class="op">[[</span><span class="st">"EH7365"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?standR and browseVignettes('standR') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">readGeoMx</span><span class="op">(</span><span class="va">countFile</span>, <span class="va">sampleAnnoFile</span>, hasNegProbe <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">18504</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">232</span></span>

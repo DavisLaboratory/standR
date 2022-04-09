@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">standR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -63,13 +63,64 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
 
 <span class="co"># S4 method for DGEList</span>
-<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
 
 <span class="co"># S4 method for ExpressionSet</span>
-<span class="fu">plotMDS</span><span class="op">(</span><span class="va">object</span>, dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, precomputed <span class="op">=</span> <span class="cn">NULL</span>, rl <span class="op">=</span> <span class="fl">1</span>, assay <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
+
+<span class="co"># S4 method for SummarizedExperiment</span>
+<span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
+
+<span class="co"># S4 method for SingleCellExperiment</span>
+<span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
+
+<span class="co"># S4 method for SpatialExperiment</span>
+<span class="fu">plotMDS</span><span class="op">(</span>
+  <span class="va">object</span>,
+  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  precomputed <span class="op">=</span> <span class="cn">NULL</span>,
+  textScale <span class="op">=</span> <span class="fl">1</span>,
+  assay <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">...</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -82,7 +133,7 @@ containing gene expression data.</p></dd>
 <dt>precomputed</dt>
 <dd><p>a dimensional reduction results from either
 <code><a href="https://rdrr.io/pkg/limma/man/plotMDS.html" class="external-link">limma::plotMDS</a></code>.</p></dd>
-<dt>rl</dt>
+<dt>textScale</dt>
 <dd><p>a numeric, specifying the relative scale factor to apply to text on
 the plot.</p></dd>
 <dt>assay</dt>

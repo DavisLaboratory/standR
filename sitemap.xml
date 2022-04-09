@@ -34,6 +34,9 @@
     <loc>/reference/dkd_spe_subset.html</loc>
   </url>
   <url>
+    <loc>/reference/drawPCA.html</loc>
+  </url>
+  <url>
     <loc>/reference/findBestK.html</loc>
   </url>
   <url>
@@ -61,22 +64,19 @@
     <loc>/reference/plotMDS.html</loc>
   </url>
   <url>
-    <loc>/reference/plotMetadata.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotPCA.html</loc>
-  </url>
-  <url>
     <loc>/reference/plotPCAbiplot.html</loc>
   </url>
   <url>
     <loc>/reference/plotPairPCA.html</loc>
   </url>
   <url>
-    <loc>/reference/plotRLE.html</loc>
+    <loc>/reference/plotRLExpr.html</loc>
   </url>
   <url>
     <loc>/reference/plotROIQC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSampleInfo.html</loc>
   </url>
   <url>
     <loc>/reference/plotScreePCA.html</loc>
