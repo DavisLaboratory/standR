@@ -72,15 +72,15 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
       if (j %in% d) {
         plotting_list[[j]] <- realplots[[k]]
       } else {
-        plotting_list[[j]] <- realplots[[k]] +
-          theme(
-            axis.title.x = element_blank(),
-            axis.text.x = element_blank(),
-            axis.ticks.x = element_blank(),
-            axis.title.y = element_blank(),
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank()
-          )
+        plotting_list[[j]] <- realplots[[k]]
+#         + theme(
+#            axis.title.x = element_blank(),
+#            axis.text.x = element_blank(),
+#            axis.ticks.x = element_blank(),
+#            axis.title.y = element_blank(),
+#            axis.text.y = element_blank(),
+#            axis.ticks.y = element_blank()
+#          )
       }
       k <- k + 1
     } else if (j %in% index_emptyPlots) {
