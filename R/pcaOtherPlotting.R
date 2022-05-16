@@ -22,6 +22,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' @param ... aesthetic mappings to pass to `ggplot2::aes()`.
 #' @param title Character vector, title to put at the top.
 #' @param title.size Numeric vector, size of the title.
+#' @param rmduplabs Remove duplicated labels from the plot.
 #'
 #' @return A ggplot object.
 #' @export

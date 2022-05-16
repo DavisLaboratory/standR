@@ -31,6 +31,8 @@ we will compute for you.}
 
 \item{title.size}{Numeric vector, size of the title.}
 
+\item{rmduplabs}{Remove duplicated labels from the plot.}
+
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes()}.}
 }
 \value{
