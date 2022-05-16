@@ -31,7 +31,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' plotPairPCA(dkd_spe_subset)
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
-                        assay = 2, title = NA, title.size = 14, ...) {
+                        assay = 2, title = NA, title.size = 14, rmduplabs = TRUE, ...) {
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
@@ -72,15 +72,19 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
       if (j %in% d) {
         plotting_list[[j]] <- realplots[[k]]
       } else {
-        plotting_list[[j]] <- realplots[[k]]
-#         + theme(
-#            axis.title.x = element_blank(),
-#            axis.text.x = element_blank(),
-#            axis.ticks.x = element_blank(),
-#            axis.title.y = element_blank(),
-#            axis.text.y = element_blank(),
-#            axis.ticks.y = element_blank()
-#          )
+        if (rmduplabs){
+          plotting_list[[j]] <- realplots[[k]] +
+            theme(
+            axis.title.x = element_blank(),
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank()
+          )
+        } else {
+          plotting_list[[j]] <- realplots[[k]]
+        }
       }
       k <- k + 1
     } else if (j %in% index_emptyPlots) {
