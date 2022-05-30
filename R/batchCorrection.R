@@ -100,7 +100,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
                                  batch = NULL, batch2 = NULL, covariates = NULL, design = matrix(1, ncol(spe), 1),
                                  method = c("RUV4", "Limma", "RUVg"), isLog = TRUE) {
-  if (length(method) == 2) {
+  if (length(method) == 3) {
     method <- "RUV4"
   } else {
     stopifnot(method %in% c("RUV4", "Limma", "RUVg"))
