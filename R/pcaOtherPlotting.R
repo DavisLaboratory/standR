@@ -62,7 +62,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
   for (i in seq(nrow(PCsToPlot))) {
     realplots[[i]] <- drawPCA(spe_object,
       dims = PCsToPlot[i, ],
-      precomputed = precomputed,
+      precomputed = pca_object,
       assay = assay, ...
     )
   }
