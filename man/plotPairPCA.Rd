@@ -12,6 +12,7 @@ plotPairPCA(
   title = NA,
   title.size = 14,
   rmduplabs = FALSE,
+  flipcoord = FALSE,
   ...
 )
 }

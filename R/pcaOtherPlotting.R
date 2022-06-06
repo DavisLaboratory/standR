@@ -32,7 +32,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' plotPairPCA(dkd_spe_subset)
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
-                        assay = 2, title = NA, title.size = 14, rmduplabs = FALSE, ...) {
+                        assay = 2, title = NA, title.size = 14, rmduplabs = FALSE, flipcoord = FALSE, ...) {
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
@@ -64,6 +64,12 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
       precomputed = precomputed,
       assay = assay, ...
     )
+  }
+  
+  if(flipcoord == TRUE){
+    for(i in seq(length(realplots))){
+      realplots[[i]] <- realplots[[i]] + coord_flip()
+    }
   }
 
   plotting_list <- list()
