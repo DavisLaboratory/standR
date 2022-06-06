@@ -32,7 +32,9 @@ we will compute for you.}
 
 \item{title.size}{Numeric vector, size of the title.}
 
-\item{rmduplabs}{Remove duplicated labels from the plot.}
+\item{rmduplabs}{Remove duplicated labels from the plot. FALSE by default.}
+
+\item{flipcoord}{Flip the xy coordinates. FALSE by default.}
 
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes()}.}
 }
