@@ -11,7 +11,7 @@ plotPairPCA(
   assay = 2,
   title = NA,
   title.size = 14,
-  rmduplabs = TRUE,
+  rmduplabs = FALSE,
   ...
 )
 }
