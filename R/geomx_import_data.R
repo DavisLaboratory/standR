@@ -104,10 +104,15 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     # arrange according to count table.
 
     # negprobe raw count
-    negprobecount <- countdata[countdata[, colnames.as.rownames[1]] == NegProbeName, ]
-    negprobecount <- negprobecount[, !colnames(negprobecount) %in%
-      colnames.as.rownames[1]]
-    rownames(negprobecount) <- NegProbeName
+    negprobecount <- countdata[countdata[, colnames.as.rownames[1]] == 
+                                 NegProbeName, ]
+    nprobename <- as.vector(as.matrix(negprobecount[,colnames.as.rownames[1]]))
+    if(length(nprobename) != length(unique(nprobename))){
+      nprobename <- paste0(nprobename,"_",seq(length(nprobename)))
+    }
+    negprobecount <- negprobecount[, !colnames(negprobecount) %in% 
+                                     colnames.as.rownames[1]]
+    rownames(negprobecount) <- nprobename
 
 
     # logCPM count
