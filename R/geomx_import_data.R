@@ -64,7 +64,9 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     countdata_filtered0 <- countdata[countdata[, colnames.as.rownames[1]] != NegProbeName, ]
     countdata_filtered <- countdata_filtered0[, !colnames(countdata_filtered0) %in%
       colnames.as.rownames[1]]
-    rownames(countdata_filtered) <- countdata_filtered0[, colnames.as.rownames[1]]
+    rownames(countdata_filtered) <- countdata_filtered0[, colnames.as.rownames[1]] |> 
+      as.matrix() |>
+      as.vector()
 
 
     # gene meta without negprobes
