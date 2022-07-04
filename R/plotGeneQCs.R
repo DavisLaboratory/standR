@@ -27,12 +27,19 @@ plotGeneQC <- function(spe, top_n = 9, ordannots = c(), point_size = 1,
                        line_type = "dashed", line_col = "darkred", line_cex = 1,
                        hist_col = "black", hist_fill = "skyblue", bin_num = 30,
                        text_size = 13, layout_ncol = 1, layout_nrow = 2,
-                       layout_height = c(1, .4), ...) {
-  p1 <- plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...)
+                       layout_height = c(1, 1), ...) {
+  
   p2 <- plotNEGpercentHist(spe, hist_col, hist_fill, bin_num, text_size)
-
-  p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
-                                   heights = layout_height)
+  
+  if(nrow(S4Vectors::metadata(spe)$genes_rm_rawCount) > 0){
+    p1 <- plotRmGenes(spe, top_n, ordannots, point_size, line_type, line_col, line_cex, text_size, ...)
+    
+    
+    p1 + p2 + patchwork::plot_layout(layout_ncol, layout_nrow,
+                                     heights = layout_height)
+  } else {
+    p2
+  }
 }
 
 
@@ -101,10 +108,11 @@ plotNEGpercentHist <- function(spe, hist_col, hist_fill, bin_num, text_size) {
     ggplot(aes(percent)) +
     geom_histogram(col = hist_col, fill = hist_fill, bins = bin_num) +
     theme_test() +
-    xlab("Percentage of non-expressed genes in each sample (%)") +
+    xlab("Percentage of lowly-expressed genes in each sample (%)") +
     ylab("Frequency") +
-    theme(text = element_text(size = text_size)) +
-    ggtitle("Distribution")
+    theme(text = element_text(size = text_size))
 }
+
+
 
 utils::globalVariables(c(".", "sample", "lcpm", "rowname", "m", "percent"))
