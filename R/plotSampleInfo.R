@@ -4,6 +4,8 @@
 #' @param spe_object A SpatialExperiment object.
 #' @param column2plot Which columns to plot.
 #' @param textsize text size.
+#' 
+#' @importFrom ggalluvial StatStratum
 #'
 #'
 #' @return A ggplot object
@@ -18,7 +20,7 @@ plotSampleInfo <- function(spe_object, column2plot, textsize = 3) {
   checkPackages("ggalluvial")
 
   stopifnot(all(column2plot %in% colnames(colData(spe_object))))
-
+  
   # using alluvium plot to visualise user-defined metadata in the data.
   colData(spe_object) |>
     as.data.frame(optional = TRUE) |>

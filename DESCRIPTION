@@ -49,6 +49,7 @@ Imports:
     grDevices,
     stats,
     methods,
+    ggalluvial,
     mclustcomp,
     RUVSeq
 Suggests:
@@ -57,7 +58,6 @@ Suggests:
     rmarkdown,
     scater,
     uwot,
-    ggalluvial,
     ggpubr,
     ggrepel,
     cluster,
