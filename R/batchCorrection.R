@@ -78,7 +78,8 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param batch2 A vector indicating the second series of batches. This is specific for the Limma method.
 #' @param covariates A matrix or vector of numeric covariates to be adjusted for.
 #' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
-#' @param method Can be either RUV4 or Limma, by default is RUV4.
+#' @param method Can be either RUV4 or Limma or RUVg, by default is RUV4.
+#' @param isLog Logical vector, indicating if the count table is log or not.
 #'
 #' @return A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
 #' @export
@@ -98,11 +99,11 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #'
 geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
                                  batch = NULL, batch2 = NULL, covariates = NULL, design = matrix(1, ncol(spe), 1),
-                                 method = c("RUV4", "Limma")) {
-  if (length(method) == 2) {
+                                 method = c("RUV4", "Limma", "RUVg"), isLog = TRUE) {
+  if (length(method) == 3) {
     method <- "RUV4"
   } else {
-    stopifnot(method %in% c("RUV4", "Limma"))
+    stopifnot(method %in% c("RUV4", "Limma", "RUVg"))
     stopifnot(length(method) == 1)
   }
 
@@ -154,6 +155,29 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
       design = design
     ) |>
       (\(.) .[rownames(spe), colnames(spe)])()
+  } else if (method == "RUVg") {
+    k <- as.integer(k)
+    
+    stopifnot(k > 0)
+    
+    # get count matrix, and transpose
+    tmat <- assay(spe, n_assay) |>
+      as.matrix()
+    
+    ruvg_out <- RUVSeq::RUVg(tmat, k, isLog = isLog, cIdx = NCGs)
+    
+    # store results
+    ruv_w <- ruvg_out$W |>
+      as.data.frame()
+    colnames(ruv_w) <- paste0("ruv_W", seq(k))
+    
+    for (i in seq(ncol(ruv_w))) {
+      n <- colnames(ruv_w)[i]
+      colData(spe)[, n] <- ruv_w[, i]
+    }
+    
+    assay(spe, "logcounts") <- ruvg_out$normalizedCounts[rownames(spe), colnames(spe)]
+    
   }
 
   return(spe)

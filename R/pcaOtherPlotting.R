@@ -22,6 +22,8 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' @param ... aesthetic mappings to pass to `ggplot2::aes()`.
 #' @param title Character vector, title to put at the top.
 #' @param title.size Numeric vector, size of the title.
+#' @param rmduplabs Remove duplicated labels from the plot. FALSE by default.
+#' @param flipcoord Flip the xy coordinates. FALSE by default.
 #'
 #' @return A ggplot object.
 #' @export
@@ -31,7 +33,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' plotPairPCA(dkd_spe_subset)
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
-                        assay = 2, title = NA, title.size = 14, ...) {
+                        assay = 2, title = NA, title.size = 14, rmduplabs = FALSE, flipcoord = FALSE, ...) {
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
@@ -60,9 +62,15 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
   for (i in seq(nrow(PCsToPlot))) {
     realplots[[i]] <- drawPCA(spe_object,
       dims = PCsToPlot[i, ],
-      precomputed = precomputed,
+      precomputed = pca_object,
       assay = assay, ...
     )
+  }
+  
+  if(flipcoord == TRUE){
+    for(i in seq(length(realplots))){
+      realplots[[i]] <- realplots[[i]] + coord_flip()
+    }
   }
 
   plotting_list <- list()
@@ -72,8 +80,9 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
       if (j %in% d) {
         plotting_list[[j]] <- realplots[[k]]
       } else {
-        plotting_list[[j]] <- realplots[[k]] +
-          theme(
+        if (rmduplabs){
+          plotting_list[[j]] <- realplots[[k]] +
+            theme(
             axis.title.x = element_blank(),
             axis.text.x = element_blank(),
             axis.ticks.x = element_blank(),
@@ -81,6 +90,9 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
             axis.text.y = element_blank(),
             axis.ticks.y = element_blank()
           )
+        } else {
+          plotting_list[[j]] <- realplots[[k]]
+        }
       }
       k <- k + 1
     } else if (j %in% index_emptyPlots) {

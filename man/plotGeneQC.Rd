@@ -18,7 +18,7 @@ plotGeneQC(
   text_size = 13,
   layout_ncol = 1,
   layout_nrow = 2,
-  layout_height = c(1, 0.4),
+  layout_height = c(1, 1),
   ...
 )
 }

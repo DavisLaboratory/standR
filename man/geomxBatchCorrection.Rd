@@ -14,7 +14,8 @@ geomxBatchCorrection(
   batch2 = NULL,
   covariates = NULL,
   design = matrix(1, ncol(spe), 1),
-  method = c("RUV4", "Limma")
+  method = c("RUV4", "Limma", "RUVg"),
+  isLog = TRUE
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ geomxBatchCorrection(
 
 \item{design}{A design matrix relating to treatment conditions to be preserved, can be generated using \code{stats::model.matrix} function with all biological factors included.}
 
-\item{method}{Can be either RUV4 or Limma, by default is RUV4.}
+\item{method}{Can be either RUV4 or Limma or RUVg, by default is RUV4.}
+
+\item{isLog}{Logical vector, indicating if the count table is log or not.}
 }
 \value{
 A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
