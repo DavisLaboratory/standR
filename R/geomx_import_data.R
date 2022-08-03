@@ -68,7 +68,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
 
     # gene meta without negprobes
-    if (!is.na(featureAnnoFile)) {
+    if (!all(is.na(featureAnnoFile))) {
       if(is.data.frame(featureAnnoFile)){
         genemeta <- featureAnnoFile
       } else {
