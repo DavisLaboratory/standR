@@ -133,44 +133,54 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
   } else {
     # it doesn't remove the NegProbe genes, leave them in the count matrix
     # raw count
-    countdata <- as.data.frame(readr::read_tsv(countFile), optional = TRUE)
-
-    stopifnot(colnames.as.rownames[1] %in% colnames(countdata))
-
-    countdata <- tibble::column_to_rownames(countdata, colnames.as.rownames[1])
-    # gene meta check
-    if (!is.na(featureAnnoFile)) {
-      gene_meta <- as.data.frame(readr::read_tsv(featureAnnoFile),
-        optional = TRUE
-      )
-      gene_meta <- tibble::column_to_rownames(gene_meta, colnames.as.rownames[3])
-      gene_meta <- gene_meta[rownames(countdata), ]
-    } else {
+    if (is.data.frame(countFile)) {
+      countdata0 <- countFile
+    }
+    else {
+      countdata0 <- as.data.frame(readr::read_tsv(countFile), 
+                                 optional = TRUE)
+    }
+    stopifnot(colnames.as.rownames[1] %in% colnames(countdata0))
+    
+    countdata <- countdata0[, !colnames(countdata0) %in% colnames.as.rownames[1]]
+    rownames(countdata) <- as.vector(as.matrix(countdata0[, colnames.as.rownames[1]]))
+    
+    if (!all(is.na(featureAnnoFile))) {
+      if (is.data.frame(featureAnnoFile)) {
+        genemeta0 <- featureAnnoFile
+      }
+      else {
+        genemeta0 <- as.data.frame(readr::read_tsv(featureAnnoFile), 
+                                  optional = TRUE)
+      }
+      stopifnot(colnames.as.rownames[3] %in% colnames(genemeta0))
+      
+      genemeta <- genemeta0[, !colnames(genemeta0) %in% colnames.as.rownames[3]]
+      rownames(genemeta) <- genemeta0[, colnames.as.rownames[3]]
+      genemeta <- genemeta[rownames(countdata), ]
+    }
+    else {
       gene_meta <- data.frame(Type = rep("gene", nrow(countdata)))
     }
-
-    # sample meta
-    samplemeta <- as.data.frame(readr::read_tsv(sampleAnnoFile),
-      optional = TRUE
-    )
-
-    stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta))
-
-    samplemeta <- tibble::column_to_rownames(samplemeta, colnames.as.rownames[2])
+    
+    if (is.data.frame(sampleAnnoFile)) {
+      samplemeta0 <- sampleAnnoFile
+    }
+    else {
+      samplemeta0 <- as.data.frame(readr::read_tsv(sampleAnnoFile), 
+                                  optional = TRUE)
+    }
+    stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta0))
+    
+    samplemeta <- samplemeta0[, !colnames(samplemeta0) %in% colnames.as.rownames[2]]
+    rownames(samplemeta) <- samplemeta0[, colnames.as.rownames[2]]
     samplemeta <- samplemeta[colnames(countdata), ]
-
-    # negprobe raw count
+    
     countdata_lcpm <- edgeR::cpm(countdata, log = TRUE)
-
-    spe <- SpatialExperiment::SpatialExperiment(
-      assays = list(
-        counts = countdata,
-        logcounts = countdata_lcpm
-      ),
-      colData = samplemeta,
-      rowData = gene_meta,
-      spatialCoords = as.matrix(samplemeta[, coord.colnames])
-    )
+    spe <- SpatialExperiment::SpatialExperiment(assays = list(counts = countdata, 
+                                                              logcounts = countdata_lcpm), colData = samplemeta, 
+                                                rowData = gene_meta, spatialCoords = as.matrix(samplemeta[, 
+                                                                                                          coord.colnames]))
   }
   return(spe)
 }
