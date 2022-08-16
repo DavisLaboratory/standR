@@ -50,10 +50,10 @@ computeClusterEvalStats <- function(spe_object, foiColumn, precomputed = NULL,
 
   # compute adjrand and jaccard
   df_out <- mclustcomp::mclustcomp(km_clusters, getSilhouette(pca_object, spe_object, foiColumn)[[2]]) |>
-    filter(types %in% c("adjrand", "chisq", "jaccard", "smc", "mirkin")) |>
+    filter(types %in% c("adjrand", "chisq", "jaccard", "overlap", "mirkin")) |>
     mutate(types = c(
       "Adjusted Rand Index", "Chi-Squared Coefficient", "Jaccard Index",
-      "Simple Matching Coefficient", "Mirkin Distance"
+      "Overlap Coefficient", "Mirkin Distance"
     ))
 
   df_out[6, ] <- c("Silhouette Coefficient", ss)
