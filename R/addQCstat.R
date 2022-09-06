@@ -45,8 +45,8 @@ addPerROIQC <- function(spe_object, sample_fraction = 0.9, rm_genes = TRUE, min_
 
   # remove genes and store the removed genes to metadata
   if (rm_genes == TRUE) {
-    S4Vectors::metadata(spe)$genes_rm_rawCount <- assay(spe, "counts")[rowData(spe)$genes_lowCount_overNsamples, ]
-    S4Vectors::metadata(spe)$genes_rm_logCPM <- assay(spe, "logcounts")[rowData(spe)$genes_lowCount_overNsamples, ]
+    S4Vectors::metadata(spe)$genes_rm_rawCount <- as.data.frame(assay(spe, "counts"))[rowData(spe)$genes_lowCount_overNsamples, ]
+    S4Vectors::metadata(spe)$genes_rm_logCPM <- as.data.frame(assay(spe, "logcounts"))[rowData(spe)$genes_lowCount_overNsamples, ]
     spe <- spe[!rowData(spe)$genes_lowCount_overNsamples, ]
   }
 
