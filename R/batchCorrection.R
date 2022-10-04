@@ -44,6 +44,9 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
       return(data.frame(cv))
     }) |>
     bind_cols()
+  
+  gene_with_mzscore <- gene_with_mzscore[colSums(!is.na(gene_with_mzscore)) > 0] 
+  
   colnames(gene_with_mzscore) <- paste0("cv", seq(ncol(gene_with_mzscore)))
   gene_with_mzscore <- scale(gene_with_mzscore) |>  # compute z-score
     as.data.frame()
