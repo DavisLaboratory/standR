@@ -160,7 +160,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
       genemeta <- genemeta[rownames(countdata), ]
     }
     else {
-      gene_meta <- data.frame(Type = rep("gene", nrow(countdata)))
+      genemeta <- data.frame(Type = rep("gene", nrow(countdata)))
     }
     
     if (is.data.frame(sampleAnnoFile)) {
@@ -179,7 +179,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     countdata_lcpm <- edgeR::cpm(countdata, log = TRUE)
     spe <- SpatialExperiment::SpatialExperiment(assays = list(counts = countdata, 
                                                               logcounts = countdata_lcpm), colData = samplemeta, 
-                                                rowData = gene_meta, spatialCoords = as.matrix(samplemeta[, 
+                                                rowData = genemeta, spatialCoords = as.matrix(samplemeta[, 
                                                                                                           coord.colnames]))
   }
   return(spe)
