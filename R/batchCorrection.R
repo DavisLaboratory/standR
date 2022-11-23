@@ -84,12 +84,13 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param method Can be either RUV4 or Limma or RUVg, by default is RUV4.
 #' @param isLog Logical vector, indicating if the count table is log or not.
 #'
-#' @return A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
+#' @return A Spatial Experiment object, containing the normalized count and normalization factor. For method RUV4 and RUVg, the W matrices will be saved in the colData of the object.
 #' @export
 #'
 #' @references Gagnon-Bartsch, J. A., Jacob, L., & Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.
 #' @references Ritchie, M. E., Phipson, B., Wu, D. I., Hu, Y., Law, C. W., Shi, W., & Smyth, G. K. (2015). limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic acids research, 43(7), e47-e47.
-
+#' 
+#' @note The normalised count is not intended to be used directly for linear modelling. For linear modelling, it is better to include the batch factors/W matrices in the linear model.
 #'
 #' @examples
 #' data("dkd_spe_subset")
