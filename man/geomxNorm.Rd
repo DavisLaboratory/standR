@@ -18,10 +18,14 @@ geomxNorm(
 \item{log}{Log-transformed or not.}
 }
 \value{
-A SpatialExperiment object, with the second assay being the normalized count matrix.
+A SpatialExperiment object, with the second assay being the normalized count matrix. The normalised count is stored in the assay slot called "logcounts" by default.
+With method TMM and sizefactor, the norm.factor will be saved in the metadata of the SpatialExperiment object.
 }
 \description{
 Perform normalization to GeoMX data
+}
+\note{
+The normalised count is not intended to be used directly for linear modelling. For linear modelling, it is better to include the normalized factors in the "norm.factors" column of the DGEList object.
 }
 \examples{
 data("dkd_spe_subset")
