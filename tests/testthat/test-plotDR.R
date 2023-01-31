@@ -32,7 +32,7 @@ test_that("drawPCA works", {
 
   # test precompute
   library(scater)
-  spe <- scater::runPCA(dkd_spe_subset)
+  spe <- suppressWarnings(scater::runPCA(dkd_spe_subset))
   pdata <- reducedDim(spe, "PCA")
 
   p <- drawPCA(dkd_spe_subset, precomputed = pdata)
@@ -93,7 +93,7 @@ test_that("plotDR works", {
   library(scater)
   data("dkd_spe_subset")
 
-  dkd_spe_subset <- scater::runPCA(dkd_spe_subset)
+  dkd_spe_subset <- suppressWarnings(scater::runPCA(dkd_spe_subset))
 
   # Default param
   p <- plotDR(dkd_spe_subset, dimred = "PCA")

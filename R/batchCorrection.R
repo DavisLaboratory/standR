@@ -27,16 +27,16 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
     tidyr::gather(samples, count, -rowname) |>
     left_join(colData(spe) |>
       as.data.frame(optional = TRUE) |>
-      dplyr::select(c(batch_name)) |>
+      dplyr::select(all_of(batch_name)) |>
       rownames_to_column(),
     by = c("samples" = "rowname")
     ) |>
-    (\(.) split(., f = .[, all_of(batch_name)]))() # split data into list of batches
+    (\(.) split(., f = .[, c(batch_name)]))() # split data into list of batches
     
   gene_with_mzscore <- lapply(gene_with_mzscore_list, function(x) {
       y <- x |>
         tidyr::spread(samples, count) |>
-        dplyr::select(-batch_name) |>
+        dplyr::select(-all_of(batch_name)) |>
         column_to_rownames("rowname")
       sd <- apply(y, 1, stats::sd)
       m <- rowMeans(y)
@@ -131,7 +131,7 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
     test <- ruv::design.matrix(factorOfInterest)
 
     # run ruv4
-    ruv.out <- ruv::RUV4(tmat,
+    ruv.out <- RUV4_upgrade(tmat,
       test,
       ctl = rownames(spe) %in% NCGs,
       k = k, Z = NULL
@@ -147,11 +147,8 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
       colData(spe)[, n] <- ruv_w[, i]
     }
 
-    summary <- ruv::ruv_summary(tmat, ruv.out)
 
-    ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") |> t()
-
-    assay(spe, "logcounts") <- ruv_norm_count[rownames(spe), colnames(spe)]
+    assay(spe, "logcounts") <- as.data.frame(t(ruv.out$newY))
   } else if (method == "Limma") {
     assay(spe, "logcounts") <- limma::removeBatchEffect(assay(spe, n_assay),
       batch = batch, batch2 = batch2,

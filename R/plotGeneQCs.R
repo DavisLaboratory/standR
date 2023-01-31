@@ -82,7 +82,7 @@ plotRmGenes <- function(spe, top_n, ordannots, point_size, line_type,
     facet_wrap(~rowname) +
     geom_hline(
       yintercept = S4Vectors::metadata(spe)$lcpm_threshold, linetype = line_type,
-      cex = line_cex, col = line_col,
+      linewidth = line_cex, col = line_col
     ) +
     theme_test() +
     theme(
