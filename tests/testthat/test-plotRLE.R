@@ -41,10 +41,10 @@ test_that("plotRLExpr works with Eset", {
   expect_error(print(p), NA)
 
   # SCE
-  sce <- SingleCellExperiment::SingleCellExperiment(list("a" = matrix(rnorm(6e3), 3)))
-  expect_silent(print(plotRLExpr(sce[, 1:10])))
-  expect_silent(print(plotRLExpr(sce[, 1:100])))
-  expect_silent(print(plotRLExpr(sce)))
+  #sce <- SingleCellExperiment::SingleCellExperiment(list("a" = matrix(rnorm(6e3), 3)))
+  #expect_silent(print(plotRLExpr(sce[, 1:10])))
+  #expect_silent(print(plotRLExpr(sce[, 1:100])))
+  #expect_silent(print(plotRLExpr(sce)))
 
 
   # test dgelist

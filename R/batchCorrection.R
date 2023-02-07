@@ -27,16 +27,16 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
     tidyr::gather(samples, count, -rowname) |>
     left_join(colData(spe) |>
       as.data.frame(optional = TRUE) |>
-      dplyr::select(c(batch_name)) |>
+      dplyr::select(all_of(batch_name)) |>
       rownames_to_column(),
     by = c("samples" = "rowname")
     ) |>
-    (\(.) split(., f = .[, all_of(batch_name)]))() # split data into list of batches
+    (\(.) split(., f = .[, c(batch_name)]))() # split data into list of batches
     
   gene_with_mzscore <- lapply(gene_with_mzscore_list, function(x) {
       y <- x |>
         tidyr::spread(samples, count) |>
-        dplyr::select(-batch_name) |>
+        dplyr::select(-all_of(batch_name)) |>
         column_to_rownames("rowname")
       sd <- apply(y, 1, stats::sd)
       m <- rowMeans(y)
@@ -84,12 +84,13 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param method Can be either RUV4 or Limma or RUVg, by default is RUV4.
 #' @param isLog Logical vector, indicating if the count table is log or not.
 #'
-#' @return A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
+#' @return A Spatial Experiment object, containing the normalized count and normalization factor. For method RUV4 and RUVg, the W matrices will be saved in the colData of the object.
 #' @export
 #'
 #' @references Gagnon-Bartsch, J. A., Jacob, L., & Speed, T. P. (2013). Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, 1-112.
 #' @references Ritchie, M. E., Phipson, B., Wu, D. I., Hu, Y., Law, C. W., Shi, W., & Smyth, G. K. (2015). limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic acids research, 43(7), e47-e47.
-
+#' 
+#' @note The normalised count is not intended to be used directly for linear modelling. For linear modelling, it is better to include the batch factors/W matrices in the linear model.
 #'
 #' @examples
 #' data("dkd_spe_subset")
@@ -130,7 +131,7 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
     test <- ruv::design.matrix(factorOfInterest)
 
     # run ruv4
-    ruv.out <- ruv::RUV4(tmat,
+    ruv.out <- RUV4_upgrade(tmat,
       test,
       ctl = rownames(spe) %in% NCGs,
       k = k, Z = NULL
@@ -146,11 +147,8 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
       colData(spe)[, n] <- ruv_w[, i]
     }
 
-    summary <- ruv::ruv_summary(tmat, ruv.out)
 
-    ruv_norm_count <- ruv::ruv_residuals(summary, type = "adjusted.Y") |> t()
-
-    assay(spe, "logcounts") <- ruv_norm_count[rownames(spe), colnames(spe)]
+    assay(spe, "logcounts") <- as.data.frame(t(ruv.out$newY))
   } else if (method == "Limma") {
     assay(spe, "logcounts") <- limma::removeBatchEffect(assay(spe, n_assay),
       batch = batch, batch2 = batch2,

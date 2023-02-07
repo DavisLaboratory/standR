@@ -38,12 +38,15 @@ rpkm2tpm <- function(x) {
 #' @param method Normalization method to use. Options: TMM, RPKM, TPM, CPM, upperquartile, sizefactor. RPKM and TPM require gene length information, which should be added into rowData(spe). Note that TMM here is TMM + CPM.
 #' @param log Log-transformed or not.
 #'
-#' @return A SpatialExperiment object, with the second assay being the normalized count matrix.
+#' @return A SpatialExperiment object, with the second assay being the normalized count matrix. The normalised count is stored in the assay slot called "logcounts" by default. 
+#' With method TMM and sizefactor, the norm.factor will be saved in the metadata of the SpatialExperiment object.
 #' @export
 #'
 #' @references Robinson, M. D., McCarthy, D. J., & Smyth, G. K. (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26(1), 139-140.
 #' @references Love, M., Anders, S., & Huber, W. (2014). Differential analysis of count data–the DESeq2 package. Genome Biol, 15(550), 10-1186.
 #'
+#' @note The normalised count is not intended to be used directly for linear modelling. For linear modelling, it is better to include the normalized factors in the "norm.factors" column of the DGEList object.
+#' 
 #' @examples
 #' data("dkd_spe_subset")
 #'

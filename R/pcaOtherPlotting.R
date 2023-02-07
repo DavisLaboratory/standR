@@ -273,7 +273,7 @@ plotPCAbiplot <- function(spe_object, n_loadings = 10,
       ),
       arrow = arrow(length = unit(1 / 2, "picas"), ends = "last"),
       color = "black",
-      size = .5,
+      linewidth = .5,
       alpha = 1,
       show.legend = NA
     ) +

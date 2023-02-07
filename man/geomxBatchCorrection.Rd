@@ -42,10 +42,13 @@ geomxBatchCorrection(
 \item{isLog}{Logical vector, indicating if the count table is log or not.}
 }
 \value{
-A Spatial Experiment object, containing the ruv4-normalized count and normalization factor.
+A Spatial Experiment object, containing the normalized count and normalization factor. For method RUV4 and RUVg, the W matrices will be saved in the colData of the object.
 }
 \description{
 Batch correction for GeoMX data
+}
+\note{
+The normalised count is not intended to be used directly for linear modelling. For linear modelling, it is better to include the batch factors/W matrices in the linear model.
 }
 \examples{
 data("dkd_spe_subset")
