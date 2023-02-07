@@ -6,8 +6,8 @@ test_that("Testing negative control gene function", {
   expect_identical(dim(spe), dim(dkd_spe_subset))
   expect_true("mean_zscore" %in% colnames(rowData(spe)))
   expect_true("mean_expr" %in% colnames(rowData(spe)))
-  expect_true("NCGs" %in% names(metadata(spe)))
-  expect_equal(length(metadata(spe)$NCGs), 100)
+  expect_true("NCGs" %in% names(S4Vectors::metadata(spe)))
+  expect_equal(length(S4Vectors::metadata(spe)$NCGs), 100)
 
   expect_error(findNCGs(dkd_spe_subset, n_assay = 3))
   expect_error(findNCGs(dkd_spe_subset, batch_name = "xyz"))
@@ -31,11 +31,11 @@ test_that("Testing ruv4 batch correction function", {
 
   expect_error(geomxBatchCorrection(spe,
     k = -1, factors = c("disease_status", "region"),
-    NCGs = metadata(spe)$NCGs
+    NCGs = S4Vectors::metadata(spe)$NCGs
   ))
   expect_error(geomxBatchCorrection(spe,
     k = 3, factors = c("xyz"),
-    NCGs = metadata(spe)$NCGs
+    NCGs = S4Vectors::metadata(spe)$NCGs
   ))
 })
 
