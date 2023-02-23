@@ -176,7 +176,7 @@ spe2dge <- function(spe, norm = NULL){
     genes <- as.data.frame(SummarizedExperiment::rowRanges(spe))
   else if (ncol(SummarizedExperiment::rowData(spe))) 
     genes <- as.data.frame(SummarizedExperiment::rowData(spe))
-  dge <- DGEList(counts = counts, samples = samples, genes = genes)
+  dge <- edgeR::DGEList(counts = counts, samples = samples, genes = genes)
   
   if(!is.null(norm)){
     if (!(norm %in% c("TMM", "upperquartile", "sizefactor"))) {
