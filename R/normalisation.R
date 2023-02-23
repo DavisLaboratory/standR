@@ -140,5 +140,58 @@ geomxNorm <- function(spe_object, method = c(
   return(spe)
 }
 
+#' Transfer SpatialExperiment object into DGEList object for DE analysis
+#'
+#' @param spe SpatialExperiment object.
+#' @param norm Prior normalization method to be used. Norm factor calculated from the previous normalization step to be used in the DGEList.
+#'
+#' @return A DGEList.
+#' @export 
+#'
+#' @examples 
+#' data("dkd_spe_subset")
+#' 
+#' dge <- spe2dge(dkd_spe_subset)
+#' 
+#' spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
+#' dge <- spe2dge(spe_tmm, norm = "TMM")
+#' 
+spe2dge <- function(spe, norm = NULL){
+  if (!is(spe, "SummarizedExperiment")) 
+    stop("spe is not of the SummarizedExperiment class")
+  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) 
+    stop("SummarizedExperiment package required but is not installed (or can't be loaded)")
+  if (!("counts" %in% SummarizedExperiment::assayNames(spe))) 
+    stop("spe doesn't contain counts")
+  counts <- SummarizedExperiment::assay(spe, "counts")
+  if (!is.null(rownames(spe))) 
+    rownames(counts) <- rownames(spe)
+  if (!is.null(colnames(spe))) 
+    colnames(counts) <- colnames(spe)
+  genes <- samples <- NULL
+  if (ncol(SummarizedExperiment::colData(spe))) {
+    samples <- as.data.frame(SummarizedExperiment::colData(spe))
+  }
+  if (is(SummarizedExperiment::rowRanges(spe), "GRanges")) 
+    genes <- as.data.frame(SummarizedExperiment::rowRanges(spe))
+  else if (ncol(SummarizedExperiment::rowData(spe))) 
+    genes <- as.data.frame(SummarizedExperiment::rowData(spe))
+  dge <- DGEList(counts = counts, samples = samples, genes = genes)
+  
+  if(!is.null(norm)){
+    if (!(norm %in% c("TMM", "upperquartile", "sizefactor"))) {
+      stop("Please make sure norm matched one of the following strings: 
+         TMM, 
+         upperquartile, 
+         sizefactor")
+    } else {
+      dge$samples$norm.factors <- S4Vectors::metadata(spe)$norm.factor
+    }
+  }
+  
+  return(dge)
+}
+
+
 
 utils::globalVariables(c("."))
