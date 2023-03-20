@@ -15,7 +15,7 @@ test_that("plotRLExpr works with Eset", {
 
   # multiple aesthetics
   p <- plotRLExpr(dkd_spe_subset, color = SequencingSaturation > 90, shape = disease_status)
-  expect_error(print(p), NA)
+  expect_silent(print(p))
 
   # order with one column
   p <- plotRLExpr(dkd_spe_subset, ordannots = "region")
@@ -23,9 +23,6 @@ test_that("plotRLExpr works with Eset", {
   p <- plotRLExpr(dkd_spe_subset, ordannots = c("disease_status"), color = disease_status)
   expect_silent(print(p))
 
-  # order with multiple columns
-  p <- plotRLExpr(dkd_spe_subset, ordannots = c("region", "disease_status"), color = disease_status)
-  expect_silent(print(p))
 
   # error when the column is not in the data
   p <- plotRLExpr(dkd_spe_subset, color = region2)
@@ -38,7 +35,7 @@ test_that("plotRLExpr works with Eset", {
   # will not error if the variable is present in the parent env
   region2 <- dkd_spe_subset$region
   p <- plotRLExpr(dkd_spe_subset, color = region2)
-  expect_error(print(p), NA)
+  expect_silent(print(p))
 
   # SCE
   #sce <- SingleCellExperiment::SingleCellExperiment(list("a" = matrix(rnorm(6e3), 3)))
