@@ -29,7 +29,7 @@ setMethod(
     # extract expression data (and transform)
     object <- edgeR::cpm(object, log = TRUE)
     # create data structure
-    samporder <- orderSamples(sdata, rlang::enquo(ordannots))
+    samporder <- orderSamples(sdata, ordannots)
     rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLExpr_intl(rledf, sdata, isSCE = FALSE, ...)
 
@@ -47,7 +47,7 @@ setMethod(
     # extract expression data (and transform)
     object <- Biobase::exprs(object)
     # create data structure
-    samporder <- orderSamples(sdata, rlang::enquo(ordannots))
+    samporder <- orderSamples(sdata, ordannots)
     rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLExpr_intl(rledf, sdata, isSCE = FALSE, ...)
 
@@ -68,7 +68,7 @@ setMethod(
     # extract expression data (and transform)
     object <- assay(object, i = assay)
     # create data structure
-    samporder <- orderSamples(sdata, rlang::enquo(ordannots))
+    samporder <- orderSamples(sdata, ordannots)
     rledf <- pdataRLE_intl(object, samporder)
     p1 <- plotRLExpr_intl(rledf, sdata, isSCE = isSCE, ...)
 

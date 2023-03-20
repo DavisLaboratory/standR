@@ -42,7 +42,8 @@ orderSamples <- function(sdata, ordannots) {
   sdata$SampleOrderID <- seq(nrow(sdata))
 
   # order samples based on provided annotations
-  sdata <- dplyr::arrange(sdata, base::eval(base::as.name(paste("region"))))
+  
+  sdata <- dplyr::arrange(sdata, !!rlang::sym(ordannots))
 
   return(sdata$SampleOrderID)
 }
