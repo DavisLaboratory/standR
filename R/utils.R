@@ -43,7 +43,8 @@ orderSamples <- function(sdata, ordannots) {
 
   # order samples based on provided annotations
   
-  sdata <- dplyr::arrange(sdata, !!rlang::sym(ordannots))
-
+  if(!is.null(ordannots)){
+    sdata <- dplyr::arrange(sdata, !!rlang::sym(ordannots))
+  }
   return(sdata$SampleOrderID)
 }
