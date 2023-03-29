@@ -101,6 +101,7 @@ colData(spe)$regions <- paste0(colData(spe)$region,"_",colData(spe)$SegmentLabel
   paste0("_",colData(spe)$pathology) |>
   (\(.) gsub("_NA","_ns",.))()
 
+library(ggalluvial)
 
 plotSampleInfo(spe, column2plot = c("SlideName","disease_status","regions"))
 ```
