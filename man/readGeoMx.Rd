@@ -8,7 +8,7 @@ readGeoMx(
   countFile,
   sampleAnnoFile,
   featureAnnoFile = NA,
-  hasNegProbe = TRUE,
+  rmNegProbe = TRUE,
   NegProbeName = "NegProbe-WTX",
   colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
   coord.colnames = c("ROICoordinateX", "ROICoordinateY")
@@ -21,7 +21,7 @@ readGeoMx(
 
 \item{featureAnnoFile}{tsv file or a dataframe object. Feature/Gene annotations.}
 
-\item{hasNegProbe}{Logical. Default is TRUE, indicating there are negative probe genes in the data.}
+\item{rmNegProbe}{Logical. Default is TRUE, indicating there are negative probe genes in the data.}
 
 \item{NegProbeName}{Character. Name of negative probe genes, default is NegProbe-WTX.}
 
@@ -43,6 +43,6 @@ query(eh, "standR")
 countFile <- eh[["EH7364"]]
 sampleAnnoFile <- eh[["EH7365"]]
 
-spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
+spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
 
 }

@@ -3,7 +3,7 @@
 #' @param countFile tsv file or a dataframe object. Count matrix, with samples in columns and features/genes in rows. The first column is gene names/ids.
 #' @param sampleAnnoFile tsv file or a dataframe object. Sample annotations.
 #' @param featureAnnoFile tsv file or a dataframe object. Feature/Gene annotations.
-#' @param hasNegProbe Logical. Default is TRUE, indicating there are negative probe genes in the data.
+#' @param rmNegProbe Logical. Default is TRUE, indicating there are negative probe genes in the data.
 #' @param NegProbeName Character. Name of negative probe genes, default is NegProbe-WTX.
 #' @param colnames.as.rownames Vector of characters, length of 3. Column names used to capture gene names, sample names and gene names in countFile, sampleAnnoFile and featureAnnoFile, respectively.
 #' @param coord.colnames Vector of characters, length of 2. Column names used to capture ROI coordinates.
@@ -19,10 +19,10 @@
 #' countFile <- eh[["EH7364"]]
 #' sampleAnnoFile <- eh[["EH7365"]]
 #'
-#' spe <- readGeoMx(countFile, sampleAnnoFile, hasNegProbe = FALSE)
+#' spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
 #'
 readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
-                      hasNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
+                      rmNegProbe = TRUE, NegProbeName = "NegProbe-WTX",
                       colnames.as.rownames = c("TargetName", "SegmentDisplayName", "TargetName"),
                       coord.colnames = c("ROICoordinateX", "ROICoordinateY")) {
   stopifnot(is.character(NegProbeName))
@@ -30,7 +30,7 @@ readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
   stopifnot(length(coord.colnames) == 2)
   spe <- geomx_import_fun(
     countFile, sampleAnnoFile, featureAnnoFile,
-    hasNegProbe, NegProbeName, colnames.as.rownames, coord.colnames
+    rmNegProbe, NegProbeName, colnames.as.rownames, coord.colnames
   )
   return(spe)
 }
@@ -38,12 +38,12 @@ readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
 
 # the importing function itself
 geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
-                             hasNegProbe, NegProbeName,
+                             rmNegProbe, NegProbeName,
                              colnames.as.rownames,
                              coord.colnames) {
 
   # remove the NegProbe gene from the count matrix and save it in the metadata
-  if (hasNegProbe) {
+  if (rmNegProbe) {
     if(is.data.frame(countFile)){
       countdata <- countFile
     } else {
