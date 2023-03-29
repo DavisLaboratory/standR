@@ -20,7 +20,7 @@ A ggplot object
 Plot the user-defined meta data using alluvium plot
 }
 \examples{
-library(ggalluvial)
+
 data("dkd_spe_subset")
 plotSampleInfo(dkd_spe_subset, column2plot = c("SlideName", "disease_status", "region"))
 
