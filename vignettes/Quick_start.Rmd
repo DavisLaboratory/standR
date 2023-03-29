@@ -79,7 +79,7 @@ countFile <- eh[["EH7364"]]
 sampleAnnoFile <- eh[["EH7365"]]
 featureAnnoFile <- eh[["EH7366"]]
 
-spe <- readGeoMx(countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, hasNegProbe = TRUE)
+spe <- readGeoMx(countFile, sampleAnnoFile, featureAnnoFile = featureAnnoFile, rmNegProbe = TRUE)
 
 ```
 
@@ -96,8 +96,6 @@ can affect the process of batch correction.
 
 
 ```{r}
-library(ggalluvial)
-
 colData(spe)$regions <- paste0(colData(spe)$region,"_",colData(spe)$SegmentLabel) |> 
   (\(.) gsub("_Geometric Segment","",.))() |>
   paste0("_",colData(spe)$pathology) |>
