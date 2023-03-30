@@ -7,7 +7,8 @@
 prepareSpatialDecon(
   spe,
   assay2use = "logcounts",
-  negProbeName = "NegProbe-WTX"
+  negProbeName = "NegProbe-WTX",
+  pool = NA
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ prepareSpatialDecon(
 \item{assay2use}{The name of the assay to use. By default is logcounts.}
 
 \item{negProbeName}{The name of the negative probe gene. By default is NegProbe-WTX.}
+
+\item{pool}{A vector indicates the pools of the genes. This is required when there are more than one Negative Probes.}
 }
 \value{
 A list of two dataframes. The first data.frame is the normalised count, the second data.frame is the background for the data.

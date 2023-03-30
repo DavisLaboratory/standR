@@ -4,6 +4,7 @@
 #' @param spe SpatialExperiment object.
 #' @param assay2use The name of the assay to use. By default is logcounts.
 #' @param negProbeName The name of the negative probe gene. By default is NegProbe-WTX.
+#' @param pool A vector indicates the pools of the genes. This is required when there are more than one Negative Probes.
 #'
 #' @return A list of two dataframes. The first data.frame is the normalised count, the second data.frame is the background for the data.
 #' @export
@@ -20,15 +21,34 @@
 #' 
 #' out <- prepareSpatialDecon(spe)
 #' 
-prepareSpatialDecon <- function(spe, assay2use = "logcounts", negProbeName = "NegProbe-WTX"){
+prepareSpatialDecon <- function(spe, assay2use = "logcounts", negProbeName = "NegProbe-WTX", pool = NA){
   
   norm <- assay(spe, assay2use)
   
-  if (!(negProbeName %in% rownames(norm))){
+  if (!all(negProbeName %in% rownames(norm))){
     stop(paste0(negProbeName, " must be included in the dataset. Perhaps specify rmNegProbe=TRUE when using readGeoMx"))
   }
   
-  bg <- sweep(norm*0, 2, norm[negProbeName,], "+")
+  if (length(negProbeName) == 1){
+    bg <- sweep(norm*0, 2, norm[negProbeName,], "+")
+  } else {
+    if (nrow(norm) != length(pool)){
+      stop("length(pool) should be equal to nrow(spe).")
+    }
+    
+    bg <- norm*0
+    
+    for (p in unique(pool)){
+      genes_p <- rownames(norm)[pool == p]
+      negp_p <- base::intersect(negProbeName, genes_p)
+      
+      stopifnot("Negative probes not found in one of the pool." = length(negp_p) > 0)
+      
+      mean_bg_p <- colMeans(norm[negp_p, , drop = FALSE])
+      
+      bg[pool == p, ] <- sweep(bg[pool == p, ], 2, mean_bg_p, "+")
+    }
+  }
   
   out <- list(norm, bg)
   
