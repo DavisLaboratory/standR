@@ -6,6 +6,7 @@
 #' @param negProbeName The name of the negative probe gene. By default is NegProbe-WTX.
 #'
 #' @return A list of two dataframes. The first data.frame is the normalised count, the second data.frame is the background for the data.
+#' @export
 #'
 #' @examples
 #' library(ExperimentHub)
@@ -18,6 +19,7 @@
 #' spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
 #' 
 #' out <- prepareSpatialDecon(spe)
+#' 
 prepareSpatialDecon <- function(spe, assay2use = "logcounts", negProbeName = "NegProbe-WTX"){
   
   norm <- assay(spe, assay2use)

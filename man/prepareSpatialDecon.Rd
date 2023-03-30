@@ -34,4 +34,5 @@ sampleAnnoFile <- eh[["EH7365"]]
 spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
 
 out <- prepareSpatialDecon(spe)
+
 }
