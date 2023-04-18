@@ -282,7 +282,7 @@ checkPrecomputedPCA <- function(object, pcdata) {
     attr(pcdata, "rotation") <- rot
   } else if (is.matrix(pcdata)) {
     stopifnot(all(rownames(pcdata) == colnames(object)))
-    stopifnot(c("dim", "dimnames", "varExplained", "percentVar", "rotation") %in% names(attributes(pcdata)))
+    stopifnot(c("dim", "dimnames", "percentVar", "rotation") %in% names(attributes(pcdata)))
   } else {
     stop("provide results from prcomp or scater::calculatePCA")
   }
