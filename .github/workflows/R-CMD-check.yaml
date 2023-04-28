@@ -239,7 +239,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Test coverage
-        if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux' && matrix.config.r == 'devel'
+        if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux' && matrix.config.r == 'devel'
         run: |
           covr::codecov(type="all", commentDontrun=FALSE)
         shell: Rscript {0}
