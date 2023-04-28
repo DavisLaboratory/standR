@@ -249,7 +249,7 @@ jobs:
         run: R CMD INSTALL .
 
       - name: Deploy package
-        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r == 'devel'
+        if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux' && matrix.config.r == 'devel'
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
