@@ -262,7 +262,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@devel
+        uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-biocversion-${{ matrix.config.bioc }}-r-${{ matrix.config.r }}-results
           path: check
