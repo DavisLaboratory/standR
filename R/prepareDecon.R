@@ -30,7 +30,7 @@ prepareSpatialDecon <- function(spe, assay2use = "logcounts", negProbeName = "Ne
   }
   
   if (length(negProbeName) == 1){
-    bg <- sweep(norm*0, 2, norm[negProbeName,], "+")
+    bg <- sweep(norm*0, 2, unlist(norm[negProbeName,]), "+")
   } else {
     if (nrow(norm) != length(pool)){
       stop("length(pool) should be equal to nrow(spe).")
