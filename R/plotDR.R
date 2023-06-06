@@ -374,7 +374,6 @@ plotDR_intl <- function(drdf, sdata, textScale, ...) {
 
   # tidystyle recommends no explicit return statements at end of functions
   ggplot2::ggplot(plotdf, ggplot2::aes(!!x, !!y, !!!aesmap)) +
-    #ggplot2::geom_point() +
     do.call(ggplot2::geom_point,defaultmap) +
     bhuvad_theme(textScale)
 }
