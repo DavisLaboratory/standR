@@ -1,5 +1,5 @@
 test_that("Testing the function of computing evaluation statistics for batch correction", {
-  library(scater)
+  #library(scater)
   data("dkd_spe_subset")
   eval_out <- computeClusterEvalStats(dkd_spe_subset, "SlideName")
 
@@ -10,7 +10,7 @@ test_that("Testing the function of computing evaluation statistics for batch cor
 })
 
 test_that("Testing the function of plotting and comparing different batch-corrected data", {
-  library(scater)
+  #library(scater)
   data("dkd_spe_subset")
   spe <- dkd_spe_subset
   spe2 <- spe
