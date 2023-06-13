@@ -1,4 +1,5 @@
 Package: standR
+Title: Spatial transcriptome analyses of Nanostring's DSP data in R
 Version: 1.4.2
 Authors@R: 
     c(person(given = "Ning",
