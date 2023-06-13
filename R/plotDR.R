@@ -4,7 +4,7 @@ calcPCA <- function(object, dims) {
   if (requireNamespace("scater") & maxdim < ncol(object)) {
     pcdata <- scater::calculatePCA(object, ncomponents = maxdim)
   } else {
-    pcdata <- stats::prcomp(t(object))[,dims]
+    pcdata <- stats::prcomp(t(object))
     pcdata <- checkPrecomputedPCA(object, pcdata)
   }
 
