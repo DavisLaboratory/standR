@@ -18,7 +18,6 @@ Transfer SpatialExperiment object into DGEList object for DE analysis
 \examples{
 data("dkd_spe_subset")
 
-dge <- spe2dge(dkd_spe_subset)
 
 spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
 dge <- spe2dge(spe_tmm)
