@@ -4,12 +4,10 @@
 \alias{spe2dge}
 \title{Transfer SpatialExperiment object into DGEList object for DE analysis}
 \usage{
-spe2dge(spe, norm = NULL)
+spe2dge(spe)
 }
 \arguments{
 \item{spe}{SpatialExperiment object.}
-
-\item{norm}{Prior normalization method to be used. Norm factor calculated from the previous normalization step to be used in the DGEList.}
 }
 \value{
 A DGEList.
@@ -23,6 +21,6 @@ data("dkd_spe_subset")
 dge <- spe2dge(dkd_spe_subset)
 
 spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
-dge <- spe2dge(spe_tmm, norm = "TMM")
+dge <- spe2dge(spe_tmm)
 
 }

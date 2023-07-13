@@ -81,6 +81,7 @@ geomxNorm <- function(spe_object, method = c(
 
   if (method == "TMM") {
     S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y)$samples$norm.factors
+    S4Vectors::metadata(spe)$norm.method <- "TMM"
     if (isTRUE(log)) {
       assay(spe, "logcounts") <- edgeR::calcNormFactors(y) |>
         (\(.) edgeR::cpm(., log = TRUE))()
@@ -93,6 +94,7 @@ geomxNorm <- function(spe_object, method = c(
   ## RPKM
 
   if (method == "RPKM") {
+    S4Vectors::metadata(spe)$norm.method <- "RPKM"
     if (isTRUE(log)) {
       assay(spe, "logcounts") <- edgeR::rpkm(y, log = TRUE, prior.count = 0)
     } else {
@@ -104,6 +106,7 @@ geomxNorm <- function(spe_object, method = c(
   ## TPM
 
   if (method == "TPM") {
+    S4Vectors::metadata(spe)$norm.method <- "TPM"
     if (isTRUE(log)) {
       assay(spe, "logcounts") <- log(rpkm2tpm(edgeR::rpkm(y)) + 1, 2)
     } else {
@@ -115,6 +118,7 @@ geomxNorm <- function(spe_object, method = c(
   ## upper quantile
 
   if (method == "upperquartile") {
+    S4Vectors::metadata(spe)$norm.method <- "upperquartile"
     S4Vectors::metadata(spe)$norm.factor <- edgeR::calcNormFactors(y, method = "upperquartile")$samples$norm.factors
     if (isTRUE(log)) {
       assay(spe, "logcounts") <- edgeR::calcNormFactors(y, method = "upperquartile") |>
@@ -129,6 +133,7 @@ geomxNorm <- function(spe_object, method = c(
   ## calculating size factor based on geomean
 
   if (method == "sizefactor") {
+    S4Vectors::metadata(spe)$norm.method <- "sizefactor"
     S4Vectors::metadata(spe)$norm.factor <- calNormCount(spe, log = TRUE)[[2]]
     if (isTRUE(log)) {
       assay(spe, "logcounts") <- calNormCount(spe, log = TRUE)[[1]]
@@ -143,7 +148,6 @@ geomxNorm <- function(spe_object, method = c(
 #' Transfer SpatialExperiment object into DGEList object for DE analysis
 #'
 #' @param spe SpatialExperiment object.
-#' @param norm Prior normalization method to be used. Norm factor calculated from the previous normalization step to be used in the DGEList.
 #'
 #' @return A DGEList.
 #' @export 
@@ -154,39 +158,14 @@ geomxNorm <- function(spe_object, method = c(
 #' dge <- spe2dge(dkd_spe_subset)
 #' 
 #' spe_tmm <- geomxNorm(dkd_spe_subset, method = "TMM")
-#' dge <- spe2dge(spe_tmm, norm = "TMM")
+#' dge <- spe2dge(spe_tmm)
 #' 
-spe2dge <- function(spe, norm = NULL){
-  if (!is(spe, "SummarizedExperiment")) 
-    stop("spe is not of the SummarizedExperiment class")
-  if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) 
-    stop("SummarizedExperiment package required but is not installed (or can't be loaded)")
-  if (!("counts" %in% SummarizedExperiment::assayNames(spe))) 
-    stop("spe doesn't contain counts")
-  counts <- SummarizedExperiment::assay(spe, "counts")
-  if (!is.null(rownames(spe))) 
-    rownames(counts) <- rownames(spe)
-  if (!is.null(colnames(spe))) 
-    colnames(counts) <- colnames(spe)
-  genes <- samples <- NULL
-  if (ncol(SummarizedExperiment::colData(spe))) {
-    samples <- as.data.frame(SummarizedExperiment::colData(spe))
-  }
-  if (is(SummarizedExperiment::rowRanges(spe), "GRanges")) 
-    genes <- as.data.frame(SummarizedExperiment::rowRanges(spe))
-  else if (ncol(SummarizedExperiment::rowData(spe))) 
-    genes <- as.data.frame(SummarizedExperiment::rowData(spe))
-  dge <- edgeR::DGEList(counts = counts, samples = samples, genes = genes)
+spe2dge <- function(spe){
   
-  if(!is.null(norm)){
-    if (!(norm %in% c("TMM", "upperquartile", "sizefactor"))) {
-      stop("Please make sure norm matched one of the following strings: 
-         TMM, 
-         upperquartile, 
-         sizefactor")
-    } else {
-      dge$samples$norm.factors <- S4Vectors::metadata(spe)$norm.factor
-    }
+  dge <- edgeR::SE2DGEList(spe)
+  nm <- S4Vectors::metadata(spe)$norm.method
+  if(nm %in% c("TMM", "upperquartile", "sizefactor")){
+    dge$samples$norm.factors <- S4Vectors::metadata(spe)$norm.factor
   }
   
   return(dge)
