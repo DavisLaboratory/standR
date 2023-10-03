@@ -40,11 +40,15 @@ bhuvad_theme <- function(textScale = 1.1) {
 orderSamples <- function(sdata, ordannots) {
   # add sample IDs
   sdata$SampleOrderID <- seq(nrow(sdata))
-
-  # order samples based on provided annotations
   
-  if(!is.null(ordannots)){
-    sdata <- dplyr::arrange(sdata, !!rlang::sym(ordannots))
+  # order samples based on provided annotations
+  if (!is.null(ordannots)) {
+    if (length(ordannots) == 1) {
+      sdata <- sdata[order(sdata[[ordannots]]), ]
+    } else {
+      sdata <- sdata[do.call(order, sdata[ordannots]), ]
+    }
   }
+  
   return(sdata$SampleOrderID)
 }
