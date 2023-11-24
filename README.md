@@ -34,5 +34,9 @@ library(devtools)
 devtools::install_github("DavisLaboratory/standR")
 ```
 
+## Citation
 
+To cite standR, plese cite the following article:
+https://doi.org/10.1093/nar/gkad1026
+Much appreciated!
 
