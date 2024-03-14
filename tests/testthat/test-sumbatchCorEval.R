@@ -16,10 +16,12 @@ test_that("Testing the function of plotting and comparing different batch-correc
   spe2 <- spe
   spe3 <- spe
 
-  expect_silent(plotClusterEvalStats(list(spe, spe2, spe3),
-    bio_feature_name = "region",
-    batch_feature_name = "SlideName", c("test1", "test2", "test3")
-  ))
+  p <- plotClusterEvalStats(list(spe, spe2, spe3),
+                            bio_feature_name = "region",
+                            batch_feature_name = "SlideName", 
+                            c("test1", "test2", "test3")
+  )
+  expect_s3_class(p, "ggplot")
 
   expect_error(plotClusterEvalStats(list(spe, spe2, spe3),
     bio_feature_name = "xyz",

@@ -3,7 +3,8 @@ test_that("Testing plotlibraryQC function", {
   library(patchwork)
   data("dkd_spe_subset")
   spe <- addPerROIQC(dkd_spe_subset)
-
-  expect_silent(plotROIQC(spe))
+  
+  p <- plotROIQC(spe)
+  expect_s3_class(p, "ggplot")
   expect_error(plotROIQC(col = xyz))
 })
