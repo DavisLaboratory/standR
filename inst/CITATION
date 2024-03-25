@@ -1,0 +1,20 @@
+citHeader("Please cite the paper below for the standR software itself.  Please also try to cite the appropriate methodology articles that describe the statistical methods implemented in standR, depending on which standR functions you are using.")
+
+c(
+  bibentry(bibtype = "article",
+  		 title = "standR: spatial transcriptomic analysis for GeoMx DSP data",
+  		 author = c(person("Ning", "Liu"),
+  		 		   person("Dharmesh D", "Bhuva"),
+  		 		   person("Ahmed", "Mohamed"),
+  		 		   person("Micah", "Bokelund"),
+  		 		   person("Arutha", "Kulasinghe"),
+  		 		   person("Chin Wee", "Tan"),
+  		 		   person("Melissa J.", "Davis")),
+  		 journal = "Nucleic Acids Research",
+  		 volume = 52,
+  		 number = 1,
+  		 pages = e2--e2,
+  		 year = 2024,
+  		 publisher = "Oxford University Press",
+  		 DOI = "https://doi.org/10.1093/nar/gkad1026")
+)
