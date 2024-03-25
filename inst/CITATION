@@ -13,7 +13,7 @@ c(
   		 journal = "Nucleic Acids Research",
   		 volume = 52,
   		 number = 1,
-  		 pages = e2--e2,
+  		 pages = "e2",
   		 year = 2024,
   		 publisher = "Oxford University Press",
   		 DOI = "https://doi.org/10.1093/nar/gkad1026")
