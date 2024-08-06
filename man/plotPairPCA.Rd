@@ -13,6 +13,7 @@ plotPairPCA(
   title.size = 14,
   rmduplabs = FALSE,
   flipcoord = FALSE,
+  legend.pos = "top",
   ...
 )
 }
