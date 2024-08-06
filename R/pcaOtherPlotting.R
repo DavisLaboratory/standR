@@ -33,7 +33,8 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' plotPairPCA(dkd_spe_subset)
 plotPairPCA <- function(spe_object, n_dimension = 3,
                         precomputed = NULL,
-                        assay = 2, title = NA, title.size = 14, rmduplabs = FALSE, flipcoord = FALSE, ...) {
+                        assay = 2, title = NA, title.size = 14, rmduplabs = FALSE, flipcoord = FALSE, 
+                        legend.pos = "top", ...) {
   stopifnot(is.numeric(n_dimension))
 
   # compute PCA
@@ -105,7 +106,7 @@ plotPairPCA <- function(spe_object, n_dimension = 3,
   PCApairplot <- ggpubr::ggarrange(
     plotlist = plotting_list,
     ncol = n - 1, nrow = n - 1, align = "hv",
-    common.legend = TRUE, legend = "top"
+    common.legend = TRUE, legend = legend.pos
   )
 
   if (!is.na(title)) {
