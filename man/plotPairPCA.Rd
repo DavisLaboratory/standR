@@ -37,6 +37,8 @@ we will compute for you.}
 
 \item{flipcoord}{Flip the xy coordinates. FALSE by default.}
 
+\item{legend.pos}{Position of the legend. top by default.}
+
 \item{...}{aesthetic mappings to pass to \code{ggplot2::aes()}.}
 }
 \value{

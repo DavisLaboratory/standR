@@ -24,6 +24,7 @@ expand.grid.rmdup <- function(x, y, include.equals = FALSE) {
 #' @param title.size Numeric vector, size of the title.
 #' @param rmduplabs Remove duplicated labels from the plot. FALSE by default.
 #' @param flipcoord Flip the xy coordinates. FALSE by default.
+#' @param legend.pos Position of the legend. top by default.
 #'
 #' @return A ggplot object.
 #' @export
