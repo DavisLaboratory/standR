@@ -3,6 +3,8 @@
 #' @param ordannots variables or computations to sort samples by (tidy style).
 #'
 #' @inheritParams drawPCA
+#' @param sce_thresh Integer value. The threshold of sample size for using 
+#' dot plot instead of box plot.
 #' @return a ggplot2 object, containing the RLE plot.
 #' @export
 #'
@@ -59,7 +61,7 @@ setMethod(
 setMethod(
   "plotRLExpr",
   signature("SummarizedExperiment", "ANY"),
-  function(object, ordannots, assay = 1, ...) {
+  function(object, ordannots, assay = 1, sce_thresh = 1000, ...) {
     isSCE <- is(object, "SingleCellExperiment")
 
     # extract sample data
@@ -70,7 +72,8 @@ setMethod(
     # create data structure
     samporder <- orderSamples(sdata, ordannots)
     rledf <- pdataRLE_intl(object, samporder)
-    p1 <- plotRLExpr_intl(rledf, sdata, isSCE = isSCE, ...)
+    p1 <- plotRLExpr_intl(rledf, sdata, isSCE = isSCE, 
+                          sce_thresh = sce_thresh, ...)
 
     return(p1)
   }
@@ -93,11 +96,12 @@ pdataRLE_intl <- function(emat, sampord) {
   return(rledf)
 }
 
-plotRLExpr_intl <- function(plotdf, sdata, isSCE = FALSE, textScale = 1, ...) {
+plotRLExpr_intl <- function(plotdf, sdata, isSCE = FALSE, textScale = 1, 
+                            sce_thresh = 1000, ...) {
 
   # constant - sample size at which standard plot becomes dense
   dense_thresh <- 50
-  sce_thresh <- 1000
+  sce_thresh <- sce_thresh
 
   # extract aes
   aesmap <- rlang::enquos(...)
@@ -106,7 +110,8 @@ plotRLExpr_intl <- function(plotdf, sdata, isSCE = FALSE, textScale = 1, ...) {
   plotdf <- addSampleAnnot(plotdf, sdata)
 
   # compute plot
-  aesmap <- aesmap[!names(aesmap) %in% c("x", "ymin", "ymax", "upper", "middle", "lower")] # remove fixed mappings if present
+  aesmap <- aesmap[!names(aesmap) %in% c("x", "ymin", "ymax", 
+                                         "upper", "middle", "lower")] # remove fixed mappings if present
 
   # split aes params into those that are not aes i.e. static parametrisation
   if (length(aesmap) > 0) {

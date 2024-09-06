@@ -13,7 +13,7 @@ plotRLExpr(object, ordannots = c(), ...)
 
 \S4method{plotRLExpr}{ExpressionSet}(object, ordannots = c(), ...)
 
-\S4method{plotRLExpr}{SummarizedExperiment}(object, ordannots, assay = 1, ...)
+\S4method{plotRLExpr}{SummarizedExperiment}(object, ordannots, assay = 1, sce_thresh = 1000, ...)
 }
 \arguments{
 \item{object}{a DGEList, SummarizedExperiment or ExpressionSet object
@@ -25,6 +25,9 @@ containing gene expression data.}
 
 \item{assay}{a numeric or character, specifying the assay to use (for
 \code{SummarizedExperiment} and its derivative classes).}
+
+\item{sce_thresh}{Integer value. The threshold of sample size for using
+dot plot instead of box plot.}
 }
 \value{
 a ggplot2 object, containing the RLE plot.
