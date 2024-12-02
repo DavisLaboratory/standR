@@ -21,7 +21,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   stopifnot(top_n <= nrow(spe))
   
   # compute coefficient of variance for each batch
-  gene_with_mzscore_list <- assay(spe, "logcounts") |>
+  gene_with_mzscore_list <- assay(spe, n_assay) |>
     as.data.frame() |>
     rownames_to_column() |>
     tidyr::gather(samples, count, -rowname) |>
@@ -83,6 +83,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' @param design A design matrix relating to treatment conditions to be preserved, can be generated using `stats::model.matrix` function with all biological factors included.
 #' @param method Can be either RUV4 or Limma or RUVg, by default is RUV4.
 #' @param isLog Logical vector, indicating if the count table is log or not.
+#' @param outAssay Output assay name, logcounts by default.
 #'
 #' @return A Spatial Experiment object, containing the normalized count and normalization factor. For method RUV4 and RUVg, the W matrices will be saved in the colData of the object.
 #' @export
@@ -102,8 +103,10 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
 #' )
 #'
 geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
-                                 batch = NULL, batch2 = NULL, covariates = NULL, design = matrix(1, ncol(spe), 1),
-                                 method = c("RUV4", "Limma", "RUVg"), isLog = TRUE) {
+                                 batch = NULL, batch2 = NULL, covariates = NULL, 
+                                 design = matrix(1, ncol(spe), 1),
+                                 method = c("RUV4", "Limma", "RUVg"), isLog = TRUE,
+                                 outAssay = "logcounts") {
   if (length(method) == 3) {
     method <- "RUV4"
   } else {
@@ -148,9 +151,9 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
     }
 
 
-    assay(spe, "logcounts") <- as.data.frame(t(ruv.out$newY))
+    assay(spe, outAssay) <- as.data.frame(t(ruv.out$newY))
   } else if (method == "Limma") {
-    assay(spe, "logcounts") <- limma::removeBatchEffect(assay(spe, n_assay),
+    assay(spe, outAssay) <- limma::removeBatchEffect(assay(spe, n_assay),
       batch = batch, batch2 = batch2,
       covariates = covariates,
       design = design
@@ -177,7 +180,7 @@ geomxBatchCorrection <- function(spe, k, factors, NCGs, n_assay = 2,
       colData(spe)[, n] <- ruv_w[, i]
     }
     
-    assay(spe, "logcounts") <- ruvg_out$normalizedCounts[rownames(spe), colnames(spe)]
+    assay(spe, outAssay) <- ruvg_out$normalizedCounts[rownames(spe), colnames(spe)]
     
   }
 
@@ -231,7 +234,8 @@ getSilhouette <- function(pca_object, spe, foiColumn) {
 #'   factor_batch = "SlideName", NCGs = S4Vectors::metadata(spe)$NCGs
 #' )
 #'
-findBestK <- function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3, line_col = "black", point_col = "black", text_size = 13) {
+findBestK <- function(spe, maxK = 10, factor_of_int, factor_batch, NCGs, point_size = 3,
+                      line_col = "black", point_col = "black", text_size = 13) {
   kdata <- data.frame()
   for (i in seq(maxK)) {
     spe_ruv <- geomxBatchCorrection(spe, k = i, factors = factor_of_int, NCGs = NCGs)

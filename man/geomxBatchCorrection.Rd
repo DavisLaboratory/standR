@@ -15,7 +15,8 @@ geomxBatchCorrection(
   covariates = NULL,
   design = matrix(1, ncol(spe), 1),
   method = c("RUV4", "Limma", "RUVg"),
-  isLog = TRUE
+  isLog = TRUE,
+  outAssay = "logcounts"
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ geomxBatchCorrection(
 \item{method}{Can be either RUV4 or Limma or RUVg, by default is RUV4.}
 
 \item{isLog}{Logical vector, indicating if the count table is log or not.}
+
+\item{outAssay}{Output assay name, logcounts by default.}
 }
 \value{
 A Spatial Experiment object, containing the normalized count and normalization factor. For method RUV4 and RUVg, the W matrices will be saved in the colData of the object.
