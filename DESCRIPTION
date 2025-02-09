@@ -1,11 +1,11 @@
 Package: standR
 Title: Spatial transcriptome analyses of Nanostring's DSP data in R
-Version: 1.11.1
+Version: 1.11.2
 Authors@R: 
     c(person(given = "Ning",
              family = "Liu",
              role = c("aut", "cre"),
-             email = "liu.n@wehi.edu.au",
+             email = "ning.liu@adelaide.edu.au",
              comment = c(ORCID = "0000-0002-9487-9305")),
       person(given = "Dharmesh D",
              family = "Bhuva",
