@@ -56,12 +56,12 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
       stop("colnames.as.rownames[1] is not in the column names of your count file.")
     }
     # make sure the name of negprobe is in the gene column of count data.
-    if (!NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]])) {
+    if (!all(NegProbeName %in% as.matrix(countdata[, colnames.as.rownames[1]]))) {
       stop("NegProbeName is not found in your count file.")
     }
 
     # filter the count data, remove the negprobe.
-    countdata_filtered0 <- countdata[countdata[, colnames.as.rownames[1]] != NegProbeName, ]
+    countdata_filtered0 <- countdata[!countdata[, colnames.as.rownames[1]] %in% NegProbeName, ]
     countdata_filtered <- countdata_filtered0[, !colnames(countdata_filtered0) %in%
       colnames.as.rownames[1]]
     rownames(countdata_filtered) <- as.vector(as.matrix(countdata_filtered0[, colnames.as.rownames[1]]))
@@ -102,9 +102,8 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     rownames(samplemeta_filtered) <- samplemeta[, colnames.as.rownames[2]]
     samplemeta_filtered <- samplemeta_filtered[colnames(countdata_filtered), ]
     # arrange according to count table.
-
     # negprobe raw count
-    negprobecount <- countdata[countdata[, colnames.as.rownames[1]] == 
+    negprobecount <- countdata[countdata[, colnames.as.rownames[1]] %in% 
                                  NegProbeName, ]
     nprobename <- as.vector(as.matrix(negprobecount[,colnames.as.rownames[1]]))
     if(length(nprobename) != length(unique(nprobename))){
