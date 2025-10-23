@@ -50,7 +50,7 @@ findNCGs <- function(spe, n_assay = 2, batch_name = "SlideName", top_n = 200) {
   colnames(gene_with_mzscore) <- paste0("cv", seq(ncol(gene_with_mzscore)))
   gene_with_mzscore <- scale(gene_with_mzscore) |>  # compute z-score
     as.data.frame()
-  gene_with_mzscore$mean_zscore <- rowMeans(gene_with_mzscore)
+  gene_with_mzscore$mean_zscore <- rowMeans(gene_with_mzscore, na.rm = TRUE)
   gene_with_mzscore <- gene_with_mzscore |> dplyr::select(mean_zscore)
 
   rowData(spe)$mean_zscore <- gene_with_mzscore[rownames(spe), ]
