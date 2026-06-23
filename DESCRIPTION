@@ -1,6 +1,6 @@
 Package: standR
 Title: Spatial transcriptome analyses of Nanostring's DSP data in R
-Version: 1.17.1
+Version: 1.17.2
 Authors@R: 
     c(person(given = "Ning",
              family = "Liu",
@@ -61,6 +61,7 @@ Suggests:
     ggpubr,
     ggrepel,
     cluster,
+    GeomxTools,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

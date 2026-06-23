@@ -1,3 +1,8 @@
+# standR 1.17.2
+
+* Add `GeomxTools` to `Suggests` so examples using
+  `readGeoMxFromNanoStringGeoMxSet()` can run in coverage workflows.
+
 # standR 1.17.1
 
 * Add `readGeoMxFromNanoStringGeoMxSet()` to convert
