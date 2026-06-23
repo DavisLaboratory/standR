@@ -8,10 +8,16 @@ The standR package provides a series of functions to assist different stages of 
 
 ## See full guide at [HERE](https://davislaboratory.github.io/standR/)
 
-## Input with DDC files
+## Latest news
 
-If you started only with DCC files, load them into the GeoMX Data analysis suite, then you can export an excel that contains several sheets.
-Then save the sheets separately in to csv, then load them in R using readGeoMx. (thanks to @hookoop)
+### standR 1.17.1
+
+* Add `readGeoMxFromNanoStringGeoMxSet()` to convert
+  `GeomxTools::readNanoStringGeoMxSet()` / `NanoStringGeoMxSet` objects from
+  DCC/PKC workflows into `SpatialExperiment` objects for standR.
+
+* Improve `prepareSpatialDecon()` so negative probes removed by
+  `readGeoMx(rmNegProbe = TRUE)` can be read from `metadata(spe)$NegProbes`.
 
 ## Overall workflow
 
@@ -44,4 +50,3 @@ devtools::install_github("DavisLaboratory/standR")
 To cite standR, plese cite the following article:
 https://doi.org/10.1093/nar/gkad1026
 Much appreciated!
-
