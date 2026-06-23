@@ -8,6 +8,11 @@ The standR package provides a series of functions to assist different stages of 
 
 ## See full guide at [HERE](https://davislaboratory.github.io/standR/)
 
+## Input with DDC files
+
+If you started only with DCC files, load them into the GeoMX Data analysis suite, then you can export an excel that contains several sheets.
+Then save the sheets separately in to csv, then load them in R using readGeoMx. (thanks to @hookoop)
+
 ## Overall workflow
 
 <img src="man/figures/workflow.jpg" width="1200">
