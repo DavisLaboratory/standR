@@ -36,6 +36,98 @@ readGeoMx <- function(countFile, sampleAnnoFile, featureAnnoFile = NA,
 }
 
 
+#' Import GeoMX DSP data from a NanoStringGeoMxSet-like object
+#'
+#' Converts a `Biobase::ExpressionSet` object, including objects returned by
+#' `GeomxTools::readNanoStringGeoMxSet()`, into a `SpatialExperiment` object.
+#'
+#' @param geomxSet A `Biobase::ExpressionSet`-derived object.
+#' @param assay2use Name of the assay data element to use. Default is `exprs`.
+#' @param sampleIDCol Column in the sample annotation used as sample IDs. If the
+#'   column is absent it is created from the assay column names.
+#' @param featureIDCol Column in the feature annotation used as feature IDs. If
+#'   duplicated, counts are summed by this column.
+#' @param rmNegProbe Logical. Default is TRUE, indicating negative probe genes
+#'   are removed from the assay and stored in metadata.
+#' @param NegProbeName Character. Name of negative probe genes.
+#' @param coord.colnames Vector of characters, length of 2. Column names used to
+#'   capture ROI coordinates.
+#'
+#' @return A SpatialExperiment object.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(GeomxTools)
+#' datadir <- system.file("extdata", "DSP_NGS_Example_Data", package = "GeomxTools")
+#' dccFiles <- dir(datadir, pattern = ".dcc$", full.names = TRUE)
+#' pkcFiles <- unzip(zipfile = file.path(datadir, "pkcs.zip"))
+#' sampleAnnotationFile <- file.path(datadir, "annotations.xlsx")
+#'
+#' dccSet <- readNanoStringGeoMxSet(
+#'   dccFiles = dccFiles,
+#'   pkcFiles = pkcFiles,
+#'   phenoDataFile = sampleAnnotationFile,
+#'   phenoDataSheet = "CW005",
+#'   phenoDataDccColName = "Sample_ID"
+#' )
+#' spe <- readGeoMxFromNanoStringGeoMxSet(dccSet)
+#' }
+readGeoMxFromNanoStringGeoMxSet <- function(geomxSet, assay2use = "exprs",
+                                            sampleIDCol = "SegmentDisplayName",
+                                            featureIDCol = "TargetName",
+                                            rmNegProbe = TRUE,
+                                            NegProbeName = "NegProbe-WTX",
+                                            coord.colnames = c("ROICoordinateX", "ROICoordinateY")) {
+  if (!methods::is(geomxSet, "ExpressionSet")) {
+    stop("geomxSet must be a Biobase::ExpressionSet-derived object.")
+  }
+
+  count_matrix <- Biobase::assayDataElement(geomxSet, assay2use)
+  count_matrix <- as.matrix(count_matrix)
+  samplemeta <- Biobase::pData(geomxSet)
+  featuremeta <- Biobase::fData(geomxSet)
+
+  if (!featureIDCol %in% colnames(featuremeta)) {
+    featuremeta[[featureIDCol]] <- rownames(count_matrix)
+  }
+  feature_ids <- as.character(featuremeta[[featureIDCol]])
+
+  if (anyDuplicated(feature_ids)) {
+    count_matrix <- rowsum(count_matrix, group = feature_ids, reorder = FALSE)
+    featuremeta <- featuremeta[!duplicated(feature_ids), , drop = FALSE]
+    featuremeta[[featureIDCol]] <- unique(feature_ids)
+    rownames(featuremeta) <- featuremeta[[featureIDCol]]
+  } else {
+    rownames(count_matrix) <- feature_ids
+    rownames(featuremeta) <- feature_ids
+  }
+
+  countdata <- data.frame(
+    setNames(list(rownames(count_matrix)), featureIDCol),
+    as.data.frame(count_matrix, check.names = FALSE),
+    check.names = FALSE
+  )
+
+  if (!sampleIDCol %in% colnames(samplemeta)) {
+    samplemeta[[sampleIDCol]] <- colnames(count_matrix)
+  }
+  if (!all(colnames(count_matrix) %in% samplemeta[[sampleIDCol]])) {
+    stop("sampleIDCol must identify all columns in the selected assay.")
+  }
+
+  readGeoMx(
+    countFile = countdata,
+    sampleAnnoFile = samplemeta,
+    featureAnnoFile = featuremeta,
+    rmNegProbe = rmNegProbe,
+    NegProbeName = NegProbeName,
+    colnames.as.rownames = c(featureIDCol, sampleIDCol, featureIDCol),
+    coord.colnames = coord.colnames
+  )
+}
+
+
 # the importing function itself
 geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
                              rmNegProbe, NegProbeName,
@@ -77,9 +169,9 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta)) # make sure column name is there in the gene meta.
 
-      genemeta_filtered0 <- genemeta[genemeta[, colnames.as.rownames[3]] != NegProbeName, ]
+      genemeta_filtered0 <- genemeta[!genemeta[, colnames.as.rownames[3]] %in% NegProbeName, ]
       genemeta_filtered <- genemeta_filtered0[, !colnames(genemeta_filtered0) %in%
-        colnames.as.rownames[3]]
+        colnames.as.rownames[3], drop = FALSE]
       rownames(genemeta_filtered) <- genemeta_filtered0[, colnames.as.rownames[3]]
       genemeta_filtered <- genemeta_filtered[rownames(countdata_filtered), ]
       # arrange the gene meta, as the same order as count table.
@@ -98,7 +190,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
 
 
     samplemeta_filtered <- samplemeta[, !colnames(samplemeta) %in%
-      colnames.as.rownames[2]]
+      colnames.as.rownames[2], drop = FALSE]
     rownames(samplemeta_filtered) <- samplemeta[, colnames.as.rownames[2]]
     samplemeta_filtered <- samplemeta_filtered[colnames(countdata_filtered), ]
     # arrange according to count table.
@@ -154,7 +246,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
       }
       stopifnot(colnames.as.rownames[3] %in% colnames(genemeta0))
       
-      genemeta <- genemeta0[, !colnames(genemeta0) %in% colnames.as.rownames[3]]
+      genemeta <- genemeta0[, !colnames(genemeta0) %in% colnames.as.rownames[3], drop = FALSE]
       rownames(genemeta) <- genemeta0[, colnames.as.rownames[3]]
       genemeta <- genemeta[rownames(countdata), ]
     }
@@ -171,7 +263,7 @@ geomx_import_fun <- function(countFile, sampleAnnoFile, featureAnnoFile,
     }
     stopifnot(colnames.as.rownames[2] %in% colnames(samplemeta0))
     
-    samplemeta <- samplemeta0[, !colnames(samplemeta0) %in% colnames.as.rownames[2]]
+    samplemeta <- samplemeta0[, !colnames(samplemeta0) %in% colnames.as.rownames[2], drop = FALSE]
     rownames(samplemeta) <- samplemeta0[, colnames.as.rownames[2]]
     samplemeta <- samplemeta[colnames(countdata), ]
     
