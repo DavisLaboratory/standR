@@ -10,11 +10,10 @@ The standR package provides a series of functions to assist different stages of 
 
 ## Latest news
 
-### standR 1.17.1
+### standR 1.17.3
 
-* Add `readGeoMxFromNanoStringGeoMxSet()` to convert
-  `GeomxTools::readNanoStringGeoMxSet()` / `NanoStringGeoMxSet` objects from
-  DCC/PKC workflows into `SpatialExperiment` objects for standR.
+* Add `readGeoMxFromDcc()` to import DCC/PKC workflows directly into
+  `SpatialExperiment` objects without requiring `GeomxTools`.
 
 * Improve `prepareSpatialDecon()` so negative probes removed by
   `readGeoMx(rmNegProbe = TRUE)` can be read from `metadata(spe)$NegProbes`.

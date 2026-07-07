@@ -1,3 +1,8 @@
+# standR 1.17.3
+
+* Add a standR-native `readGeoMxFromDcc()` importer for DCC/PKC workflows and
+  remove `GeomxTools` from `Suggests`.
+
 # standR 1.17.2
 
 * Add `GeomxTools` to `Suggests` so examples using

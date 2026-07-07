@@ -37,24 +37,18 @@ capture ROI coordinates.}
 A SpatialExperiment object.
 }
 \description{
-Converts a \code{Biobase::ExpressionSet} object, including objects returned by
-\code{GeomxTools::readNanoStringGeoMxSet()}, into a \code{SpatialExperiment} object.
+Converts a \code{Biobase::ExpressionSet}-derived object into a
+\code{SpatialExperiment} object.
 }
 \examples{
-\dontrun{
-library(GeomxTools)
-datadir <- system.file("extdata", "DSP_NGS_Example_Data", package = "GeomxTools")
-dccFiles <- dir(datadir, pattern = ".dcc$", full.names = TRUE)
-pkcFiles <- unzip(zipfile = file.path(datadir, "pkcs.zip"))
-sampleAnnotationFile <- file.path(datadir, "annotations.xlsx")
-
-dccSet <- readNanoStringGeoMxSet(
-  dccFiles = dccFiles,
-  pkcFiles = pkcFiles,
-  phenoDataFile = sampleAnnotationFile,
-  phenoDataSheet = "CW005",
-  phenoDataDccColName = "Sample_ID"
+expr <- matrix(c(10, 1), nrow = 2,
+               dimnames = list(c("GeneA", "NegProbe-WTX"), "ROI1"))
+pheno <- data.frame(ROICoordinateX = 1, ROICoordinateY = 1, row.names = "ROI1")
+feature <- data.frame(TargetName = rownames(expr), row.names = rownames(expr))
+eset <- Biobase::ExpressionSet(
+  assayData = expr,
+  phenoData = Biobase::AnnotatedDataFrame(pheno),
+  featureData = Biobase::AnnotatedDataFrame(feature)
 )
-spe <- readGeoMxFromNanoStringGeoMxSet(dccSet)
-}
+spe <- readGeoMxFromNanoStringGeoMxSet(eset)
 }
