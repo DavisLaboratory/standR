@@ -186,9 +186,9 @@ test_that("DCC and PKC files can be imported without GeomxTools", {
 })
 
 test_that("GeomxTools is not required as a suggested package", {
-  description <- read.dcf(test_path("../../DESCRIPTION"))
+  description <- utils::packageDescription("standR")
 
-  expect_false(grepl("GeomxTools", description[1, "Suggests"], fixed = TRUE))
+  expect_false(grepl("GeomxTools", description$Suggests, fixed = TRUE))
 })
 
 test_that("DCC import supports one sample after negative probe removal", {

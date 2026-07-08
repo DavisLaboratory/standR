@@ -1,3 +1,8 @@
+# standR 1.17.4
+
+* Fix installed-package checks for the DCC importer tests and qualify
+  `stats::setNames()` to avoid R CMD check notes.
+
 # standR 1.17.3
 
 * Add a standR-native `readGeoMxFromDcc()` importer for DCC/PKC workflows and

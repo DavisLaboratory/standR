@@ -98,7 +98,7 @@ readGeoMxFromNanoStringGeoMxSet <- function(geomxSet, assay2use = "exprs",
   }
 
   countdata <- data.frame(
-    setNames(list(rownames(count_matrix)), featureIDCol),
+    stats::setNames(list(rownames(count_matrix)), featureIDCol),
     as.data.frame(count_matrix, check.names = FALSE),
     check.names = FALSE
   )
