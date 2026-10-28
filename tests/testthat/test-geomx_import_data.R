@@ -1,14 +1,23 @@
-test_that("Testing import data from path", {
+test_that("GeoMx data can be imported from local file paths", {
   library(SpatialExperiment)
-  url <- "http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/"
-  countFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Raw_TargetCountMatrix.txt")
-  sampleAnnoFile <- paste0(url, "GeoScriptHub/KidneyDataset/Kidney_Sample_Annotations.txt")
+  countFile <- test_path("fixtures", "geomx-counts.tsv")
+  sampleAnnoFile <- test_path("fixtures", "geomx-samples.tsv")
 
   # default
   spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
-  expect_equal(nrow(spe), 18504)
-  expect_equal(ncol(spe), 231)
-  expect_equal(length(assayNames(spe)), 2)
+  expected_counts <- matrix(
+    c(10, 20, 1, 30, 40, 2),
+    nrow = 3,
+    dimnames = list(c("GeneA", "GeneB", "NegProbe-WTX"), c("ROI1", "ROI2"))
+  )
+  expect_equal(as.matrix(assay(spe, "counts")), expected_counts)
+  expect_equal(assayNames(spe), c("counts", "logcounts"))
+  expect_equal(
+    spatialCoords(spe),
+    matrix(c(1, 2, 3, 4), nrow = 2,
+           dimnames = list(c("ROI1", "ROI2"),
+                           c("ROICoordinateX", "ROICoordinateY")))
+  )
 
   # change colnames to use
   expect_error(readGeoMx(countFile, sampleAnnoFile,

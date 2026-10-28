@@ -10,12 +10,16 @@
 #' @export
 #'
 #' @examples
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' 
-#' query(eh, "standR")
-#' countFile <- eh[["EH7364"]]
-#' sampleAnnoFile <- eh[["EH7365"]]
+#' countFile <- data.frame(
+#'   TargetName = c("GeneA", "GeneB", "NegProbe-WTX"),
+#'   ROI1 = c(10, 20, 1),
+#'   ROI2 = c(30, 40, 2)
+#' )
+#' sampleAnnoFile <- data.frame(
+#'   SegmentDisplayName = c("ROI1", "ROI2"),
+#'   ROICoordinateX = c(1, 2),
+#'   ROICoordinateY = c(3, 4)
+#' )
 #' 
 #' spe <- readGeoMx(countFile, sampleAnnoFile, rmNegProbe = FALSE)
 #' 
